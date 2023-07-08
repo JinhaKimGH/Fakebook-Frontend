@@ -1,0 +1,172 @@
+:root{
+    --facebook-blue: #1877f2;
+    --facebook-grey: #F0F2F5;
+    --facebook-green: #42b72a;
+    --facebook-dark-grey: #a0a2a2;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    font-family: SFProDisplay-Regular, Helvetica, Arial, sans-serif;
+}
+
+.login, .signup{
+    display: flex;
+    justify-content: space-around;
+    padding-top: 72px;
+    padding-bottom: 112px;
+    background-color: var(--facebook-grey);
+}
+
+.facebook-logo-login, .facebook-logo-signup{
+    height: 106px;
+    margin: -28px;
+    padding: 112px 0 16px;
+}
+
+.login-subheading, .signup-subheading{
+    font-weight: normal;
+    font-size: 28px;
+    line-height: 32px;
+    width: 500px;
+}
+
+.login-form-box, .signup-form-box{
+    margin: 40px 0 0;
+    padding: 14px 0 28px;
+    width: 396px;
+    height: 290px;
+    text-align: center;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+}
+
+.signup-form-box{
+    height: 420px !important;
+}
+
+.signup-heading{
+    display: flex;
+    text-align: left !important;
+    padding: 0 16px 10px 16px;
+}
+
+.signup-heading > .left > h3{
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 24px;
+    color: #606770;
+}
+.login-form-box > form, .signup-form-box > form{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.signup-form-box > form{
+    border-top: 1px solid #dadde1;
+    padding: 16px;
+}
+
+.fullname-signup{
+    justify-content: space-around;
+    display: flex;
+}
+.login-form-box > form > input, .login-form-box > form > button{
+    margin: 6px auto;
+    padding: 14px 16px;
+    width: 330px;
+    border-radius: 6px;
+}
+
+.signup-form-box > form > input, .signup-form-box > form > button, .fullname-signup > input{
+    border-radius: 6px;
+    padding: 9px;
+    margin: 6px auto;
+}
+
+.fullname-signup > input{
+    width: 150px;
+}
+
+.signup-form-box > form > input{
+    width: 330px;
+}
+
+.signup-form-box > form > button{
+    min-width: 351px !important;
+}
+
+.signup-form-box > form > input, .fullname-signup > input{
+    font-size: 17px;
+    border: 1px solid #dddfe2;
+}
+
+.login-form-box > form > input{
+    font-size: 17px;
+    border: 1px solid #dddfe2;
+}
+
+.login-form-box > form > input:focus{
+    border-color: #1b74e4;
+    box-shadow: 0 0 0 2px #e7f3ff;
+    caret-color: #1b74e4;
+}
+
+.submit{
+    background-color: var(--facebook-blue);
+    border: none;
+    min-width: 362px;
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+}
+
+.form-error{
+    height: 19px;
+    color: rgb(209, 38, 38);
+    font-size: 14px;
+}
+
+.sign-up-label{
+    margin-right: auto;
+    margin-left: 7px;
+    color: #606770;
+    font-size: 12px;
+    font-weight: normal;
+    margin-top: 2px;
+}
+
+.break{
+    border-bottom: 1px solid #dadde1;
+    margin: 20px 16px;
+}
+
+.signup-break{
+    border-bottom: 0.5px solid #dadde1;
+}
+
+.create-account{
+    border: none;
+    text-decoration: none;
+    color :white;
+    background-color: var(--facebook-green);
+    font-weight: bold;
+    border-radius: 6px;
+    font-size: 17px;
+    line-height: 48px;
+    padding: 12px 16px;
+}
+
+.x-signup{
+    border: none;
+    text-decoration: none;
+    color: var(--facebook-dark-grey);
+    margin-left: auto;
+}
+
+.input-err{
+    border-color: red !important;
+}

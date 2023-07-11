@@ -23,6 +23,4 @@ function App() {
 export default App
 
 
-//TODO: The Passport thing
-//TODO: pass in the user back to home 
 //TODO: make sure user can only see login/signup page and is redirected otherwise

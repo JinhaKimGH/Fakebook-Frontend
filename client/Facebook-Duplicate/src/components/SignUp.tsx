@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable no-useless-escape */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { useNavigate, Link } from "react-router-dom";
@@ -5,7 +6,8 @@ import axios from "axios";
 import React, { SyntheticEvent } from "react";
 import {config} from "../config"
 
-export default function Login(){
+// Signup form component
+export default function SignUp(){
 
     // Used to navigate routes
     const history = useNavigate(); 
@@ -30,6 +32,14 @@ export default function Login(){
 
     // Error state for sign-up form
     const [error, setError] = React.useState("");
+
+    // If there is a token saved, go to dashboard automatically
+    React.useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            history("/home");
+        }
+    }, [])
 
     // Helper function calculates the current age of the user, based on the birthday state
     function calculateAge(dob: Date) {
@@ -88,7 +98,7 @@ export default function Login(){
 
         // Ensures age of the user is over 13
         if(calculateAge(birthday) < 13){
-            setError("You must be older than 13 to sign up to Facebook.");
+            setError("You must be older than 13 to sign up to Fakebook.");
             document.getElementById("date")!.classList.add("input-err")
             return;
         }
@@ -105,12 +115,13 @@ export default function Login(){
                 firstName, lastName, email, password, gender, birthday
             })
             .then(res => {
-                if(res.data == "Success"){
+                if(res.data.message == "Success"){
                     history("/");
-                } else if (res.data == "Failure"){
+                } else if (res.data.message == "Failure"){
                     // Sets error state if email is in use
                     setError("Email is already associated with an account.");
                 }
+                
             })
             .catch(e => {
                 // Error catching
@@ -125,8 +136,8 @@ export default function Login(){
     return (
         <div className="signup">
             <div>
-                <img className="facebook-logo-signup" src="https://static.xx.fbcdn.net/rsrc.php/y8/r/dF5SId3UHWd.svg"/>
-                <h3 className="signup-subheading">Connect with friends and the world around you on Facebook.</h3>
+                <h1 className="fakebook-logo-login">fakebook</h1>                
+                <h3 className="signup-subheading">Connect with friends and the world around you on Fakebook.</h3>
             </div>
 
             <div className="signup-form-box">

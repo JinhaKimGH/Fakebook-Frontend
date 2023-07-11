@@ -1,30 +1,47 @@
 import React from "react"
 import {useLocation, useNavigate} from 'react-router-dom'
 import axios from "axios"
+import Navbar from "./Navigationbar";
 
+interface IsUser {
+    firstName: string,
+    lastName: string,
+    email: string,
+    gender: string,
+    birthday: Date,
+    accountCreationDate: string,
+    password: string,
+    bio: string,
+    facebookid: string
+}
+
+interface Token {
+    user: IsUser,
+    token: string,
+    message: string,
+}
+
+// Homepage component
 export default function Home(){
     const location = useLocation();
+    const history = useNavigate();
     const [user, setUser] = React.useState({});
-    
-    async function getUser(){
-        try{
-            await axios.get("http://localhost:3000/", {
-                withCredentials: true,
-            })
-            .then(res => console.log(res))
-            .catch(e => {console.log(e)})
-        } catch (err) {
-            console.log(err)
-        }
-    }
 
+    // If there is no token saved, go to login automatically
     React.useEffect(() => {
-        void getUser();
+        const token : Token = JSON.parse(localStorage.getItem("token"));
+        if (!token) {
+            history("/");
+        } else{
+            setUser(token.user)
+        }
     }, [])
 
     return (
         <div className="homepage">
-            <h1>Hello {user.email} and welcome to the homepage.</h1>
+            <Navbar user={user}/>
         </div>
     )
 }
+
+// TODO: Create a Nav bar, routed to all the facebook stuff, and style the home page

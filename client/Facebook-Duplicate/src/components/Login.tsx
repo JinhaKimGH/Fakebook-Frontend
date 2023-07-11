@@ -1,35 +1,51 @@
-/* eslint-disable no-useless-escape */
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios"
 import React, { SyntheticEvent } from "react"
 import {config} from "../config"
 
+interface Response {
+    data: Data
+}
+
+interface Data {
+    message: string,
+    token: string,
+    user: object,
+}
+
+// Login form component
 export default function Login(){
+    // Used to navigate routes
     const history = useNavigate();
+
+    // Sets the state for the email input
     const [email, setEmail] = React.useState("");
+
+    // Sets the state for the password input
     const [password, setPassword] = React.useState("");
+
+    // Sets the error message for the form
     const [error, setError] = React.useState("");
 
+    // Sets the state that determines whether the user is already logged in
+    const [userLoggedIn, setUserLoggedIn] = React.useState(false);
+
+    // Helper function ensures that inputted email is a valid email
     function validateEmail(inputEmail: string){
         const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, "gm");
 
         return emailRegex.test(inputEmail);
     }
-    async function getUser(){
-        try{
-            await axios.get(`${config.apiURL}/user`, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(res => console.log(res))
-            .catch(e => {console.log(e)})
-        } catch (err) {
-            console.log(err)
+
+    // If there is a token saved, go to home automatically
+    React.useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            history("/home");
         }
-    }
+    }, [])
+
+    // Asynchronous function which handles the login submission
     async function submit(e : SyntheticEvent){
         e.preventDefault();
         document.getElementById("email")!.classList.remove("input-err")
@@ -46,26 +62,27 @@ export default function Login(){
             return; 
         }
 
+        // If there are any errors with the form, a class is added to the form to indicate to the user, which inputs have errors
+
+        // Otherwise, accesses the api and gets a response
         try{
-            await axios.post(config.apiURL, { 
-                username: email,
+            const res : Response = await axios.post(`${config.apiURL}/login`, { 
+                email: email,
                 password: password, 
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
+            });
+
+            const data : Data = res.data;
+            
+            if(data.message == "Success"){
+                if (data.token){
+                    // Sets the token, user, and time in localStorage
+                    localStorage.setItem("token", JSON.stringify({token: data.token, user: data.user, time: Date.now() }));
+                    setUserLoggedIn(true);
+                    return history('/home');
                 }
-            })
-            .then(res=>{
-                if(res.data == "Success"){
-                    void getUser();
-                    //history("/home");
-                } else if (res.data == "Incorrect email or password.") {
-                   setError("Incorrect email or password.");
-                }
-            })
-            .catch(e => {
-                console.log(e)
-            })
+            } else if (data.message == "Incorrect email or password.") {
+                setError("Incorrect email or password.");
+            }
 
          } catch(err) {
             console.log(err)
@@ -75,8 +92,8 @@ export default function Login(){
     return (
         <div className="login">
             <div>
-                <img className="facebook-logo-login" src="https://static.xx.fbcdn.net/rsrc.php/y8/r/dF5SId3UHWd.svg"/>
-                <h3 className="login-subheading">Connect with friends and the world around you on Facebook.</h3>
+                <h1 className="fakebook-logo-login">fakebook</h1>
+                <h3 className="login-subheading">Connect with friends and the world around you on Fakebook.</h3>
             </div>
             
             <div className="login-form-box">

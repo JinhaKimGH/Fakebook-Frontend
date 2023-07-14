@@ -61,7 +61,7 @@ exports.login_post = asyncHandler(async (req, res, next) => {
 })
 
 exports.login_fakebook = [
-  // Authenticate with facebbok and return token for OdinBook
+  // Authenticate with facebook and return token for OdinBook
   passport.authenticate("facebook-token", { session: false, scope: ['email', ] }),
   function (req, res) {
     const opts = {};

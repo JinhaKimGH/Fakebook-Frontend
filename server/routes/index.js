@@ -7,6 +7,7 @@ const bcrypt = require("bcryptjs");
 
 // Controller Modules
 const authController = require('../controllers/authController');
+const userController = require('../controllers/userController');
 
 
 // Authentication Routes
@@ -20,11 +21,11 @@ router.post('/signup', authController.user_signup_post);
 /* POST Login Page */
 router.post('/facebook-login', authController.login_fakebook);
 
+
+// User Routes 
+
 /* GET user */
-router.get('/user', (req, res, next) => {
-    console.log(req.user)
-    res.send(req.user);
-})
+router.get('/user/:id', passport.authenticate("jwt", {session: false}), userController.user_get)
 
 //router.get("/posts", passport.authenticate("jwt", { session: false }), postController.posts_get);
 

@@ -1,7 +1,8 @@
 import React from "react"
 import {useLocation, useNavigate} from 'react-router-dom'
-import axios from "axios"
 import Navbar from "./Navigationbar";
+import SideItem from "./SideItem";
+import SideProfile from "./SideProfile";
 
 interface IsUser {
     firstName: string,
@@ -12,7 +13,9 @@ interface IsUser {
     accountCreationDate: string,
     password: string,
     bio: string,
-    facebookid: string
+    facebookid: string,
+    friends: Array<string>,
+    profilePhoto: string
 }
 
 interface Token {
@@ -25,11 +28,24 @@ interface Token {
 export default function Home(){
     const location = useLocation();
     const history = useNavigate();
-    const [user, setUser] = React.useState({});
+    const [user, setUser] = React.useState<IsUser>({
+        firstName: "",
+        lastName: "",
+        email: "",
+        gender: "",
+        birthday: new Date(),
+        accountCreationDate: "",
+        password: "",
+        bio: "",
+        facebookid: "",
+        friends: [],
+        profilePhoto: ""
+    });
 
     // If there is no token saved, go to login automatically
     React.useEffect(() => {
-        const token : Token = JSON.parse(localStorage.getItem("token"));
+        const tokenJSON = localStorage.getItem("token");
+        const token : Token | null = tokenJSON ? JSON.parse(tokenJSON) as Token : null;
         if (!token) {
             history("/");
         } else{
@@ -39,7 +55,19 @@ export default function Home(){
 
     return (
         <div className="homepage">
-            <Navbar user={user}/>
+            <Navbar user={user} home={'home'}/>
+            <div className="home-items">
+                <div className="home-options">
+                    <SideProfile image={user.profilePhoto} text={`${user.firstName} ${user.lastName}`} id={`${user._id}`}/>
+                    <SideItem icon={"group"} text="Friends" link="/friends"/>
+                </div>
+                <div className="home-feed">
+
+                </div>
+                <div className="home-contact-list">
+                    {user.friends.map((friend) => <SideProfile image="" text="" id={friend} />)}
+                </div>
+            </div>
         </div>
     )
 }

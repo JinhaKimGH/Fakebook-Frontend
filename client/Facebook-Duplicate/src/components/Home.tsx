@@ -5,11 +5,12 @@ import SideItem from "./SideItem";
 import SideProfile from "./SideProfile";
 
 interface IsUser {
+    _id: string,
     firstName: string,
     lastName: string,
     email: string,
     gender: string,
-    birthday: Date,
+    birthday: string,
     accountCreationDate: string,
     password: string,
     bio: string,
@@ -29,11 +30,12 @@ export default function Home(){
     const location = useLocation();
     const history = useNavigate();
     const [user, setUser] = React.useState<IsUser>({
+        _id: "",
         firstName: "",
         lastName: "",
         email: "",
         gender: "",
-        birthday: new Date(),
+        birthday: "",
         accountCreationDate: "",
         password: "",
         bio: "",

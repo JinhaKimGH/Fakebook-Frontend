@@ -8,7 +8,6 @@ const CommentSchema = new Schema({
     link: {type: String},
     commentTime: {type: Date, required: true},
     replies: [{type: Schema.Types.ObjectId, ref: "Comment"}],
-    
     likes: [{type: Schema.Types.ObjectId, ref: "User"}]
 });
 

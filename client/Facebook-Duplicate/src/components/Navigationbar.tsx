@@ -13,7 +13,7 @@ interface IsUser {
     lastName: string,
     email: string,
     gender: string,
-    birthday: Date,
+    birthday: string,
     accountCreationDate: string,
     password: string,
     bio: string,

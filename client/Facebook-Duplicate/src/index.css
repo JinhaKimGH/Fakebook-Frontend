@@ -338,6 +338,13 @@
     border-radius: 999999px;
 }
 
+.comment-profile-photo{
+    margin-top: 5px;
+    width: 30px;
+    height: auto;
+    border-radius: 999999px;
+}
+
 .dropdown-menu{
     position: absolute;
     top: 70px;
@@ -438,7 +445,7 @@ ul{
     padding: 4px;
     font-size: 28px;
     -webkit-background-clip: text;
-    background-image: linear-gradient(0deg, rgba(24,119,242,1) 0%, rgba(0,212,255,1) 100%);;
+    background-image: linear-gradient(0deg, rgba(24,119,242,1) 0%, rgba(0,212,255,1) 100%);
     background-size: 100%;
     -moz-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -453,18 +460,32 @@ ul{
     margin-left: 5px;
 }
 
-.dropdown-menu.active, .post-form-popup-screen.active{
+.dropdown-menu.active, .post-form-popup-screen.active, .post-right.active{
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
     transition: 1s ease;
 }
 
+.dropdown-menu.active, .post-form-popup-screen.active{
+    transform: translateY(0);
+}
+
 .dropdown-menu.inactive, .post-form-popup-screen.inactive{
+    transform: translateY(-20px);
+}
+
+.dropdown-menu.inactive, .post-form-popup-screen.inactive, .post-right.inactive{
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-20px);
     transition: 1s ease;
+}
+
+.post-right.active{
+    transform: translateX(0);
+}
+
+.post-right.inactive{
+    transform: translateX(-20px);
 }
 
 .home-items{
@@ -494,9 +515,9 @@ ul{
 
 .profile-feed{
     background-color: var(--fakebook-background);
-    height: 100%;
+    min-height: 100vh;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .profile-picture{
@@ -605,15 +626,35 @@ ul{
     border-right: 0.5px solid var(--fakebook-border-color);
 }
 
-.profile-about-left > h3, .profile-about-left > ul > li, .profile-about-right > h4, .profile-about-right > p{
+.profile-about-left > h3, .profile-about-left > ul > li, .profile-about-right > div > h4, .profile-about-right > h4, .profile-about-right > p{
     color: rgb(228, 230, 235);
     font-family: var(--secondary-font);
+}
+
+.title-container{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .profile-about-right > h4{
     font-size: 20px;
     font-weight: 700;
     margin-bottom : 20px;
+}
+
+.profile-about-right{
+    flex: 1;
+}
+
+.edit-button{
+    color: var(--fakebook-blue)
+}
+
+.edit-button:hover{
+    text-decoration: underline;
+    text-decoration-color: var(--fakebook-blue);
+    cursor: pointer;
 }
 
 .profile-about-left > h3{
@@ -655,11 +696,31 @@ ul{
     font-size: 15px;
     font-weight: 400;
     word-break: break-all;
+    color: rgb(228, 230, 235);
+}
+
+.contact-symbol.bio{
+    margin-top: 10px;
 }
 
 .about-button-icon{
     color: var(--fakebook-dark-grey);
     margin-right: 5px;
+}
+
+.likes{
+    display: flex;
+    align-items: center;
+    z-index: 1;
+}
+
+.like-icon{
+    color: var(--fakebook-white-font);
+    background-image: linear-gradient(0deg, rgba(24,119,242,1) 0%, rgba(0,212,255,1) 100%);;
+    border-radius: 9999999px;
+    padding: 2px;
+    font-size: 10px;
+    margin-right: 2px;
 }
 
 .about-desc{
@@ -682,8 +743,30 @@ ul{
     border-radius: 8px;
     margin-top: 16px;
     width: 668px;
+    box-shadow: 0 1px 2px var(--shadow-2);
 }
 
+.post-feed{
+    display: flex;
+    flex-direction: column;
+}
+.post-right{
+    margin-left: 10px;
+    background-color: var(--fakebook-post-nav);
+    padding: 16px;
+    font-size: 12px;
+    border-radius: 8px;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 2px var(--shadow-2);
+    max-width: 300px;
+}
+
+.post-feed{
+    padding-bottom: 4px !important;
+    min-width: 668px !important;
+}
 .post-creation-info{
     display: flex;
     align-items: center;
@@ -707,13 +790,64 @@ ul{
 .post-form-popup-screen{
     z-index: 100;
     background-color: rgba(0, 0, 0, 0.448);
-    position: absolute;
+    position: fixed;
     top: 0px;
     bottom: 0px;
     right: 0px;
     left: 0px;
-    height: 100%;
+    height: 100vh;
     width: 100vw;
+}
+
+.edit-form{
+    margin-top: 10px;
+}
+
+.edit-form-textarea, .edit-form-input{
+    border: none;
+    background-color: rgb(58, 59, 60);
+    color: #B0B3B8;
+    font-size: 15px;
+    resize: none;
+    font-weight: 300;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    max-width: 855.5px;
+    width: 855.5px;
+}
+
+.edit-form-textarea:focus, .edit-form-input:focus{
+    border: none;
+    outline: none;
+    caret-color: #B0B3B8;
+}
+
+.form-button-cancel{
+    margin-left: auto;
+}
+
+.form-button-save{
+    margin-left: 20px;
+}
+
+.form-button-save, .form-button-cancel{
+    color: rgb(228, 230, 235);
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 6px;
+    height: 36px;
+    padding: 0 12px;
+}
+
+.form-button-save:hover, .form-button-cancel:hover{
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.308)
+}
+
+.edit-form-buttons{
+    display: flex;
+    width: 100%;
 }
 
 .post-form-popup{
@@ -764,6 +898,7 @@ ul{
     font-size: 24px;
     resize: none;
     font-weight: 300;
+    margin-bottom: 10px;
 }
 
 .post-text-area:focus{
@@ -834,23 +969,30 @@ ul{
     margin-left: 10px;
 }
 
-.post-content{
-    border-bottom: 1px solid var(--fakebook-border-color);
-    padding-bottom: 12px; 
-}
-
 .post-text{
     color: rgb(228, 230, 235);
     font-size: 15px;
     font-weight: 400;
     overflow-wrap: break-word;
+    overflow-y: scroll;
+    max-height: 60px;
     padding: 16px 0 16px 0;
 }
 
 .post-likes-comments{
+    border-bottom: 1px solid var(--fakebook-border-color);
+    padding-bottom: 12px; 
     display: flex;
     justify-content: space-between;
     color: rgb(176, 179, 184);
+    margin-top: auto;
+}
+
+.comment-nonexistent{
+    text-align: center;
+    color: rgb(176, 179, 184);
+    margin-top: 10px;
+    overflow-wrap: break-word;
 }
 
 .post-interactions{
@@ -858,6 +1000,7 @@ ul{
     justify-content: space-around;
     align-items: center;
     margin-top: 6px;
+    margin-bottom: 10px;
 }
 
 .thumbs-up, .comment{
@@ -866,7 +1009,8 @@ ul{
     border: none;
     background-color: transparent;
     color: rgb(176, 179, 184);
-    padding: 10px;
+    padding: 8px;
+    text-decoration: none;
 }
 
 .liked{
@@ -881,4 +1025,248 @@ ul{
 
 .interactions{
     margin-right: 6px;
+}
+
+.post-image{
+    text-align: center;
+    height: 350px;
+    display: block;
+    margin: 0 auto 10px auto;
+    max-width: 100%;
+    object-fit: cover;
+}
+
+iframe{
+    width: 100% !important;
+    height: 350px !important;
+}
+
+.comments-top{
+    display: flex;
+    align-items: center;
+}
+
+.comments-popup{
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.post-container{
+    display: flex;
+    margin-left: 342px;
+    margin-bottom: 20px;
+}
+
+.post-container.big{
+    max-height: 570px;
+    min-height: 570px;
+}
+
+.post-container.small{
+    max-height: 255px;
+    min-height: 255px;
+}
+
+.create-post{
+    display: flex;
+    justify-content: center;
+}
+
+.comments-top > h2{
+    color: white;
+    font-weight: 400;
+    font-size: 17px;
+    margin-right: 20px;
+}
+
+.comments-top > button{
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 999999px;
+    padding: 6px 8.5px;
+    margin-left: auto;
+}
+
+.comments-top > button:hover{
+    background-color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+}
+
+.comment-container{
+    flex: 1;
+    overflow-y: scroll;
+    max-height: 100%;
+    width: 100%;
+}
+
+.comment-form{
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+    background-color: rgb(58, 59, 60);
+    padding: 5px;
+    border-radius: 12px;
+}
+
+.reply-form{
+    display: flex;
+    align-items: center;
+    background-color: rgb(58, 59, 60);
+    padding: 2px;
+    border-radius: 12px;
+    width: 50%;
+    margin-left: 45px;
+    margin-top: 5px;
+}
+
+.comment-input, .send-comment, .gif-popup{
+    border: none;
+    background: rgb(58, 59, 60);
+}
+
+.reply-input{
+    border: none;
+    background: rgb(58, 59, 60);
+    font-size: 12px;
+    width: 90%;
+    color: var(--fakebook-white-font);
+    padding-left: 12px;
+}
+
+.send-reply{
+    border: none;
+    background: transparent;
+}
+
+.comment-input{
+    width: 90%;
+    color: var(--fakebook-white-font);
+}
+
+.comment-input:focus, .reply-input:focus{
+    outline: none;
+    caret-color: #B0B3B8;
+}
+
+.send, .gif{
+    color: #B0B3B8;
+}
+
+.send-comment, .gif-popup{
+    margin-left: auto;
+    padding: 4px;
+}
+
+.send-comment:hover, .gif-popup:hover, .send-reply:hover{
+    cursor: pointer;
+    background:rgba(255, 255, 255, 0.1);
+    border-radius: 999999px;
+}
+
+.empty-container{
+    min-width: 332px;
+}
+
+.comment-bubble{
+    display: flex;
+    margin-top: 10px;
+}
+
+.comment-text{
+    margin-left: 5px;
+    background-color: rgb(58, 59, 60);
+    color: rgb(228, 230, 235);
+    padding: 8px 12px 8px 12px;
+    font-size: 12px;
+    border-radius: 18px;
+    max-width: 100%;
+}
+
+.comment-text > p {
+    padding: 4px 0 4px 0;
+    word-break: break-all;
+}
+
+.comment-name{
+    text-decoration: none;
+    color: white;
+}
+
+.interactions{
+    margin-left: 9px;
+    display: flex;
+}
+
+.interactions > p{
+    color: rgb(176, 179, 184);
+    margin: 0 8px;
+    font-size: 10px;
+}
+
+.comment-like:hover, .comment-reply:hover{
+    text-decoration: underline;
+    text-decoration-color: rgb(176, 179, 184);
+    cursor: pointer;
+}
+
+.comment-liked:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--fakebook-blue);
+    cursor: pointer;
+}
+
+.comment-liked{
+    color: var(--fakebook-blue) !important;
+}
+
+.likes{
+    margin-left: auto;
+    color: rgb(176, 179, 184);
+    margin: 0 8px;
+    font-size: 10px;
+}
+
+.view-replies{
+    transform: scaleY(-1);
+    color: #B0B3B8;
+    font-size: 15px;
+    margin-left: 47px;
+}
+
+.replies{
+    display: flex;
+    align-items: center;
+    margin-top: 3px;
+}
+
+.replies > p{
+    margin-left: 5px;
+    color: rgb(176, 179, 184);
+}
+
+.replies > p:hover{
+    text-decoration: underline;
+    text-decoration-color: rgb(176, 179, 184);
+    cursor: pointer;
+}
+
+.comment-bubble.reply{
+    margin-left: 47px;
+}
+
+.edit-button-pencil{
+    margin-left: auto;
+    color: var(--fakebook-dark-grey);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 9999999px;
+    padding: 3px;
+}
+
+.edit-button-pencil:hover{
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.3);
 }

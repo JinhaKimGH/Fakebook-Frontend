@@ -4,24 +4,11 @@ import React, { SyntheticEvent } from "react"
 import {config} from "../config"
 import { CSSTransition } from 'react-transition-group';
 import DropDownMenuItem from "./DropDownMenuItem";
+import {UserType} from '../Interfaces'
 
 // TODO: SOMETHING ON SUBMIT
 
-interface IsUser {
-    _id: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    gender: string,
-    birthday: string,
-    accountCreationDate: string,
-    password: string,
-    bio: string,
-    facebookid: string,
-    profilePhoto: string
-}
-
-export default function Navbar(props: {user: IsUser,  home: string}){
+export default function Navbar(props: {user: UserType,  home: string}){
 
     // State for opening and closing the dropdown menu
     const [open, setOpen] = React.useState(false);
@@ -37,8 +24,12 @@ export default function Navbar(props: {user: IsUser,  home: string}){
         history('/')
     }
 
+    // If the component is loaded, this function is called that adds an event listener to mousedown
+
     React.useEffect(() => {
         const handler = (e: SyntheticEvent) => {
+            // If the menuRef contains the event target, we change the setOpen for the menu
+            // The menu closes when the user clicks anything outside of the menu
             if(!menuRef.current.contains(e.target)){
                 setOpen(false)
             }

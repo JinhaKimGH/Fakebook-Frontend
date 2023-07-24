@@ -2,16 +2,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios"
 import React, { SyntheticEvent } from "react"
 import {config} from "../config"
-
-interface Response {
-    data: Data
-}
-
-interface Data {
-    message: string,
-    token: string,
-    user: object,
-}
+import { RespType } from "../Interfaces";
 
 // Login form component
 export default function Login(){
@@ -66,12 +57,12 @@ export default function Login(){
 
         // Otherwise, accesses the api and gets a response
         try{
-            const res : Response = await axios.post(`${config.apiURL}/login`, { 
+            const res : RespType = await axios.post(`${config.apiURL}/login`, { 
                 email: email,
                 password: password, 
             });
 
-            const data : Data = res.data;
+            const data = res.data;
             
             if(data.message == "Success"){
                 if (data.token){
@@ -81,6 +72,7 @@ export default function Login(){
                     return history('/home');
                 }
             } else if (data.message == "Incorrect email or password.") {
+                // Sets the form error
                 setError("Incorrect email or password.");
             }
 

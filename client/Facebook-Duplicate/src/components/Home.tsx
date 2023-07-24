@@ -1,35 +1,17 @@
 import React from "react"
-import {useLocation, useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import Navbar from "./Navigationbar";
 import SideItem from "./SideItem";
 import SideProfile from "./SideProfile";
-
-interface IsUser {
-    _id: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    gender: string,
-    birthday: string,
-    accountCreationDate: string,
-    password: string,
-    bio: string,
-    facebookid: string,
-    friends: Array<string>,
-    profilePhoto: string
-}
-
-interface Token {
-    user: IsUser,
-    token: string,
-    message: string,
-}
+import { UserType, TokenType } from "../Interfaces";
 
 // Homepage component
 export default function Home(){
-    const location = useLocation();
+    // Used for the routing
     const history = useNavigate();
-    const [user, setUser] = React.useState<IsUser>({
+
+    // The user state, for the user that is currently logged in
+    const [user, setUser] = React.useState<UserType>({
         _id: "",
         firstName: "",
         lastName: "",
@@ -41,13 +23,14 @@ export default function Home(){
         bio: "",
         facebookid: "",
         friends: [],
-        profilePhoto: ""
+        profilePhoto: "",
+        posts: []
     });
 
-    // If there is no token saved, go to login automatically
+    // If there is no token saved, go to login automatically, called on mount
     React.useEffect(() => {
         const tokenJSON = localStorage.getItem("token");
-        const token : Token | null = tokenJSON ? JSON.parse(tokenJSON) as Token : null;
+        const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
         if (!token) {
             history("/");
         } else{

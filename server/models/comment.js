@@ -5,7 +5,6 @@ const Schema = mongoose.Schema;
 const CommentSchema = new Schema({
     user: {type: Schema.Types.ObjectId, ref: "User"},
     text: {type: String, required: true},
-    link: {type: String},
     commentTime: {type: Date, required: true},
     replies: [{type: Schema.Types.ObjectId, ref: "Comment"}],
     likes: [{type: Schema.Types.ObjectId, ref: "User"}]

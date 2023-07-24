@@ -4,32 +4,7 @@ import {config} from "../config"
 import axios from 'axios'
 import Navbar from './Navigationbar'
 import ProfileFeedContainer from './ProfileFeedContainer'
-
-interface IsUser {
-    _id: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    gender: string,
-    birthday: string,
-    accountCreationDate: string,
-    password: string,
-    bio: string,
-    facebookid: string,
-    friends: Array<string>,
-    profilePhoto: string,
-    posts: Array<string>
-}
-
-interface Token {
-    user: IsUser,
-    token: string,
-    message: string,
-}
-
-interface Response {
-    data: IsUser
-}
+import {UserType, TokenType, RespType} from '../Interfaces'
 
 // Component for the profile page of a user
 export default function User(){
@@ -40,7 +15,7 @@ export default function User(){
     const history = useNavigate();
 
     // State for the current user, the user of the page we are on
-    const [user, setUser] = React.useState<IsUser>({
+    const [user, setUser] = React.useState<UserType>({
         _id: "",
         firstName: "",
         lastName: "",
@@ -57,7 +32,7 @@ export default function User(){
     });
 
     // State for the user logged into the site
-    const [selfUser, setSelfUser] = React.useState<IsUser>({
+    const [selfUser, setSelfUser] = React.useState<UserType>({
         _id: "",
         firstName: "",
         lastName: "",
@@ -85,15 +60,19 @@ export default function User(){
     // Fetches the profile of the user
     async function fetchUser(token: string) {
         try{
-            const res : Response = await axios.get(`${config.apiURL}/user/${id}`, {
+            const res : RespType = await axios.get(`${config.apiURL}/user/${id}`, {
                 headers: {
                     'Content-Type': "application/json",
                     Authorization: `Bearer ${token}`,
                 }
             });
 
-            const data : IsUser = res.data;
-            setUser(data);
+            if(res.data == null){
+                history('/'); //TODO: Error Page
+            } else {
+                const data : UserType = res.data.user;
+                setUser(data);
+            }
         } catch (err){
             console.log(err);
         }
@@ -103,14 +82,14 @@ export default function User(){
     // And fetch the profile of the user
     React.useEffect(() => {
         const tokenJSON = localStorage.getItem("token");
-        const token : Token | null = tokenJSON ? JSON.parse(tokenJSON) as Token : null;
+        const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
         if (!token) {
             history("/");
         } else{
             setSelfUser(token.user);
             if( id === token.user._id){
                 setIsUser(true);
-                setUser(token.user);
+                void fetchUser(token.token);
             } else {
                 setIsUser(false);
                 if (token.user.friends.includes(id)){
@@ -128,7 +107,7 @@ export default function User(){
     // Calculates the number of mutual friends between users
     function getMutualFriends(){
         const tokenJSON = localStorage.getItem("token");
-        const token : Token | null = tokenJSON ? JSON.parse(tokenJSON) as Token : null;
+        const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
 
         if(token){
             const intersection = user.friends.filter(x => token.user.friends.includes(x));
@@ -155,7 +134,6 @@ export default function User(){
                     {isUser ? <div className='profile-friends'>{`${user.friends.length} friends`}</div> : <div className='profile-friends'>{`${user.friends.length} friends • ${getMutualFriends()} mutual friends`}</div>}
                 </div>
 
-                {isUser ? <div className='edit-profile'><span className="material-symbols-rounded button-icon">contract_edit</span>Edit Profile</div> : ''}
                 {!isUser && isFriend ? <div className='profile-friend'><span className="material-symbols-rounded button-icon">how_to_reg</span>Friends</div> : ''}
                 {!isUser && !isFriend ? <div className='profile-not-friend'><span className="material-symbols-rounded button-icon">person_add</span>Add Friend</div> : ''}
             </div>
@@ -165,10 +143,10 @@ export default function User(){
                 {tab == 'Friends' ? <li className='tab-chosen'>Friends</li> : <li className='not-chosen' onClick={changeTab}>Friends</li>}
             </ul>
             <div className='profile-feed'>
-                <ProfileFeedContainer tab={tab} user={user} isUser={isUser}/>
+                <ProfileFeedContainer setUser={setUser} tab={tab} user={user} isUser={isUser}/>
             </div>
         </div>
     )
 }
 
-//TODO: Make one container for the feed, create a Post Container, About Container, Friend Contianer, and make all the buttons functional
+//TODO: Make the Friend Contianer, and make all the buttons functional (edit profile, friend, unfriend)

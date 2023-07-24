@@ -2,72 +2,98 @@ import { Link } from "react-router-dom";
 import React from 'react';
 import axios from 'axios';
 import {config} from "../config";
-
-interface IsUser {
-    _id: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    gender: string,
-    birthday: string,
-    accountCreationDate: string,
-    password: string,
-    bio: string,
-    facebookid: string,
-    friends: Array<string>,
-    profilePhoto: string,
-    posts: Array<string>
-}
-
-interface Post {
-    _id: string,
-    user: string,
-    text: string,
-    link: string
-    postTime: string,
-    comments: Array<string>,
-    image: string,
-    likes: Array<string>
-}
-
-interface Token {
-    user: IsUser,
-    token: string,
-    message: string,
-}
-
-interface Response {
-    data: Data
-}
-
-interface Data{
-    message: string
-}
+import CommentContainer from "./CommentContainer";
+import Microlink from '@microlink/react';
+import {UserType, PostType, TokenType, RespType, CommentType} from '../Interfaces'
 
 
-export default function Post(props : {user: IsUser, post: Post}) {
-    const [isLiked, setIsLiked] = React.useState(findLiked())
-    const [likes, setLikes] = React.useState(props.post.likes.length);
-    const [comments, setComments] = React.useState(props.post.comments.length)
+export default function Post(props : {user: UserType, id: string}) {
+    // State for the post object
+    const [post, setPost] = React.useState<PostType>({
+        _id: "",
+        user: '',
+        text: '',
+        link: '',
+        postTime: '',
+        comments: [],
+        image: '',
+        likes: [],
+    });
 
-    function findLiked(){
+    // State for the number of likes of the post
+    const [likes, setLikes] = React.useState(0);
+    // State for the comments of a post
+    const [comments, setComments] = React.useState<Array<string>>([]);
+    // State for whether the comments are hidden or not on the post
+    const [commentsIsHidden, setCommentsIsHidden] = React.useState(true);
+    // State for the current User that is logged in
+    const [currentUser, setCurrentUser] = React.useState<UserType>({
+        _id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        gender: "",
+        birthday: "",
+        accountCreationDate: "",
+        password: "",
+        bio: "",
+        facebookid: "",
+        friends: [],
+        profilePhoto: "",
+        posts: []
+    });
+    // Boolean state that determines if the user has liked this post
+    const [isLiked, setIsLiked] = React.useState(false);
+
+    // Effect that runs when post.likes property is updated, sets the current user and sets the isLiked state
+    React.useEffect(() => {
         const tokenJSON = localStorage.getItem("token");
-        const token : Token | null = tokenJSON ? JSON.parse(tokenJSON) as Token : null;
-
-        if(token){
-            return props.post.likes.includes(token.user._id);
+        const token: TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
+      
+        if (token) {
+          setCurrentUser(token.user);
+          setIsLiked(post.likes.includes(token.user._id));
         }
-        return false;
-    }
+    }, [post.likes]);
 
-    async function updateLikes(increase: boolean) {
+    // Async function that fetches the post information
+    async function fetchPost(){
         const tokenJSON = localStorage.getItem("token");
-        const token : Token | null = tokenJSON ? JSON.parse(tokenJSON) as Token : null;
-        if(token && (isLiked !== props.post.likes.includes(token.user._id))){
+        const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
+        if(token){
             try{
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
-                const res : Response = await axios.put(
-                    `${config.apiURL}/updatepost/${props.post._id}/${increase ? 'increase' : 'decrease'}`, 
+                const res : RespType = await axios.get(
+                    `${config.apiURL}/getpost/${props.id}/`, 
+                    {
+                        headers: headers
+                    });
+
+                if (res.data.message == 'Success'){
+                    setPost(res.data.post);
+                    setLikes(res.data.post.likes.length);
+                    setComments(res.data.post.comments);
+                    setCurrentUser(token.user);
+                    setIsLiked(res.data.post.likes.includes(token.user._id));
+                } else {
+                    console.log(res.data.message)
+                    // TODO: Re-direct to error page
+                }
+            } catch (err){
+                console.log(err)
+            }
+        }
+    }
+
+    // Async function that is a backend api call that updates the likes of a post
+    async function updateLikes(increase: boolean) {
+        const tokenJSON = localStorage.getItem("token");
+        const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
+        if(token && (isLiked !== post.likes.includes(token.user._id))){
+            try{
+                const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
+                const res : RespType = await axios.put(
+                    `${config.apiURL}/updatepost/${post._id}/${increase ? 'increase' : 'decrease'}`, 
                     {
                         user: token.user._id,
                     },
@@ -75,9 +101,11 @@ export default function Post(props : {user: IsUser, post: Post}) {
                         headers: headers
                     });
     
+                // If the api call is successful
                 if(res.data.message == "Success"){
                     return
                 } else{
+                    // Otherwise, there is an error
                     console.log(res.data.message)
                 }
                     
@@ -86,12 +114,21 @@ export default function Post(props : {user: IsUser, post: Post}) {
             }
         }
     }
+
+    // Effect that calls the updateLikes async function on unmount
     React.useEffect(() => {
         return () => {
-            void updateLikes(likes > props.post.likes.length);
+            void updateLikes(likes > post.likes.length);
         };
-    })
+    }, [isLiked])
 
+    
+    // Effect fetches post information on mount
+    React.useEffect(() => {
+        void fetchPost();
+    }, [])
+    
+    // Function that setsLikes and isLiked
     function thumbsUp(){
         if(isLiked == true){ 
             setLikes(prevLikes => prevLikes - 1);
@@ -102,27 +139,33 @@ export default function Post(props : {user: IsUser, post: Post}) {
     }
 
     return(
-        <div className='post-feed'>
-            <div className="post-creation-info">
-                <Link to={`/user/${props.user._id}`} className='profile-link-post-feed'>
-                    <img className='nav-profile-photo' src={props.user.profilePhoto}/>
-                    <div>
-                        <div className='post-feed-author'>{`${props.user.firstName} ${props.user.lastName}`}</div>
-                        <div className='post-feed-date'>{`${(new Date(props.post.postTime)).toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} at ${new Date(props.post.postTime).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}</div>
+        <div className={`post-container ${post.link || post.image ? "big" : "small"}`}>
+            <div className='post-feed'>
+                    <div className="post-creation-info">
+                        <Link to={`/user/${props.user._id}`} className='profile-link-post-feed'>
+                            <img className='nav-profile-photo' src={props.user.profilePhoto}/>
+                            <div>
+                                <div className='post-feed-author'>{`${props.user.firstName} ${props.user.lastName}`}</div>
+                                <div className='post-feed-date'>{`${(new Date(post.postTime)).toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} at ${new Date(post.postTime).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}</div>
+                            </div>
+                        </Link>
                     </div>
-                </Link>
+                    <div className='post-content'>
+                        <p className='post-text'>{post.text}</p>
+                        {post.image && <img src={post.image} className='post-image'></img>}
+                        {post.link && <Microlink url={post.link} style={{'marginBottom': '10px'}} />}
+                    </div>
+                    <div className='post-likes-comments'>
+                        {likes > 0 ? <div>{`${likes} likes`}</div> : <div>No Likes</div>}
+                        {comments.length > 0 ? <div>{`${comments.length} comments`}</div> : <div>No Comments</div>}
+                    </div>
+                    <div className='post-interactions'>
+                        <button className={`thumbs-up ${isLiked ? 'liked' : ""}`} onClick={thumbsUp}><span className="material-symbols-rounded interactions">thumb_up</span>Like</button>
+                        <button className='comment' onClick={() => {setCommentsIsHidden(!commentsIsHidden)}}><span className="material-symbols-rounded interactions">chat_bubble</span>Comment</button>
+                    </div>
             </div>
-            <div className='post-content'>
-                <p className='post-text'>{props.post.text}</p>
-                {props.post.image && <img src={props.post.image}></img>}
-                <div className='post-likes-comments'>
-                    {likes > 0 ? <div>{`${likes} likes`}</div> : <div>No Likes</div>}
-                    {comments > 0 ? <div>{`${comments} comments`}</div> : <div>No Comments</div>}
-                </div>
-            </div>
-            <div className='post-interactions'>
-                <button className={`thumbs-up ${isLiked ? 'liked' : ""}`} onClick={thumbsUp}><span className="material-symbols-rounded interactions">thumb_up</span>Like</button>
-                <button className='comment'><span className="material-symbols-rounded interactions">chat_bubble</span>Comment</button>
+            <div className={`post-right ${commentsIsHidden ? "inactive" : "active"}`}>
+                {commentsIsHidden ? <div className='empty-container'></div> : <CommentContainer currentUser={currentUser} comments={comments} setCommentsIsHidden={setCommentsIsHidden} setComments={setComments} postID={post._id}/>}
             </div>
         </div>
     )

@@ -26,14 +26,28 @@ router.post('/facebook-login', authController.login_fakebook);
 
 // User Routes 
 /* GET posts from a specific user */
-router.get('/getposts/:id', passport.authenticate("jwt", { session: false }), postController.user_posts_get)
+router.get('/getposts/:id', passport.authenticate("jwt", { session: false }), postController.user_posts_get);
 
 /* GET user */
-router.get('/user/:id', passport.authenticate("jwt", {session: false}), userController.user_get)
+router.get('/user/:id', passport.authenticate("jwt", {session: false}), userController.user_get);
 
 /* PUT user */
-router.put('/updateuser', passport.authenticate('jwt', {session: false}), userController.user_update)
+router.put('/updateuser', passport.authenticate('jwt', {session: false}), userController.user_update);
 
+/* GET users from search */
+router.get('/searchusers/:name', passport.authenticate('jwt', {session: false}), userController.user_get_by_name);
+
+/* PUT send friend requests */
+router.put('/friend_req', passport.authenticate('jwt', {session: false}), userController.user_friend_request_put);
+
+/* PUT Accept Friend Requests */
+router.put('/accept_req', passport.authenticate('jwt', {session: false}), userController.user_accept_request_put);
+
+/* PUT Deny Friend Requests */
+router.put('/deny_req', passport.authenticate('jwt', {session: false}), userController.user_deny_request_put);
+
+/* PUT Remove Friend */
+router.put('/unfriend', passport.authenticate('jwt', {session: false}), userController.user_unfriend_put);
 
 // Post Routes
 

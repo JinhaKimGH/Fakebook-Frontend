@@ -124,7 +124,7 @@ exports.user_deny_request_put = asyncHandler(async (req, res, next) => {
         const user = await User.findById(user_id);
         const friend = await User.findById(friend_id);
 
-        if(friend.friendRequests.includes(user_id) && user.outGoingFriendRequests.includes(friend_id)){
+        if(user.friendRequests.includes(friend_id) && friend.outGoingFriendRequests.includes(user_id)){
             await User.findByIdAndUpdate(user_id, {"$pull": {'friendRequests': friend_id}});
             await User.findByIdAndUpdate(friend_id, {"$pull": {"outGoingFriendRequests": user_id}})
             return res.json({message: "Success"});

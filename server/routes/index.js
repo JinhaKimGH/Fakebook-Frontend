@@ -25,6 +25,7 @@ router.post('/facebook-login', authController.login_fakebook);
 
 
 // User Routes 
+
 /* GET posts from a specific user */
 router.get('/getposts/:id', passport.authenticate("jwt", { session: false }), postController.user_posts_get);
 
@@ -49,6 +50,7 @@ router.put('/deny_req', passport.authenticate('jwt', {session: false}), userCont
 /* PUT Remove Friend */
 router.put('/unfriend', passport.authenticate('jwt', {session: false}), userController.user_unfriend_put);
 
+
 // Post Routes
 
 /* POST post */
@@ -57,14 +59,17 @@ router.post('/createpost', passport.authenticate("jwt", {session: false}), postC
 /* PUT Update Post Likes */
 router.put('/updatepost/:id/:increase', passport.authenticate('jwt', {session: false}), postController.update_likes_put);
 
-/* Get singular post */
+/* GET singular post */
 router.get('/getpost/:id', passport.authenticate('jwt', {session: false}), postController.get_post);
+
+/* GET homepage posts */
+router.get('/gethomeposts/:user_id', passport.authenticate('jwt', {session: false}), postController.get_recent_posts);
 
 
 // Comment Routes
 
 /* POST Create Comment */
-router.post('/createcomment', passport.authenticate('jwt', {session: false}), commentController.comment_post)
+router.post('/createcomment', passport.authenticate('jwt', {session: false}), commentController.comment_post);
 
 /* GET Comment */
 router.get('/getcomment/:id', passport.authenticate('jwt', {session: false}), commentController.get_comment);

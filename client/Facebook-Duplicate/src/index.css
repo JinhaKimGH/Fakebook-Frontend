@@ -1,7 +1,7 @@
 :root{
     --fakebook-blue: #1877f2;
     --fakebook-blue-hover: #3e89ec;
-    --fakebook-grey: #F0F2F5;
+    --fakebook-white: #F0F2F5;
     --fakebook-green: #42b72a;
     --fakebook-dark-grey: #a0a2a2;
     --fakebook-background: #18191A;
@@ -28,7 +28,7 @@
     justify-content: space-around;
     padding-top: 72px;
     padding-bottom: 112px;
-    background-color: var(--fakebook-grey);
+    background-color: var(--fakebook-white);
 }
 
 .fakebook-logo-login{
@@ -228,6 +228,7 @@
     display: flex;
     margin-right: auto;
     justify-content: space-between;
+    width: 20%;
     padding: 0 16px;
 }
 
@@ -235,7 +236,8 @@
     height: 100%;
     display: flex;
     align-items: center;
-    margin-right: 18%;
+    flex: 1;
+    justify-content: center;
 }
 
 .nav-right{
@@ -243,12 +245,14 @@
     display: flex;
     align-items: center;
     margin-left: auto;
+    width: 20%;
 }
 .nav-search-box{
     padding: 7px 8px;
     border-top-right-radius: 50px;
     border-bottom-right-radius: 50px;
     background-color: var(--search-bar-color);
+    margin-right: auto;
     border: none;
     width: 208px;
     outline-color: #ffffff00;
@@ -362,6 +366,10 @@
 
 .menu-trigger:hover{
     cursor: pointer;
+}
+
+.menu-container{
+    margin-left: auto;
 }
 
 .dropdown-menu:before{
@@ -499,7 +507,18 @@ ul{
 .home-options{
     margin-left: 5px;
     border-bottom: 1px solid var(--fakebook-border-color);
-    min-width: 20%;
+    width: 20%;
+    height: 140px;
+}
+
+.home-feed{
+    flex: 1;
+    margin-top: 50px;
+}
+
+.home-contact-list{
+    width: 20%;
+    margin-left: auto;
 }
 
 .profile{
@@ -544,7 +563,7 @@ ul{
 }
 
 .profile-picture-openform{
-    color: var(--fakebook-grey);
+    color: var(--fakebook-white);
     border-radius: 9999999px;
     background-color: rgb(58, 59, 60);
     margin-top: auto;
@@ -1315,7 +1334,7 @@ iframe{
 }
 
 .search-results-title{
-    color: var(--fakebook-grey);
+    color: var(--fakebook-white);
     text-align: center;
     font-size: 24px;
     font-weight: 700;
@@ -1361,7 +1380,7 @@ iframe{
 }
 
 .result-link{
-    color: var(--fakebook-grey);
+    color: var(--fakebook-white);
     text-decoration: none;
     font-size: 17px;
     margin: 5px 0;
@@ -1392,4 +1411,98 @@ iframe{
 .friend-request:hover{
     cursor: pointer;
     background-color: rgba(45, 136, 255, 0.406);
+}
+
+.friend-requests > h4{
+    color: var(--fakebook-white);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 40px 0 0 4px;
+}
+
+.friend-container{
+    background-color: rgb(36, 37, 38);
+    border-radius: 8px;
+    border-color: rgb(62, 64, 66);
+    border-width: 1px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0;
+    border-style: solid;
+    width: 240px;
+    max-width: 240px;
+    margin: 4px;
+
+}
+
+.friend-container > img{
+    object-fit: cover;
+    width: 240px;
+    height: 240px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.friend-container > img:hover{
+    cursor: pointer;
+}
+
+.friend-requests{
+    height: 458px;
+    border-bottom: 0.5px solid var(--fakebook-border-color);
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.friend-requests-list{
+    margin-top: 16px; 
+    display: flex;
+    max-width: 100%;
+    overflow-x: scroll;
+}
+
+.friend-container > h4{
+    margin: 12px 0 4px 12px;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--fakebook-white);
+}
+
+.friend-container > h4:hover{
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: white;
+}
+
+.friend-container > h5{
+    margin-left: 12px;
+    color: var(--fakebook-light-grey);
+    font-weight: 300;
+    font-size: 12px;
+}
+
+.friend-button-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.friend-request-container, .deny-friend-container{
+    color: var(--fakebook-white);
+    border: none;
+    background-color: var(--fakebook-blue);
+    border-radius: 6px;
+    height: 30px;
+    padding: 0 12px;
+    width: 220px;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.friend-request-container:hover, .deny-friend-container:hover{
+    cursor: pointer;
+    filter: brightness(80%);
+}
+
+.deny-friend-container{
+    background-color: rgb(255, 255, 255, 0.1);
+    margin-bottom: 12px;
 }

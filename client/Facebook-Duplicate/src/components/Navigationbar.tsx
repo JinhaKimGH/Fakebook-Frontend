@@ -90,7 +90,6 @@ export default function Navbar(props: {user: UserType,  home: string}){
                                         <p className='nav-name'>{`${props.user.firstName} ${props.user.lastName}`}</p>
                                     </div>
                                 </Link>
-                                <DropDownMenuItem icon="edit" text="Post" link="/post"></DropDownMenuItem>
                                 <DropDownMenuItem icon="settings" text="Settings" link='/settings'></DropDownMenuItem>
                                 <div className="dropdownItem-link" onClick={logout}>
                                     <li className='dropdownItem'>

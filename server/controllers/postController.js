@@ -92,3 +92,32 @@ exports.update_likes_put = asyncHandler(async (req, res, next) => {
     }
 });
 
+exports.get_recent_posts = asyncHandler(async (req, res, next) => {
+    const user_id = req.params.user_id;
+    if (user_id == ''){
+        return res.status(404).json({message: 'User not found.'});
+    } 
+
+    try {
+        // Finds the user first
+        const curr_user = await User.findById(user_id);
+        
+        if(!curr_user){
+            return res.status(400).json({message: "Unable to find user"});
+        }
+        
+        // Finds all the friends of the user
+        const friendsAndUser = [...curr_user.friends, user_id];
+        
+        // Finds all the posts from the group of friends + user, sorts it by most recent date, selects only the user id to return, and only sends back 50.
+        const posts = await Post.find({'user': {"$in": friendsAndUser}}).sort({'postTime': -1}).select({'user': 1}).limit(50);
+
+        if(!posts){
+            return res.status(400).json({message: "Unable to find posts"});
+        }
+
+        return res.json({message: "Success", posts: posts})
+    } catch (err) {
+        return res.status(400).json({message: "Unable to find posts"});
+    }
+})

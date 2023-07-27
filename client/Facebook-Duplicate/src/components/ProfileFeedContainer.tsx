@@ -14,7 +14,7 @@ export default function ProfileFeedContainer(props: {tab: string, user: UserType
             : ''}
             {props.tab === 'Posts' ? (
                 props.user && props.user.posts && props.user.posts.length !== 0 ? (
-                    [...props.user.posts].reverse().map((post: string) => <Post user={props.user} id={post} key={post} />)
+                    [...props.user.posts].reverse().map((post: string) => <Post user_id={props.user._id} id={post} key={post} />)
                 ) : null
             ) : null}
             {props.tab == 'About' ? <About setUser={props.setUser} user={props.user} isUser={props.isUser}/> : ''}

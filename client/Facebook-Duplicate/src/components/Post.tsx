@@ -5,9 +5,13 @@ import {config} from "../config";
 import CommentContainer from "./CommentContainer";
 import Microlink from '@microlink/react';
 import {UserType, PostType, TokenType, RespType, CommentType} from '../Interfaces'
+import { useNavigate } from "react-router-dom";
 
 
-export default function Post(props : {user: UserType, id: string}) {
+export default function Post(props : {user_id: string, id: string}) {
+    // For routing
+    const history = useNavigate();
+
     // State for the post object
     const [post, setPost] = React.useState<PostType>({
         _id: "",
@@ -18,6 +22,25 @@ export default function Post(props : {user: UserType, id: string}) {
         comments: [],
         image: '',
         likes: [],
+    });
+
+    // State for the poster
+    const [poster, setPoster] = React.useState<UserType>({
+        _id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        gender: "",
+        birthday: "",
+        accountCreationDate: "",
+        password: "",
+        bio: "",
+        facebookid: "",
+        friends: [],
+        friendRequests: [],
+        profilePhoto: "",
+        posts: [],
+        outGoingFriendRequests: []
     });
 
     // State for the number of likes of the post
@@ -87,6 +110,32 @@ export default function Post(props : {user: UserType, id: string}) {
         }
     }
 
+    // Fetches the profile of the user
+    async function fetchUser() {
+        const tokenJSON = localStorage.getItem("token");
+        const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
+        if(token){
+            try{
+                const res : RespType = await axios.get(`${config.apiURL}/user/${props.user_id}`, {
+                    headers: {
+                        'Content-Type': "application/json",
+                        Authorization: `Bearer ${token.token}`,
+                    }
+                });
+
+                if(res.data == null){
+                    history('/'); //TODO: Error Page
+                } else {
+                    // Sets the poster
+                    const data : UserType = res.data.user;
+                    setPoster(data);
+                }
+            } catch (err){
+                console.log(err);
+            }
+        }
+    }
+
     // Async function that is a backend api call that updates the likes of a post
     async function updateLikes(increase: boolean) {
         const tokenJSON = localStorage.getItem("token");
@@ -128,6 +177,7 @@ export default function Post(props : {user: UserType, id: string}) {
     // Effect fetches post information on mount
     React.useEffect(() => {
         void fetchPost();
+        void fetchUser();
     }, [])
     
     // Function that setsLikes and isLiked
@@ -144,10 +194,10 @@ export default function Post(props : {user: UserType, id: string}) {
         <div className={`post-container ${post.link || post.image ? "big" : "small"}`}>
             <div className='post-feed'>
                     <div className="post-creation-info">
-                        <Link to={`/user/${props.user._id}`} className='profile-link-post-feed'>
-                            <img className='nav-profile-photo' src={props.user.profilePhoto}/>
+                        <Link to={`/user/${props.user_id}`} className='profile-link-post-feed'>
+                            <img className='nav-profile-photo' src={poster.profilePhoto}/>
                             <div>
-                                <div className='post-feed-author'>{`${props.user.firstName} ${props.user.lastName}`}</div>
+                                <div className='post-feed-author'>{`${poster.firstName} ${poster.lastName}`}</div>
                                 <div className='post-feed-date'>{`${(new Date(post.postTime)).toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} at ${new Date(post.postTime).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}</div>
                             </div>
                         </Link>

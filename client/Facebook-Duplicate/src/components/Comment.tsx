@@ -41,8 +41,10 @@ export default function Comment(props: {id: string}){
         bio: '',
         facebookid: '',
         friends: [],
+        friendRequests: [],
         profilePhoto: '',
-        posts: []
+        posts: [],
+        outGoingFriendRequests: []
     })
 
     // State for whether the user has liked the comment

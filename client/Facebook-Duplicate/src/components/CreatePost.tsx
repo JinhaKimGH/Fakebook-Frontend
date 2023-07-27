@@ -9,7 +9,7 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
      // State for opening and closing the post form
      const [open, setOpen] = React.useState(false);
 
-     // Reference to the form
+    // Reference to the form
     const formRef = React.useRef(null);
 
     // Sets the error message for the form

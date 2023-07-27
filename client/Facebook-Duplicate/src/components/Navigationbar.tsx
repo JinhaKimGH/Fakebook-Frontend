@@ -16,6 +16,7 @@ export default function Navbar(props: {user: UserType,  home: string}){
     // Reference to the drop-down menu
     const menuRef = React.useRef(null);
 
+    // Used for the routing
     const history = useNavigate();
 
     // Clears the token from local storage
@@ -35,12 +36,29 @@ export default function Navbar(props: {user: UserType,  home: string}){
             }
         }
 
+        // Searches for user when searching in searchbar
+        const keyPress = (e: KeyboardEvent) => {
+            if(e.key == 'Enter'){
+                e.preventDefault();
+                const input = (document.getElementById("nav-search") as HTMLInputElement).value;
+                history('/search_results/' +  input);
+            } 
+        };
+
         document.addEventListener("mousedown", handler);
+
+        const input = document.getElementById("nav-search") as HTMLInputElement;
+
+        input.addEventListener('keypress', keyPress)
 
         return () => {
             document.removeEventListener('mousedown', handler)
+            input.removeEventListener('keypress', keyPress)
         }
     }, [])
+
+    // Async Function Search User
+
 
 
     return (
@@ -51,11 +69,11 @@ export default function Navbar(props: {user: UserType,  home: string}){
                     <div className='search-glass-div'>
                         <span className="material-symbols-outlined searchIcon">search</span>
                     </div> 
-                    <input className="nav-search-box" placeholder='Search Fakebook'/> 
+                    <input id='nav-search' className="nav-search-box" placeholder='Search Fakebook'/> 
                 </div>
                 <div className='nav-middle'>
                     {props.home == 'home' ? <Link to="/home" className="nav-link"><div className='selected-container'><span className="material-symbols-rounded nav-item-selected">home</span></div></Link> : <Link to="/home" className="nav-link"><div className='unselected-container'><span className="material-symbols-rounded nav-item-unselected">home</span></div></Link>}
-                    {props.home == 'friends' ? <Link to="/home" className="nav-link"><div className='selected-container'><span className="material-symbols-outlined nav-item-selected">group</span></div></Link> : <Link to="/friends" className="nav-link"><div className='unselected-container'><span className="material-symbols-outlined nav-item-unselected">group</span></div></Link>}
+                    {props.home == 'friends' ? <Link to="/friends" className="nav-link"><div className='selected-container'><span className="material-symbols-outlined nav-item-selected">group</span></div></Link> : <Link to="/friends" className="nav-link"><div className='unselected-container'><span className="material-symbols-outlined nav-item-unselected">group</span></div></Link>}
                 </div>
                 <div className='nav-right' ref={menuRef}>
                     <div className='menu-container'>

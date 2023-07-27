@@ -28,7 +28,9 @@ export interface UserType {
     facebookid: string,
     friends: Array<string>,
     profilePhoto: string,
-    posts: Array<string>
+    posts: Array<string>,
+    friendRequests: Array<string>
+    outGoingFriendRequests: Array<string>
 }
 
 export interface CommentType{
@@ -46,6 +48,7 @@ export interface DataType {
     id: string
     token: TokenType
     user: UserType
+    users: Array<UserType>
     posts: Array<PostType>
     comment: CommentType
 }

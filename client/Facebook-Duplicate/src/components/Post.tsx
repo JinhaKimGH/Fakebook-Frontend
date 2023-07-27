@@ -39,8 +39,10 @@ export default function Post(props : {user: UserType, id: string}) {
         bio: "",
         facebookid: "",
         friends: [],
+        friendRequests: [],
         profilePhoto: "",
-        posts: []
+        posts: [],
+        outGoingFriendRequests: []
     });
     // Boolean state that determines if the user has liked this post
     const [isLiked, setIsLiked] = React.useState(false);

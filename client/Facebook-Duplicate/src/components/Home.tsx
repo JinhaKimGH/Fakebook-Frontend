@@ -23,8 +23,10 @@ export default function Home(){
         bio: "",
         facebookid: "",
         friends: [],
+        friendRequests: [],
         profilePhoto: "",
-        posts: []
+        posts: [],
+        outGoingFriendRequests: []
     });
 
     // If there is no token saved, go to login automatically, called on mount

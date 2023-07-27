@@ -14,6 +14,7 @@
     --secondary-font: system-ui, -apple-system, "system-ui", ".SFNSText-Regular", sans-serif;
     --hover-button: rgba(255, 255, 255, 0.398);
     --fakebook-white-font: rgb(228, 230, 235);
+    --fakebook-light-grey: rgb(176, 179, 184);
 }
 
 *{
@@ -234,7 +235,7 @@
     height: 100%;
     display: flex;
     align-items: center;
-    margin-right: 10%;
+    margin-right: 18%;
 }
 
 .nav-right{
@@ -334,14 +335,16 @@
 
 .nav-profile-photo{
     width: 40px;
-    height: auto;
+    height: 40px;
     border-radius: 999999px;
+    object-fit: cover;
 }
 
 .comment-profile-photo{
     margin-top: 5px;
     width: 30px;
-    height: auto;
+    height: 30px;
+    object-fit: cover;
     border-radius: 999999px;
 }
 
@@ -417,7 +420,8 @@ ul{
     margin-top: 10px ;
     margin-bottom: 10px;
     height: 32px;
-    width: auto;
+    width: 32px;
+    object-fit: cover;
     border-radius: 99999px;
 }
 
@@ -521,12 +525,41 @@ ul{
 }
 
 .profile-picture{
-    margin: 100px 0 0 0;
     height: 168px;
     width: auto;
     border-radius: 999999px;
 }
 
+.profile-pic-wrapper{
+    overflow: hidden;
+    height: 168px;
+    width: 168px;
+    margin: 100px 0 0 0;
+    border-radius: 999999px;
+}
+
+.profile-picture.hover:hover{
+    cursor: pointer;
+    filter: brightness(60%);
+}
+
+.profile-picture-openform{
+    color: var(--fakebook-grey);
+    border-radius: 9999999px;
+    background-color: rgb(58, 59, 60);
+    margin-top: auto;
+    z-index: 1;
+    position: relative;
+    left: -50px;
+    padding: 5px 5px 2.5px 5px;
+    display: flex;
+    align-items: center;
+}
+
+.profile-picture-openform:hover{
+    background-color: #55575a;
+    cursor: pointer;
+}
 .profile-friends-container{
     display: flex;
     flex-direction: column;
@@ -548,10 +581,10 @@ ul{
     font-family: var(--secondary-font);
     font-size: 16px;
     font-weight: 600;
-    color: rgb(176, 179, 184);
+    color: var(--fakebook-light-grey);
 }
 
-.edit-profile, .profile-friend, .profile-not-friend{
+.edit-profile, .profile-friend, .profile-not-friend, .profile-unfriend{
     border: none;
     border-radius: 6px;
     font-family: var(--secondary-font);
@@ -561,11 +594,17 @@ ul{
     display: flex;
     align-items: center;
     margin-top: 225px;
-    margin-left: auto;
     color: rgb(228, 230, 235);
 }
 
-.edit-profile, .profile-friend{
+.profile-unfriend{
+    margin-left: 20px;
+}
+
+.edit-profile, .profile-friend, .profile-not-friend{
+    margin-left: auto;
+}
+.edit-profile, .profile-friend, .profile-unfriend{
     background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -578,7 +617,7 @@ ul{
     background-color: var(--fakebook-blue-hover)
 }
 
-.edit-profile:hover, .profile-friend:hover{
+.edit-profile:hover, .profile-friend:hover, .profile-unfriend:hover{
     cursor: pointer;
     background-color: var(--hover-button);
 }
@@ -724,7 +763,7 @@ ul{
 }
 
 .about-desc{
-    color: rgb(176, 179, 184) !important;
+    color: var(--fakebook-light-grey) !important;
     font-size: 12px;
     font-weight: 400;
     margin-bottom: 24px;
@@ -777,7 +816,7 @@ ul{
     background-color: rgb(58, 59, 60);
     border-radius: 20px;
     font-size: 17px;
-    color: rgb(176, 179, 184);
+    color: var(--fakebook-light-grey);
     margin-left: 8px;
     width: 594px;
 }
@@ -863,7 +902,7 @@ ul{
     min-width: 500px;
 }
 
-.post-form-popup-top > h3{
+.post-form-popup-top > h3, .profile-pic-form > h1{
     text-align: center;
     color: var(--fakebook-white-font);
     font-size: 20px;
@@ -911,6 +950,10 @@ ul{
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+}
+
+.profile-pic-form > .post-form-icon{
+    margin-top: 10px;
 }
 
 .post-form-icon > input{
@@ -964,7 +1007,7 @@ ul{
 }
 
 .post-feed-date{
-    color: rgb(176, 179, 184);
+    color: var(--fakebook-light-grey);
     font-weight: 400;
     margin-left: 10px;
 }
@@ -984,13 +1027,13 @@ ul{
     padding-bottom: 12px; 
     display: flex;
     justify-content: space-between;
-    color: rgb(176, 179, 184);
+    color: var(--fakebook-light-grey);
     margin-top: auto;
 }
 
 .comment-nonexistent{
     text-align: center;
-    color: rgb(176, 179, 184);
+    color: var(--fakebook-light-grey);
     margin-top: 10px;
     overflow-wrap: break-word;
 }
@@ -1008,7 +1051,7 @@ ul{
     align-items: center;
     border: none;
     background-color: transparent;
-    color: rgb(176, 179, 184);
+    color: var(--fakebook-light-grey);
     padding: 8px;
     text-decoration: none;
 }
@@ -1202,14 +1245,14 @@ iframe{
 }
 
 .interactions > p{
-    color: rgb(176, 179, 184);
+    color: var(--fakebook-light-grey);
     margin: 0 8px;
     font-size: 10px;
 }
 
 .comment-like:hover, .comment-reply:hover{
     text-decoration: underline;
-    text-decoration-color: rgb(176, 179, 184);
+    text-decoration-color: var(--fakebook-light-grey);
     cursor: pointer;
 }
 
@@ -1225,7 +1268,7 @@ iframe{
 
 .likes{
     margin-left: auto;
-    color: rgb(176, 179, 184);
+    color: var(--fakebook-light-grey);
     margin: 0 8px;
     font-size: 10px;
 }
@@ -1245,12 +1288,12 @@ iframe{
 
 .replies > p{
     margin-left: 5px;
-    color: rgb(176, 179, 184);
+    color: var(--fakebook-light-grey);
 }
 
 .replies > p:hover{
     text-decoration: underline;
-    text-decoration-color: rgb(176, 179, 184);
+    text-decoration-color: var(--fakebook-light-grey);
     cursor: pointer;
 }
 
@@ -1269,4 +1312,84 @@ iframe{
 .edit-button-pencil:hover{
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.3);
+}
+
+.search-results-title{
+    color: var(--fakebook-grey);
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 50px;
+}
+
+.search-result-user{
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    width: 680px;
+    height: 120px;
+    background-color: rgb(36, 37, 38);
+    border-radius: 8px;
+}
+
+.search-result-mid{
+    display: flex;
+    flex-direction: column;
+}
+
+.results-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 32px;
+}
+
+.results-profile-photo{
+    width: 60px;
+    height: 60px;
+    border-radius: 999999px;
+    object-fit: cover;
+    margin-left: 16px;
+    margin-right: 12px;
+}
+
+.results-profile-photo:hover{
+    cursor: pointer;
+    filter: brightness(60%);
+}
+
+.result-link{
+    color: var(--fakebook-grey);
+    text-decoration: none;
+    font-size: 17px;
+    margin: 5px 0;
+}
+
+.result-link:hover{
+    text-decoration: underline;
+}
+
+.search-result-mid > p{
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--fakebook-light-grey);
+    margin: 2px 0;
+}
+
+.friend-request{
+    color: var(--fakebook-blue);
+    border: none;
+    background-color: rgba(45, 136, 255, 0.2);
+    border-radius: 6px;
+    height: 36px;
+    margin-left: auto;
+    margin-right: 16px;
+    padding: 0 12px;
+}
+
+.friend-request:hover{
+    cursor: pointer;
+    background-color: rgba(45, 136, 255, 0.406);
 }

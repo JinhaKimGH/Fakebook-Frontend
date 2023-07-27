@@ -2,8 +2,10 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Home from "./components/Home"
 import User from './components/User'
+import Friend from "./components/Friend";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React from "react";
+import Search from "./components/Search";
 
 function App() {
 
@@ -15,6 +17,8 @@ function App() {
             <Route path="/signup" element={<SignUp/>}/>
             <Route path="/home" element={<Home />}/>
             <Route path="user/:id" element={<User/>}/>
+            <Route path="/friends" element={<Friend/>}/>
+            <Route path='/search_results/:name' element={<Search/>}/>
           </Routes>
         </Router>
     </div>
@@ -24,4 +28,3 @@ function App() {
 export default App
 
 
-//TODO: make sure user can only see login/signup page and is redirected otherwise

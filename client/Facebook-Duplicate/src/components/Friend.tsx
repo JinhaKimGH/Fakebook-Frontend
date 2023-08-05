@@ -6,12 +6,16 @@ import axios from "axios";
 import { config } from "../config";
 import FriendRequestContainer from "./FriendRequestContainer";
 
-// This is the component for the Friends page, which displays all the different friends and friend requests of the user
+/**
+ * Friend Component
+ *  
+ * @returns {JSX.Element} A React JSX element representing the Friend Component, the friends page on Fakebook
+*/
 export default function Friend() {
     // Used for the routing
     const history = useNavigate();
 
-    // User State
+    // Logged-on user State
     const [user, setUser] = React.useState<UserType>({
         _id: "",
         firstName: "",
@@ -40,20 +44,22 @@ export default function Friend() {
                 }
             });
 
-            if(res.data == null){
-                history('/'); //TODO: Error Page
-            } else {
-                // Sets the data and also sets the token data since we are fetching the user's data
+            if(res.data.message == "Success"){
+                // Sets the data and also sets the token data since we are fetching the logged-on user's data
                 const data : UserType = res.data.user;
                 setUser(data);
                 localStorage.setItem('token', JSON.stringify({token: token, user: data}));
+            } else {
+                // If error, re-directs to error page
+                history('/error');
             }
         } catch (err){
-            console.log(err);
+            // If error, re-directs to error page
+            history('/error');
         }
     }
 
-    // If there is no token saved, go to login automatically, called on mount
+    // Fetches user on mount, If there is no token saved, go to login automatically, called on mount
     React.useEffect(() => {
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
@@ -68,9 +74,7 @@ export default function Friend() {
     React.useEffect(() => {
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
-        if (!token) {
-            history("/");
-        } else if(user._id != ""){
+        if(user._id != "" && token){
             localStorage.setItem('token', JSON.stringify({token: token.token, user: user}));
         }
     }, [user])
@@ -78,7 +82,7 @@ export default function Friend() {
     return (
         <div className='homepage'>
             <Navbar user={user} home={'friends'}/>
-
+            {/* Displays friend requests if the user has any incoming friend requests */}
             { user.friendRequests.length > 0 &&
                 <div className='friend-requests'>
                     <h4>Friend Requests</h4>
@@ -87,7 +91,7 @@ export default function Friend() {
                     </div>
                 </div>
             }
-
+            {/* Displays list of friends */}
             <div className='friend-requests list'>
                 <h4>Friends</h4>
                 <div className='friend-requests-list'>

@@ -50,6 +50,7 @@ export interface DataType {
     user: UserType
     users: Array<UserType>
     posts: Array<PostType>
+    ids: Array<string>
     comment: CommentType
 }
 

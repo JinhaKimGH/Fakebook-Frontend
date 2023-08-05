@@ -1,13 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable no-useless-escape */
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import React, { SyntheticEvent } from "react";
 import {config} from "../config"
+import { RespType } from "../Interfaces";
 
-// Signup form component
-export default function SignUp(){
+/**
+ * SignUp Component
+ *  
+ * @returns {JSX.Element} A React JSX element representing the SignUp Component, the sign up form
+*/
+export default function SignUp(): JSX.Element{
 
     // Used to navigate routes
     const history = useNavigate(); 
@@ -51,7 +53,7 @@ export default function SignUp(){
 
     // Helper function ensures that inputted email is a valid email
     function validateEmail(inputEmail: string){
-        const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, "gm");
+        const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, "gm");
 
         return emailRegex.test(inputEmail);
     }
@@ -67,8 +69,7 @@ export default function SignUp(){
     }
 
     // Asynchronous function for submitting the sign up form
-    async function submit(e : SyntheticEvent){
-        e.preventDefault();
+    async function submit(){
         resetClassError();
 
         // Sanity check for all fields, adds 'input-err' class to the input if there is an error
@@ -111,26 +112,31 @@ export default function SignUp(){
 
         // Accesses the API to create a new user or reject is if the email is in use
         try{
-            await axios.post(`${config.apiURL}/signup`, {
-                firstName, lastName, email, password, gender, birthday
-            })
-            .then(res => {
-                if(res.data.message == "Success"){
-                    history("/");
-                } else if (res.data.message == "Failure"){
-                    // Sets error state if email is in use
-                    setError("Email is already associated with an account.");
+            const res: RespType = await axios.post(
+                `${config.apiURL}/signup`, 
+                {
+                    firstName, lastName, email, password, gender, birthday
                 }
-                
-            })
-            .catch(e => {
-                // Error catching
-                console.log(e)
-            })
+            );
+            
+            // Redirects to login page if sign up successful
+            if(res.data.message == 'Success'){
+                history('/');
+            } else if (res.data.message == "Failure"){
+                // Sets error state if email is in use
+                setError("Email is already associated with an account.");
+            }
 
          } catch(err) {
-            console.log(err)
+            // If error, re-directs to error page
+            history('/error');
         }
+    }
+
+    // Work-around to ensure a void return is provided to the Onclick attribute instead of a promise
+    const handleSubmitOnClick = (e: SyntheticEvent) => {
+        e.preventDefault();
+        void submit();
     }
 
     return (
@@ -139,7 +145,7 @@ export default function SignUp(){
                 <h1 className="fakebook-logo-login">fakebook</h1>                
                 <h3 className="signup-subheading">Connect with friends and the world around you on Fakebook.</h3>
             </div>
-
+            {/* Sign Up form with states for all inputs */}
             <div className="signup-form-box">
                 <div className="signup-heading">
                     <div className="left">
@@ -161,7 +167,7 @@ export default function SignUp(){
                     <input type="date" onChange={(e) => {setBirthDate(new Date(e.target.value))}} id="date" required/>
                     <input type="text" onChange={(e) => {setGender(e.target.value)}} id="gender" placeholder="Gender" required/>
                     <div className="form-error">{error}</div>
-                    <button className="submit" onClick={submit}>Sign Up</button>
+                    <button className="submit" onClick={handleSubmitOnClick}>Sign Up</button>
                 </form>
             </div>
         </div>

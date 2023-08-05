@@ -15,7 +15,7 @@ const unicodeDecode = (text) => {
 exports.user_get = asyncHandler(async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
-        res.json({user: user})
+        res.json({ message: "Success", user: user})
     } catch (error){
         return res.status(500).json({ message: "User Not Found." });
     }
@@ -158,5 +158,39 @@ exports.user_unfriend_put = asyncHandler(async (req, res, next) => {
 
     } catch (error) {
         return res.status(500).json({message: 'User Not Found.'});
+    }
+})
+
+exports.user_birthday_get = asyncHandler(async (req, res, next) => {
+    const user_id = req.params.id;
+
+    try{
+        const user = await User.findById(user_id);
+
+        if(user){
+            const today = new Date();
+            const currMonth = today.getMonth() + 1; // getMonth() returns 0 - 11
+            const currDay = today.getDate();
+
+            const birthdays = await User.find({
+                '_id': {
+                    '$in': user.friends
+                }, 
+                '$expr': {
+                    '$and': [
+                        { $eq: [{ $dayOfMonth: '$birthday' }, currDay] },
+                        { $eq: [{ $month: '$birthday' }, currMonth] },
+                    ],
+                }    
+            }).select("_id");
+
+            return res.json({message: "Success", users: birthdays});
+
+        } else {
+            return res.status(500).json({message: 'User Not Found.'});
+        }
+
+    } catch (error) {
+        return res.status(500).json({message: 'Users Not Found.'});
     }
 })

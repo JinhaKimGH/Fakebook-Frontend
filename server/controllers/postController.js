@@ -48,12 +48,12 @@ exports.user_create_post = asyncHandler(async (req, res, next) => {
     const {user, text, link, image} = req.body;
 
     if(text == ''){
-        return res.status(404).json({message: 'Error'})
+        return res.json({message: 'Please Enter Text to Post.'})
     } else if(text.length > 300) {
-        return res.status(404).json({message: "Exceeded Max Character Limit of 300"});
+        return res.status(404).json({message: "Exceeded Max Character Limit of 300."});
     } else {
         if (image != '' & link != ''){
-            return res.status(404).json({message: 'Can only enter one link.'})
+            return res.json({message: 'You may only enter an image link or an external link, not both.'})
         }
         if ((image == '' || checkImageURL(image)) && (link == '' || isValidURL(link))){
             try{
@@ -62,12 +62,12 @@ exports.user_create_post = asyncHandler(async (req, res, next) => {
                 await User.findByIdAndUpdate(user, {"$push": {'posts': post._id}});
                 return res.json({message: "Success", id: post._id});
             } catch (err){
-                return res.status(500).json({message: "internal Server Error."});
+                return res.status(500).json({message: "nternal Server Error."});
             }
         } else if(image != '' &!checkImageURL(image)){
-            return res.status(404).json({message: "Invalid Image URL"})
+            return res.json({message: "Please Enter a Valid Image URL."})
         } else{
-            return res.status(404).json({message: "Invalid External Link"})
+            return res.json({message: "Please Enter a Valid External URL."})
         }
     }
         

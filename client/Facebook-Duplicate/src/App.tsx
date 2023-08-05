@@ -4,13 +4,19 @@ import Home from "./components/Home"
 import User from './components/User'
 import Friend from "./components/Friend";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import React from "react";
 import Search from "./components/Search";
+import ErrorPage from "./components/ErrorPage";
 
+/**
+ * App Component
+ *  
+ * @returns {JSX.Element} A React JSX element representing the App Component
+*/
 function App() {
 
   return (
     <div className="App">
+      {/* Contains routing for all routes in this app */}
         <Router>
           <Routes>
             <Route path="/" element={<Login/>}/>
@@ -19,6 +25,8 @@ function App() {
             <Route path="user/:id" element={<User/>}/>
             <Route path="/friends" element={<Friend/>}/>
             <Route path='/search_results/:name' element={<Search/>}/>
+            <Route path='/error' element={<ErrorPage isApiErr={true}/>}/>
+            <Route path="*" element={<ErrorPage isApiErr={false}/>}/>
           </Routes>
         </Router>
     </div>

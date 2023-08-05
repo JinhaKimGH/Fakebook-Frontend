@@ -1,7 +1,15 @@
 import {Link} from 'react-router-dom'
 
-// Component for the items on the side of the homepage screen
-export default function SideItem(props: {icon: string, text: string, link: string}){
+/**
+ * SideItem Component
+ *  
+ * @param {Object} props - The component props.
+ * @param {string} props.icon - The icon displayed next to the side item
+ * @param {string} props.text - The name of the side item
+ * @param {string} props.link - The link of the side item
+ * @returns {JSX.Element} A React JSX element representing the SideItem Component, a sideItem on the homepage
+*/
+export default function SideItem(props: {icon: string, text: string, link: string}): JSX.Element{
     return(
         <Link to={props.link} className="sideItem-link">
             <li className='sideItem'>

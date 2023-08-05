@@ -83,15 +83,15 @@ exports.create_reply_post = asyncHandler(async (req, res, next) => {
     const {user, text, commentID} = req.body;
 
     if(user == ''){
-        return res.status(404).json({message: "User does not exist."});
+        return res.json({message: "User does not exist."});
     }
 
     if(text == ''){
-        return res.status(404).json({message: "Text does not exist."});
+        return res.json({message: "Text does not exist."});
     }
 
     if(commentID == ''){
-        return res.status(404).json({message: "Comment does not exist."});
+        return res.json({message: "Comment does not exist."});
     }
 
     try{

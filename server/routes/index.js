@@ -50,6 +50,8 @@ router.put('/deny_req', passport.authenticate('jwt', {session: false}), userCont
 /* PUT Remove Friend */
 router.put('/unfriend', passport.authenticate('jwt', {session: false}), userController.user_unfriend_put);
 
+/* GET Birthdays */
+router.get('/birthdays/:id', passport.authenticate('jwt', {session: false}), userController.user_birthday_get);
 
 // Post Routes
 

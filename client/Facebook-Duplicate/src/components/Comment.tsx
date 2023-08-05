@@ -6,8 +6,14 @@ import {RespType, CommentType, UserType, TokenType} from '../Interfaces'
 import { Link } from "react-router-dom"
 import Reply from "./Reply"
 
-// Component for the individual comment
-export default function Comment(props: {id: string}){
+/**
+ * Comment Component
+ *  
+ * @param {Object} props - The component props.
+ * @param {String} props.id - The comments id
+ * @returns {JSX.Element} A React JSX element representing the Comment Component
+*/
+export default function Comment(props: {id: string}): JSX.Element{
 
     // State for comment object
     const [comment, setComment] = React.useState<CommentType>({
@@ -66,7 +72,11 @@ export default function Comment(props: {id: string}){
         setCommentText(value);
     }
 
-    // Returns a formatted time between the original posting and now
+    /* 
+    Returns a formatted time between the original posting and now   
+    Computes the number of years, weeks, days, hours, minutes that have passed since posting
+    The largest unit greater than or equal to 1 will be displayed 
+    */
     function calculateTime(){
         const dateNow = new Date();
         const datePast = new Date(comment.commentTime);
@@ -127,18 +137,20 @@ export default function Comment(props: {id: string}){
                     {
                         headers: headers
                     });
-
+                
+                // If the api call was successful, the different states are set to the returned values
                 if(res.data.message == 'Success') {
                     setComment(res.data.comment);
                     setUser(res.data.user);
                     setIsLiked(res.data.comment.likes.includes(token.user._id));
                     setNumLikes(res.data.comment.likes.length);
                 } else {
-                    // TODO: CALL ERROR THING
-                    console.log(res.data.message);
+                    // If error, re-directs to error page
+                    history('/error');
                 }
             } catch (err) {
-                console.log(err)
+                // If error, re-directs to error page
+                history('/error');
             }
         }
 
@@ -149,6 +161,7 @@ export default function Comment(props: {id: string}){
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
         if(token){
+            // Skips calling the api if the user hasn't interacted with the comment
             if(isLiked == comment.likes.includes(token.user._id)){
                 return    
             } else {
@@ -164,18 +177,16 @@ export default function Comment(props: {id: string}){
                         {
                             headers: headers
                         });
-
+                    // If successful, nothing happens
                     if (res.data.message == "Success"){
                         return;
-                    } if (res.data.message == 'Internal Server Error.'){
-                        //TODO: REDIRECT TO ERROR PAGE
-                        return;
                     } else {
-                        console.log("ERROR")
-                        return;
+                        // If error, re-directs to error page
+                        history('/error');
                     }
                 } catch (err) {
-                    console.log(err);
+                    // If error, re-directs to error page
+                    history('/error');
                 }
             }
         } else {
@@ -183,9 +194,7 @@ export default function Comment(props: {id: string}){
         }
     }
 
-    async function sendComment(event: SyntheticEvent){
-        event.preventDefault();
-
+    async function sendComment(){
         if(commentText == ''){
             return;
         }
@@ -212,8 +221,8 @@ export default function Comment(props: {id: string}){
                     headers: headers
                 });
 
+            // If successful, the form is reset
             if(res.data.message == 'Success'){
-                // If success, resets the form
                 if(document.getElementById('reply-form')){
                     (document.getElementById('reply-form') as HTMLInputElement)!.value = "";
                 }
@@ -223,16 +232,19 @@ export default function Comment(props: {id: string}){
                 // Update the local state to include the reply
                 setComment({...comment, replies: [...comment.replies, res.data.id]});
                 return;
-            } else {
-                console.log(res.data.message);
-                return; //TODO: Error page redirect
             }
             } catch (err){
-                console.log(err);
+                // If error, re-directs to error page
+                history('/error');
             }
         }
 
+    }
 
+    // Work-around to ensure a void return is provided to the Onclick attribute instead of a promise
+    const handleSendCommentOnClick = (e: SyntheticEvent) => {
+        e.preventDefault();
+        void sendComment();
     }
 
     // Effect called to get comments when component is mounted
@@ -262,32 +274,39 @@ export default function Comment(props: {id: string}){
     return (
         <div>
             <div className='comment-bubble'>
+                {/* Comment bubble displays the users photo, name, and reply. Both the name and photo are linked to the user's profile*/}
                 <Link to={`/user/${user._id}`}><img src={user.profilePhoto} className='comment-profile-photo'/></Link>
                 <div>
                     <div className='comment-text'>
                         <Link to={`/user/${user._id}`} className='comment-name'>{`${user.firstName} ${user.lastName}`}</Link>
                         <p>{comment.text}</p>
                     </div>
+                    {/* The different interactions (like, reply) the user can have with the comment. Also displays the time state and the number of likes*/}
                     <div className='interactions'>
+                        {/* Sets the isLiked state and the numLikes state */}
                         <p className={`comment-like${isLiked ? "d" : ''}`} onClick={clickLike}>Like</p>
+                        {/* Opens the comment reply form when reply is clicked */}
                         <p className='comment-reply' onClick={() => setReplyForm(!replyForm)}>Reply</p>
                         <p>{time}</p>
                         <div className='likes'><span className="material-symbols-rounded like-icon">thumb_up</span><p>{numLikes}</p></div>
                     </div>
                 </div>
             </div>
+            {/* If the user clicks on the view replies option, the replies to a comment will be displayed */}
             {openReplies && comment.replies.length > 0 &&
                 comment.replies.map((reply) => <Reply key={reply} id={reply}/>)
             }
+            {/* When clicked, the replies of a comment open/close */}
             {comment.replies.length > 0 &&
             <div className='replies' onClick={() => setOpenReplies(!openReplies)}>
                 <span className="material-symbols-rounded view-replies">shortcut</span>
                 <p>{openReplies ? 'Hide Replies' : (comment.replies.length == 1 ? "1 Reply" : `${comment.replies.length} Replies`)}</p>
             </div>}
+            {/* If the replyForm state is true, the form is displayed */}
             {replyForm &&  <div>
             <form className='reply-form'>
                 <input id='reply-form' className='reply-input' name='comment' placeholder='Write a reply...' onChange={handleChange}></input>
-                <button className='send-reply' onClick={sendComment}><span className="material-symbols-rounded send">send</span></button>
+                <button className='send-reply' onClick={handleSendCommentOnClick}><span className="material-symbols-rounded send">send</span></button>
             </form>
             </div>}
         </div>

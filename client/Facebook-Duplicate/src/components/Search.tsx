@@ -6,8 +6,12 @@ import axios from 'axios';
 import { config } from '../config';
 import SearchResultContainer from './SearchResultContainer';
 
-// Search Results from the navbar
-export default function Search(){
+/**
+ * Search Component
+ *  
+ * @returns {JSX.Element} A React JSX element representing the Search Component, displays the search results
+*/
+export default function Search(): JSX.Element{
     // Changes words to uppercase for the first character
     function titleCase(str: string) {
         const splitStr = str.toLowerCase().split(' ');
@@ -45,8 +49,10 @@ export default function Search(){
         outGoingFriendRequests: []
     });
 
+    // The users state, an array of users that were found from the search
     const [users, setUsers] = React.useState<Array<UserType>>([]);
 
+    // Async function that gets the search results from the backend
     async function getUsers(token: string){
         try{
             const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token}`}
@@ -58,11 +64,10 @@ export default function Search(){
             
             if(res.data.message == 'Success'){
                 setUsers(res.data.users);
-            } else {
-                console.log(res.data.message);
             }
         } catch (err){
-            console.log(err);
+            // If error, re-directs to error page
+            history('/error');
         }
     }
 
@@ -81,7 +86,7 @@ export default function Search(){
     return(
         <div className='homepage'>
             <Navbar user={user} home={'Neither'}/>
-
+            {/* Displays search results & maps them into the SearchResultsContainer component */}
             {users.length > 0 && <h4 className='search-results-title'>Search results for "{name}"</h4>}
             {users.length == 0 && <h4 className='search-results-title'>No results for "{name}"</h4>}
 

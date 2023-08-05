@@ -53,7 +53,7 @@
     margin: 40px 0 0;
     padding: 14px 0 28px;
     width: 396px;
-    height: 290px;
+    height: 340px;
     text-align: center;
     border-radius: 8px;
     background-color: white;
@@ -200,6 +200,10 @@
     background-color: var(--fakebook-post-nav);
     height: 56px;
     border-bottom: 0.5px solid var(--fakebook-border-color);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 2;
 }
 
 .nav-app-icon{
@@ -424,6 +428,10 @@ ul{
     border-radius: 8px;
 }
 
+.dropdown-profile-photo{
+    margin-left: 10px;
+}
+
 .dropdown-profile-photo, .sideProfile-image{
     margin-top: 10px ;
     margin-bottom: 10px;
@@ -450,6 +458,7 @@ ul{
     border-radius: 999999px;
     background-color: var(--search-bar-color);
     padding: 4px;
+    margin-left: 10px;
 }
 
 .sideItem-icon{
@@ -502,6 +511,7 @@ ul{
 
 .home-items{
     display: flex;
+    padding-top: 70px;
 }
 
 .home-options{
@@ -513,7 +523,6 @@ ul{
 
 .home-feed{
     flex: 1;
-    margin-top: 50px;
 }
 
 .home-contact-list{
@@ -670,7 +679,7 @@ ul{
 }
 
 .profile-about{
-    margin: 16px 8px;
+    margin: 16px auto;
     background-color:var(--fakebook-post-nav);
     width: 1218px;
     height: 300px;
@@ -766,6 +775,11 @@ ul{
     margin-right: 5px;
 }
 
+.error-icon{
+    color: var(--fakebook-white);
+    margin-right: 5px
+}
+
 .likes{
     display: flex;
     align-items: center;
@@ -843,6 +857,13 @@ ul{
 .form-trigger:hover{
     background-color: #55575a;
     cursor: pointer;
+}
+
+.home-contact-list > h4, .contact-birthdays > h4 {
+    color: rgb(176, 179, 184);
+    font-size: 17px;
+    font-weight: 500;
+    margin-top: 20px;
 }
 
 .post-form-popup-screen{
@@ -1117,8 +1138,12 @@ iframe{
 
 .post-container{
     display: flex;
-    margin-left: 342px;
+    margin-left: 609px;
     margin-bottom: 20px;
+}
+
+.post-container.home{
+    margin-left: 340px;
 }
 
 .post-container.big{
@@ -1339,6 +1364,7 @@ iframe{
     font-size: 24px;
     font-weight: 700;
     margin-top: 50px;
+    padding-top: 20px;
 }
 
 .search-result-user{
@@ -1361,7 +1387,7 @@ iframe{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    max-width: 100%;
     padding: 32px;
 }
 
@@ -1450,6 +1476,8 @@ iframe{
     border-bottom: 0.5px solid var(--fakebook-border-color);
     margin-left: 16px;
     margin-right: 16px;
+    padding-top: 50px;
+    padding-bottom: 20px;
 }
 
 .friend-requests-list{
@@ -1505,4 +1533,61 @@ iframe{
 .deny-friend-container{
     background-color: rgb(255, 255, 255, 0.1);
     margin-bottom: 12px;
+}
+
+.contact-birthdays{
+    border-bottom: 0.5px solid var(--fakebook-border-color);
+    padding-bottom: 20px;
+}
+
+.profile-feed > div{
+    width: 100%;
+}
+
+.profile-feed-container-no-posts{
+    text-align: center;
+    color: var(--fakebook-dark-grey);
+    font-size: 24px;
+    font-weight: 400;
+    margin-top: 50px;
+}
+
+.error-page{
+    background-color: var(--fakebook-post-nav);
+    height: 100vh;
+    color: var(--fakebook-white);
+    padding: 100px 100px;
+}
+
+.error-page > h2{
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.error-back-button{
+    text-decoration: underline;
+    text-decoration-color: var(--fakebook-blue);
+    color: var(--fakebook-blue);
+    width: 63px;
+}
+
+.error-back-button:hover{
+    cursor: pointer;
+}
+
+.error-msg{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.error-msg > h1{
+    font-weight: 100;
+}
+
+.error-page > h3{
+    margin-bottom: 5px;
+    font-weight: 200;
 }

@@ -4,11 +4,19 @@ import axios from 'axios';
 import {config} from "../config";
 import CommentContainer from "./CommentContainer";
 import Microlink from '@microlink/react';
-import {UserType, PostType, TokenType, RespType, CommentType} from '../Interfaces'
+import {UserType, PostType, TokenType, RespType} from '../Interfaces'
 import { useNavigate } from "react-router-dom";
 
-
-export default function Post(props : {user_id: string, id: string}) {
+/**
+ * Post Component
+ *  
+ * @param {Object} props - The component props.
+ * @param {string} props.user_id - The user id of the user that made the post
+ * @param {string} props.id - The id of the post
+ * @param {string} props.style - A string that sets the className of the post
+ * @returns {JSX.Element} A React JSX element representing the Post component, component that displays the posts
+*/
+export default function Post(props : {user_id: string, id: string, style:string}) {
     // For routing
     const history = useNavigate();
 
@@ -74,7 +82,8 @@ export default function Post(props : {user_id: string, id: string}) {
     React.useEffect(() => {
         const tokenJSON = localStorage.getItem("token");
         const token: TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
-      
+        
+        // Sets the currentUser and isLiked state when there is a token
         if (token) {
           setCurrentUser(token.user);
           setIsLiked(post.likes.includes(token.user._id));
@@ -93,19 +102,18 @@ export default function Post(props : {user_id: string, id: string}) {
                     {
                         headers: headers
                     });
-
+                
+                // If successfully called, the post, likes, comments, currentUser, and isLiked states are set
                 if (res.data.message == 'Success'){
                     setPost(res.data.post);
                     setLikes(res.data.post.likes.length);
                     setComments(res.data.post.comments);
                     setCurrentUser(token.user);
                     setIsLiked(res.data.post.likes.includes(token.user._id));
-                } else {
-                    console.log(res.data.message)
-                    // TODO: Re-direct to error page
                 }
             } catch (err){
-                console.log(err)
+                // If error, re-directs to error page
+                history('/error');
             }
         }
     }
@@ -123,15 +131,17 @@ export default function Post(props : {user_id: string, id: string}) {
                     }
                 });
 
-                if(res.data == null){
-                    history('/'); //TODO: Error Page
-                } else {
+                if(res.data.message == 'Success'){
                     // Sets the poster
                     const data : UserType = res.data.user;
                     setPoster(data);
+                } else {
+                    // If error, re-directs to error page
+                    history('/error');
                 }
             } catch (err){
-                console.log(err);
+                // If error, re-directs to error page
+                history('/error');
             }
         }
     }
@@ -155,13 +165,10 @@ export default function Post(props : {user_id: string, id: string}) {
                 // If the api call is successful
                 if(res.data.message == "Success"){
                     return
-                } else{
-                    // Otherwise, there is an error
-                    console.log(res.data.message)
                 }
-                    
             } catch (err) {
-                console.log(err)
+                // If error, re-directs to error page
+                history('/error');
             }
         }
     }
@@ -191,8 +198,9 @@ export default function Post(props : {user_id: string, id: string}) {
     }
 
     return(
-        <div className={`post-container ${post.link || post.image ? "big" : "small"}`}>
+        <div className={`post-container ${post.link || post.image ? "big" : "small"} ${props.style}`}>
             <div className='post-feed'>
+                {/* Contains the post creation info. User profile picture, name, and date of post */}
                     <div className="post-creation-info">
                         <Link to={`/user/${props.user_id}`} className='profile-link-post-feed'>
                             <img className='nav-profile-photo' src={poster.profilePhoto}/>
@@ -203,19 +211,23 @@ export default function Post(props : {user_id: string, id: string}) {
                         </Link>
                     </div>
                     <div className='post-content'>
+                        {/* Content of the post: text and image or link */}
                         <p className='post-text'>{post.text}</p>
                         {post.image && <img src={post.image} className='post-image'></img>}
                         {post.link && <Microlink url={post.link} style={{'marginBottom': '10px'}} />}
                     </div>
+                    {/* Number of likes and comments of a post */}
                     <div className='post-likes-comments'>
                         {likes > 0 ? <div>{`${likes} likes`}</div> : <div>No Likes</div>}
                         {comments.length > 0 ? <div>{`${comments.length} comments`}</div> : <div>No Comments</div>}
                     </div>
+                    {/* Buttons to like the post and open the comments section of a post */}
                     <div className='post-interactions'>
                         <button className={`thumbs-up ${isLiked ? 'liked' : ""}`} onClick={thumbsUp}><span className="material-symbols-rounded interactions">thumb_up</span>Like</button>
                         <button className='comment' onClick={() => {setCommentsIsHidden(!commentsIsHidden)}}><span className="material-symbols-rounded interactions">chat_bubble</span>Comment</button>
                     </div>
             </div>
+            {/* The comments section if commentsIsHidden is false*/}
             <div className={`post-right ${commentsIsHidden ? "inactive" : "active"}`}>
                 {commentsIsHidden ? <div className='empty-container'></div> : <CommentContainer currentUser={currentUser} comments={comments} setCommentsIsHidden={setCommentsIsHidden} setComments={setComments} postID={post._id}/>}
             </div>

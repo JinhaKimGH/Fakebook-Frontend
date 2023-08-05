@@ -5,8 +5,18 @@ import {config} from "../config";
 import axios from 'axios';
 import { UserType, RespType, TokenType } from "../Interfaces";
 
-// Component for the container for comments of a post
-export default function CommentContainer(props: {comments: Array<string>, setComments: React.Dispatch<React.SetStateAction<any>>, setCommentsIsHidden: React.Dispatch<React.SetStateAction<any>>, currentUser: UserType, postID: string}){
+/**
+ * CommentContainer Component
+ *  
+ * @param {Object} props - The component props.
+ * @param {Array<string>} props.comments - The array of ids for the comments of a post
+ * @param {React.Dispatch<React.SetStateAction<Array<string>>>} props.setComments - A function that updates the comments state
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setCommentsIsHidden - A function that updates the commentsIsHidden state, determines whether the comments are displayed
+ * @param {UserType} props.currentUser - The user object containing the user information of the logged-on user
+ * @param {String} props.postId - The id of the post the user is viewing
+ * @returns {JSX.Element} A React JSX element representing the CommentContainer Component, container for comments of a post
+*/
+export default function CommentContainer(props: {comments: Array<string>, setComments: React.Dispatch<React.SetStateAction<Array<string>>>, setCommentsIsHidden: React.Dispatch<React.SetStateAction<boolean>>, currentUser: UserType, postID: string}): JSX.Element{
     // Used to navigate routes
     const history = useNavigate();
 
@@ -24,9 +34,9 @@ export default function CommentContainer(props: {comments: Array<string>, setCom
     }
 
     // Async Function that calls the backend to create a new comment
-    async function submit(event: SyntheticEvent){
-        event.preventDefault();
+    async function submit(){
 
+        // Retrieves the token from local storage
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
 
@@ -37,52 +47,61 @@ export default function CommentContainer(props: {comments: Array<string>, setCom
 
         else {
             try{
-            const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
-            const res : RespType = await axios.post(
-                `${config.apiURL}/createcomment`, 
-                {
-                    user: props.currentUser._id,
-                    text: commentText,
-                    postID: props.postID,
-                },
-                {
-                    headers: headers
-                });
+                const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
+                const res : RespType = await axios.post(
+                    `${config.apiURL}/createcomment`, 
+                    {
+                        user: props.currentUser._id,
+                        text: commentText,
+                        postID: props.postID,
+                    },
+                    {
+                        headers: headers
+                    });
 
-            // Checks response message to verify status of the api POST call
-            if(res.data.message == 'User does not exist.' || res.data.message == 'Post not found.' || res.data.message == 'Internal Server Error'){
-                return; //TODO: ADD ERROR PAGE
-            } else if (res.data.message == "Invalid Text"){
-                // Sets Error state if invalid text
-                setError('Please Enter Text to Post.');
-            } else if (res.data.message == 'Success'){
-                // If success, resets the form
-                if(document.getElementById('comment-form')){
-                    (document.getElementById('comment-form') as HTMLInputElement)!.value = "";
+                // Checks response message to verify status of the api POST call
+                if (res.data.message == "Invalid Text"){
+                    // Sets Error state if form is filled incorrectly
+                    setError('Please Enter Text to Post.');
+                } else if (res.data.message == 'Success'){
+                    // If successful, the form is reset, and states are reset
+                    if(document.getElementById('comment-form')){
+                        (document.getElementById('comment-form') as HTMLInputElement)!.value = "";
+                    }
+                    setCommentText('');
+                    setError('');
+                    // The new comment id is appended to the comments state
+                    props.setComments([...props.comments, res.data.id]);
                 }
-                setCommentText('');
-                setError('');
-                props.setComments([...props.comments, res.data.id]);
+            } catch(err){
+                // If error, re-directs to error page
+                history('/error');
             }
-        } catch(err){
-            console.log(err);
         }
     }
+
+    // Work-around to ensure a void return is provided to the Onclick attribute instead of a promise
+    const handleSubmitOnClick = (e: SyntheticEvent) => {
+        e.preventDefault();
+        void submit();
     }
 
     return (
         <div className="comments-popup">
+            {/* Top of the comment container window, displays the title and exit button */}
             <div className='comments-top'>
                 <h2>Comments</h2>
                 <button onClick={() => {props.setCommentsIsHidden(true)}}>✕</button>
             </div>
+            {/* Comment container that displays all comments */}
             <div className='comment-container'>
                 {props.comments.length > 0 ? props.comments.map((comment) => <Comment key={comment} id={comment}/>) : <div className='comment-nonexistent'>No Comments</div>}
             </div>
+            {/* The comment form, users can submit a new comment here */}
             <div className="form-error-post">{error}</div>
             <form className='comment-form'>
                 <input id='comment-form' className='comment-input' name='comment' placeholder='Write a comment...' onChange={handleChange}></input>
-                <button className='send-comment' onClick={submit}><span className="material-symbols-rounded send">send</span></button>
+                <button className='send-comment' onClick={handleSubmitOnClick}><span className="material-symbols-rounded send">send</span></button>
             </form>
         </div>
     )

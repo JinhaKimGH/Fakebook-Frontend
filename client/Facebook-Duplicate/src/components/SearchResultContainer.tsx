@@ -5,7 +5,14 @@ import axios from "axios";
 import { config } from "../config";
 import { useNavigate } from 'react-router-dom'
 
-export default function SearchResultContainer(props: {user: UserType}){
+/**
+ * SearchResultContainer Component
+ *  
+ * @param {Object} props - The component props.
+ * @param {UserType} props.user - The user object containing the user information of the profile you are on
+ * @returns {JSX.Element} A React JSX element representing the SearchResultContainer Component, the search results from the search
+*/
+export default function SearchResultContainer(props: {user: UserType}): JSX.Element{
     // Is Friends State, checks if the two are friends
     const [isFriends, setIsFriends] = React.useState(false);
 
@@ -82,7 +89,7 @@ export default function SearchResultContainer(props: {user: UserType}){
         }
     }
 
-    // Finds isFriends and isYou and request state values on mount
+    // Finds isFriends, isYou and request state values on mount
     React.useEffect(() => {
         setIsFriends(getIsFriends);
         setIsYou(getIsYou);
@@ -96,8 +103,7 @@ export default function SearchResultContainer(props: {user: UserType}){
     }
 
     // Async function that sends a friend request
-    async function requestFriend(e: SyntheticEvent) {
-        e.preventDefault();
+    async function requestFriend() {
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
 
@@ -113,22 +119,21 @@ export default function SearchResultContainer(props: {user: UserType}){
                     {
                         headers: headers
                     });
-
+                
+                // If successful, the request state is set
                 if (res.data.message == 'Success'){
                     setRequest("Outgoing");
                     localStorage.setItem('token', JSON.stringify({token: token.token, user: {...token.user, 'outGoingFriendRequests': [...token.user.outGoingFriendRequests, props.user._id]}}));
-                } else{
-                    console.log(res.data.message);
                 }
             } catch (err){
-                console.log(err);
+                // If error, re-directs to error page
+                history('/error');
             }
         }
     }
 
     // Async Function that accepts a friend request
-    async function acceptRequest(e: SyntheticEvent){
-        e.preventDefault();
+    async function acceptRequest(){
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
 
@@ -144,30 +149,45 @@ export default function SearchResultContainer(props: {user: UserType}){
                     {
                         headers: headers
                     });
+
+                // If successful the isFriends state is set, request state is reset, and localstoraget is updated to reflect the new friend
                 if(res.data.message == 'Success'){
                     setIsFriends(true);
                     setRequest('');
                     localStorage.setItem('token', JSON.stringify({token: token.token, user: {...token.user, 'friends': [...token.user.friends, props.user._id]}}));
-                } else{
-                    console.log(res.data.message);
                 }
             } catch(err) {
-                console.log(err);
+                // If error, re-directs to error page
+                history('/error');
             }
         }
     }
 
+    // Work-around to ensure a void return is provided to the Onclick attribute instead of a promise
+    const handleAcceptOnClick = (e: SyntheticEvent) => {
+        e.preventDefault();
+        void acceptRequest();
+    }
+
+    // Work-around to ensure a void return is provided to the Onclick attribute instead of a promise
+    const handleRequestOnClick = (e: SyntheticEvent) => {
+        e.preventDefault();
+        void requestFriend();
+    }
+
     return (
         <div className='search-result-user'>
+            {/* Link to the search result user's profile page */}
             <Link to={`/user/${props.user._id}`}><img className='results-profile-photo' src={props.user.profilePhoto}/></Link>
             <div className='search-result-mid'>
                 <Link to={`/user/${props.user._id}`} className='result-link'>{`${props.user.firstName} ${props.user.lastName}`}</Link>
                 <p>{`${(isYou || isFriends) ? (isYou ? "You ·" : "Friend ·") : ""} ${getMutualFriends()} mutual friends`}</p>
             </div>
 
-            {isYou == false && isFriends == false && request == "" &&<button className='friend-request' onClick={requestFriend}>Add Friend</button>}
+            {/* Redirects/calls a function depending on the different states */}
+            {isYou == false && isFriends == false && request == "" &&<button className='friend-request' onClick={handleRequestOnClick}>Add Friend</button>}
             {isFriends == false &&  request == "Outgoing" && <button className='friend-request' onClick={(event) => redirect(event, `/friends`)}>Pending Request</button>}
-            {isFriends == false &&  request == 'Incoming' && <button className='friend-request' onClick={acceptRequest}>Accept Request</button>}
+            {isFriends == false &&  request == 'Incoming' && <button className='friend-request' onClick={handleAcceptOnClick}>Accept Request</button>}
             {(isYou == true || isFriends == true) && <button className='friend-request' onClick={(event) => redirect(event, `/user/${props.user._id}`)}>View Profile</button>}
         </div>
     )

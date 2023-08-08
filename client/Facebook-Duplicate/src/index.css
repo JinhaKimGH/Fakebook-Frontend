@@ -228,6 +228,19 @@
     min-height: 100vh;
 }
 
+.searchpage{
+    background-color: var(--fakebook-background);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-result-loading{
+    height: 150px;
+    margin-top: 50px;
+}
+
 .nav-left{
     display: flex;
     margin-right: auto;
@@ -704,7 +717,7 @@ ul{
     justify-content: space-between;
 }
 
-.profile-about-right > h4{
+.profile-about-right > h4, .title-container > h4{
     font-size: 20px;
     font-weight: 700;
     margin-bottom : 20px;
@@ -762,7 +775,7 @@ ul{
     align-items: center;
     font-size: 15px;
     font-weight: 400;
-    word-break: break-all;
+    word-break: break-word;
     color: rgb(228, 230, 235);
 }
 
@@ -836,7 +849,7 @@ ul{
 }
 
 .post-feed{
-    padding-bottom: 4px !important;
+    padding-bottom: 20px !important;
     min-width: 668px !important;
 }
 .post-creation-info{
@@ -917,6 +930,20 @@ ul{
     border-radius: 6px;
     height: 36px;
     padding: 0 12px;
+}
+
+.form-button-cancel.disabled{
+    background-color: rgba(255, 255, 255, 0.335);
+}
+
+.form-button-cancel.disabled:hover{
+    cursor: not-allowed;
+    background-color: rgba(255, 255, 255, 0.335);
+}
+
+.form-button-save.disabled:hover{
+    cursor: wait;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .form-button-save:hover, .form-button-cancel:hover{
@@ -1020,6 +1047,40 @@ ul{
     color: white;
     font-size: 16px;
     font-weight: 700;
+}
+
+.login-submit-disabled{
+    background-color: #1876f239;
+    border: none;
+    min-width: 362px;
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-submit-disabled:hover{
+    cursor: wait;
+}
+
+.post-submit-disabled{
+    background-color: #1876f239;
+    border: none;
+    border-radius: 20px;
+    padding: 10px;
+    width: 100%;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post-submit-disabled:hover{
+    cursor: wait;
 }
 
 .post-submit:hover{
@@ -1142,12 +1203,17 @@ iframe{
     margin-bottom: 20px;
 }
 
+.post-loading-container{
+    display: flex;
+    justify-content: center;
+}
+
 .post-container.home{
     margin-left: 340px;
 }
 
 .post-container.big{
-    max-height: 570px;
+    max-height: 580px;
     min-height: 570px;
 }
 
@@ -1194,6 +1260,7 @@ iframe{
     display: flex;
     align-items: center;
     margin-top: auto;
+    height: 35px;
     background-color: rgb(58, 59, 60);
     padding: 5px;
     border-radius: 12px;
@@ -1241,6 +1308,14 @@ iframe{
 
 .send, .gif{
     color: #B0B3B8;
+}
+
+.send-disabled{
+    color: #b0b3b87c;
+}
+
+.send-disabled:hover{
+    cursor: wait;
 }
 
 .send-comment, .gif-popup{
@@ -1456,7 +1531,6 @@ iframe{
     width: 240px;
     max-width: 240px;
     margin: 4px;
-
 }
 
 .friend-container > img{
@@ -1525,6 +1599,26 @@ iframe{
     margin-top: 10px;
 }
 
+.friend-req-disabled{
+    border: none;
+    background-color: #1876f239;
+    border-radius: 6px;
+    height: 30px;
+    padding: 0 12px;
+    width: 220px;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.friend-req-disabled:hover{
+    cursor: wait;
+}
+
+.friend-req-disabled.se{
+    background-color: rgba(255, 255, 255, 0.027);
+    margin-bottom: 12px;
+}
+
 .friend-request-container:hover, .deny-friend-container:hover{
     cursor: pointer;
     filter: brightness(80%);
@@ -1590,4 +1684,97 @@ iframe{
 .error-page > h3{
     margin-bottom: 5px;
     font-weight: 200;
+}
+
+.loading-container{
+    width: 100%;
+    height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.about-loading{
+    height: 40px;
+}
+
+.friends-loading{
+    height: 50px;
+    margin-left: 50vw;
+    margin-top: 50vh;
+}
+
+.about-property-loading, .comment-loading{
+    height: 20px
+}
+
+.post-loading{
+    margin-top: 50px;
+    height: 60px;
+}
+
+.comment-loading{
+    margin: auto;
+}
+
+.friend-req-loading{
+    margin-top: 50px;
+}
+
+.loading-birthdays{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.birthday-loading{
+    height: 30px;
+}
+
+.post-loading-container-new{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post-loading-new{
+    height: 80px;
+    width: 80px;
+    margin: auto;
+}
+
+.profile-load{
+    background-color: var(--fakebook-background);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-loading{
+    height: 100px;
+}
+
+.friend-request.disabled, .profile-unfriend.disabled:hover, .profile-not-friend.disabled:hover{
+    cursor: wait;
+}
+
+.profile-unfriend.disabled{
+    width: 90px;
+    display: flex;
+    justify-content: center;
+}
+
+.profile-not-friend.disabled{
+    background-color: rgba(45, 136, 255, 0.2);
+    width: 90px;
+    display: flex;
+    justify-content: center;
+}
+
+.side-profile-loading{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
 }

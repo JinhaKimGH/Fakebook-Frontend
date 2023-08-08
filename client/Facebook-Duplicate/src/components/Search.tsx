@@ -27,6 +27,9 @@ export default function Search(): JSX.Element{
     // Finds the id of the user from the url
     const name : string  = titleCase(useParams().name || '');
 
+    // State for loading time for the comment to send
+    const [loading, setLoading] = React.useState(false);
+
     // Used for routing
     const history = useNavigate();
 
@@ -44,7 +47,7 @@ export default function Search(): JSX.Element{
         facebookid: "",
         friends: [],
         friendRequests: [],
-        profilePhoto: "",
+        profilePhoto: "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1",
         posts: [],
         outGoingFriendRequests: []
     });
@@ -54,7 +57,13 @@ export default function Search(): JSX.Element{
 
     // Async function that gets the search results from the backend
     async function getUsers(token: string){
+        if(loading){
+            return;
+        }
+
         try{
+            // Sets loading state to true before calling the api
+            setLoading(true);
             const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token}`}
             const res : RespType = await axios.get(
                 `${config.apiURL}/searchusers/${name}`, 
@@ -64,8 +73,12 @@ export default function Search(): JSX.Element{
             
             if(res.data.message == 'Success'){
                 setUsers(res.data.users);
+                // Sets loading state to false after api call
+                setLoading(false);
             }
         } catch (err){
+            // Sets loading state to false after api call
+            setLoading(false);
             // If error, re-directs to error page
             history('/error');
         }
@@ -84,11 +97,12 @@ export default function Search(): JSX.Element{
     }, [name])
 
     return(
-        <div className='homepage'>
+        <div className='searchpage'>
             <Navbar user={user} home={'Neither'}/>
             {/* Displays search results & maps them into the SearchResultsContainer component */}
             {users.length > 0 && <h4 className='search-results-title'>Search results for "{name}"</h4>}
-            {users.length == 0 && <h4 className='search-results-title'>No results for "{name}"</h4>}
+            {users.length == 0 && !loading && <h4 className='search-results-title'>No results for "{name}"</h4>}
+            {loading && <img src='/loading.gif' className='search-result-loading'/>}
 
             <div className='results-container'>
                 {users.map((user: UserType) => <SearchResultContainer user={user} key={user._id}/>)}

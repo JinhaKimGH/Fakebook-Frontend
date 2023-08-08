@@ -198,21 +198,26 @@ export default function Reply(props: {id: string}): JSX.Element{
     }
 
     return (
-    <div className='comment-bubble reply'>
-        {/* Comment bubble displays the users photo and name. Both the name and photo are linked to the user's profile*/}
-        <Link to={`/user/${user._id}`}><img src={user.profilePhoto} className='comment-profile-photo'/></Link>
         <div>
-            <div className='comment-text'>
-                <Link to={`/user/${user._id}`} className='comment-name'>{`${user.firstName} ${user.lastName}`}</Link>
-                <p>{reply.text}</p>
-            </div>
-             {/* The different interactions the user can have with the comment. Also displays the time state and the number of likes*/}
-            <div className='interactions'>
-                <p className={`comment-like${isLiked ? "d" : ''}`} onClick={clickLike}>Like</p>
-                <p>{time}</p>
-                <div className='likes'><span className="material-symbols-rounded like-icon">thumb_up</span><p>{numLikes}</p></div>
-            </div>
+            {
+                reply._id == '' ? <div className="comment-bubble"><img src='/loading.gif' className='comment-loading'/></div> :
+                <div className='comment-bubble reply'>
+                    {/* Comment bubble displays the users photo and name. Both the name and photo are linked to the user's profile*/}
+                    <Link to={`/user/${user._id}`}><img src={user.profilePhoto} className='comment-profile-photo'/></Link>
+                    <div>
+                        <div className='comment-text'>
+                            <Link to={`/user/${user._id}`} className='comment-name'>{`${user.firstName} ${user.lastName}`}</Link>
+                            <p>{reply.text}</p>
+                        </div>
+                        {/* The different interactions the user can have with the comment. Also displays the time state and the number of likes*/}
+                        <div className='interactions'>
+                            <p className={`comment-like${isLiked ? "d" : ''}`} onClick={clickLike}>Like</p>
+                            <p>{time}</p>
+                            <div className='likes'><span className="material-symbols-rounded like-icon">thumb_up</span><p>{numLikes}</p></div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
-    </div>
     )
 }

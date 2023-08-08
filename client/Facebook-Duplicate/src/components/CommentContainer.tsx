@@ -20,6 +20,9 @@ export default function CommentContainer(props: {comments: Array<string>, setCom
     // Used to navigate routes
     const history = useNavigate();
 
+    // State for loading time for the comment to send
+    const [loading, setLoading] = React.useState(false);
+
     // State for comment input text
     const [commentText, setCommentText] = React.useState("");
 
@@ -35,6 +38,15 @@ export default function CommentContainer(props: {comments: Array<string>, setCom
 
     // Async Function that calls the backend to create a new comment
     async function submit(){
+        // Sets Error state if form is filled incorrectly
+        if (commentText == ''){
+            setError('Please Enter Text to Post.');
+            return;
+        }
+
+        if (loading){
+            return;
+        }
 
         // Retrieves the token from local storage
         const tokenJSON = localStorage.getItem("token");
@@ -47,6 +59,8 @@ export default function CommentContainer(props: {comments: Array<string>, setCom
 
         else {
             try{
+                // Sets the loading state for the api call
+                setLoading(true);
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
                 const res : RespType = await axios.post(
                     `${config.apiURL}/createcomment`, 
@@ -60,20 +74,22 @@ export default function CommentContainer(props: {comments: Array<string>, setCom
                     });
 
                 // Checks response message to verify status of the api POST call
-                if (res.data.message == "Invalid Text"){
-                    // Sets Error state if form is filled incorrectly
-                    setError('Please Enter Text to Post.');
-                } else if (res.data.message == 'Success'){
+                if (res.data.message == 'Success'){
                     // If successful, the form is reset, and states are reset
                     if(document.getElementById('comment-form')){
                         (document.getElementById('comment-form') as HTMLInputElement)!.value = "";
                     }
                     setCommentText('');
                     setError('');
+                    // Sets loading state to false after api call
+                    setLoading(false);
+
                     // The new comment id is appended to the comments state
                     props.setComments([...props.comments, res.data.id]);
                 }
             } catch(err){
+                // Sets loading state to false after api call
+                setLoading(false);
                 // If error, re-directs to error page
                 history('/error');
             }
@@ -101,7 +117,8 @@ export default function CommentContainer(props: {comments: Array<string>, setCom
             <div className="form-error-post">{error}</div>
             <form className='comment-form'>
                 <input id='comment-form' className='comment-input' name='comment' placeholder='Write a comment...' onChange={handleChange}></input>
-                <button className='send-comment' onClick={handleSubmitOnClick}><span className="material-symbols-rounded send">send</span></button>
+                {loading ? <img src='/loading.gif' className='about-property-loading'/> : ""}
+                {loading ? <span className="material-symbols-rounded send-disabled">send</span> : <button className='send-comment' onClick={handleSubmitOnClick}><span className="material-symbols-rounded send">send</span></button>}
             </form>
         </div>
     )

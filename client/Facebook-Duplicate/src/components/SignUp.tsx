@@ -14,6 +14,9 @@ export default function SignUp(): JSX.Element{
     // Used to navigate routes
     const history = useNavigate(); 
 
+    // State to determine whether sign in is loading
+    const [loading, setLoading] = React.useState(false);
+
     // First name state for sign-up form
     const [firstName, setFirstName] = React.useState("");
 
@@ -70,6 +73,10 @@ export default function SignUp(): JSX.Element{
 
     // Asynchronous function for submitting the sign up form
     async function submit(){
+        if(loading){
+            return;
+        }
+
         resetClassError();
 
         // Sanity check for all fields, adds 'input-err' class to the input if there is an error
@@ -112,6 +119,8 @@ export default function SignUp(): JSX.Element{
 
         // Accesses the API to create a new user or reject is if the email is in use
         try{
+            // Sets loading to true before the api call
+            setLoading(true);
             const res: RespType = await axios.post(
                 `${config.apiURL}/signup`, 
                 {
@@ -121,13 +130,19 @@ export default function SignUp(): JSX.Element{
             
             // Redirects to login page if sign up successful
             if(res.data.message == 'Success'){
+                // Sets loading state to false after the api call
+                setLoading(false);
                 history('/');
             } else if (res.data.message == "Failure"){
+                // Sets loading state to false after the api call
+                setLoading(false);
                 // Sets error state if email is in use
                 setError("Email is already associated with an account.");
             }
 
          } catch(err) {
+            // Sets loading state to false after the api call
+            setLoading(false);
             // If error, re-directs to error page
             history('/error');
         }
@@ -167,7 +182,7 @@ export default function SignUp(): JSX.Element{
                     <input type="date" onChange={(e) => {setBirthDate(new Date(e.target.value))}} id="date" required/>
                     <input type="text" onChange={(e) => {setGender(e.target.value)}} id="gender" placeholder="Gender" required/>
                     <div className="form-error">{error}</div>
-                    <button className="submit" onClick={handleSubmitOnClick}>Sign Up</button>
+                    {loading ? <button className='login-submit-disabled' onClick={handleSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className="submit" onClick={handleSubmitOnClick}>Sign Up</button>}
                 </form>
             </div>
         </div>

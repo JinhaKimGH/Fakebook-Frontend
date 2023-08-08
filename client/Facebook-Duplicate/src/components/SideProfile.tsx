@@ -55,11 +55,18 @@ export default function SideProfile(props: {image: string, text: string, id: str
     }, [])
 
     return(
-        <Link to={`/user/${props.id}`} className="sideItem-profile">
-            <li className='sideItem sideProfile'>
-                <img className="sideProfile-image" src={profile ?  profile.profilePhoto : props.image}/>
-                <div className="sideProfile-text">{profile ? `${profile.firstName} ${profile.lastName}` : props.text}</div>
-            </li>
-        </Link>
+        <div>
+            {
+                profile ? 
+                <Link to={`/user/${props.id}`} className="sideItem-profile">
+                    <li className='sideItem sideProfile'>
+                        <img className="sideProfile-image" src={profile ?  profile.profilePhoto : props.image}/>
+                        <div className="sideProfile-text">{profile ? `${profile.firstName} ${profile.lastName}` : props.text}</div>
+                    </li>
+                </Link> :
+
+                <div className='side-profile-loading'><img src='/loading.gif' className='birthday-loading'/></div>
+            }
+        </div>
     )
 }

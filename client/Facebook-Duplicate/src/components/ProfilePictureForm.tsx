@@ -17,6 +17,9 @@ export default function ProfilePictureForm(props: {user_id: string, setProfileFo
     // Used for the routing
     const history = useNavigate();
 
+    // State for loading time for the comment to send
+    const [loading, setLoading] = React.useState(false);
+
     // Reference to the form
     const formRef = React.useRef<HTMLDivElement>(null);
 
@@ -38,6 +41,10 @@ export default function ProfilePictureForm(props: {user_id: string, setProfileFo
 
     // Async function to submit the form
     async function submitForm(){
+        // Don't call the api if it is already loading
+        if(loading){
+            return;
+        }
 
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
@@ -46,6 +53,8 @@ export default function ProfilePictureForm(props: {user_id: string, setProfileFo
             return;
         } else {
             try{
+                // Sets the loading state before the api call
+                setLoading(true);
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
                 const res : RespType = await axios.put(
                     `${config.apiURL}/updateuser/`, 
@@ -62,13 +71,18 @@ export default function ProfilePictureForm(props: {user_id: string, setProfileFo
                     setLink('');
                     props.setProfileForm(false);
                     setError('');
-
+                    // Sets loading state to false after api call
+                    setLoading(false);
                     localStorage.setItem("token", JSON.stringify({token: token.token, user: {...token.user, 'profilePhoto': link}, time: Date.now() }));
                 } else{
+                    // Sets loading state to false after api call
+                    setLoading(false);
                     // Otherwise sets the error message
                     setError(res.data.message);
                 }
             } catch (error){
+                // Sets loading state to false after api call
+                setLoading(false);
                 // If error, re-directs to error page
                 history('/error');
             }
@@ -99,6 +113,12 @@ export default function ProfilePictureForm(props: {user_id: string, setProfileFo
         void submitForm();
     }
 
+    // Dummy Submit on click that only prevents default event of the form, is used when the api call is loading
+    const handleDummyOnClick = (e: SyntheticEvent) => {
+        e.preventDefault();
+        return;
+    }
+
     return (
         <div className={`post-form-popup-screen ${props.profileForm ? 'active' : 'inactive'}`}>
             <div className='post-form-popup' ref={formRef}>
@@ -108,8 +128,8 @@ export default function ProfilePictureForm(props: {user_id: string, setProfileFo
                     <div className='post-form-icon'><span className="material-symbols-rounded about-button-icon">add_link</span><input placeholder='Profile Picture Link' id='link' onChange={(e) => {setLink(e.target.value)}}/></div>
                     <div className="form-error-post">{error}</div>
                     <div className='edit-form-buttons'>
-                        <button className='form-button-cancel' onClick={closeForm}>Cancel</button>
-                        <button className='form-button-save' onClick={handleSubmitOnClick}>Submit</button>
+                        {loading ? <button className='form-button-cancel disabled' onClick={handleDummyOnClick}>Cancel</button> : <button className='form-button-cancel' onClick={closeForm}>Cancel</button>}
+                        {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button>: <button className='form-button-save' onClick={handleSubmitOnClick}>Submit</button>}
                     </div>
                 </form>
             </div>

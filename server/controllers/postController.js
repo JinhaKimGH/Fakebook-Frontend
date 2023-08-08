@@ -109,8 +109,8 @@ exports.get_recent_posts = asyncHandler(async (req, res, next) => {
         // Finds all the friends of the user
         const friendsAndUser = [...curr_user.friends, user_id];
         
-        // Finds all the posts from the group of friends + user, sorts it by most recent date, selects only the user id to return, and only sends back 50.
-        const posts = await Post.find({'user': {"$in": friendsAndUser}}).sort({'postTime': -1}).select({'user': 1}).limit(50);
+        // Finds all the posts from the group of friends + user, sorts it by most recent date, and only sends back 50.
+        const posts = await Post.find({'user': {"$in": friendsAndUser}}).sort({'postTime': -1}).limit(50);
 
         if(!posts){
             return res.status(400).json({message: "Unable to find posts"});

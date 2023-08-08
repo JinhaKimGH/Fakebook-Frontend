@@ -13,6 +13,9 @@ export default function Login(): JSX.Element{
     // Used to navigate routes
     const history = useNavigate();
 
+    // State to determine whether sign in is loading
+    const [loading, setLoading] = React.useState(false);
+
     // Sets the state for the email input
     const [email, setEmail] = React.useState("");
 
@@ -39,6 +42,9 @@ export default function Login(): JSX.Element{
 
     // Asynchronous function which handles the login submission
     async function submit(){
+        if(loading){
+            return;
+        }
         document.getElementById("email")!.classList.remove("input-err")
         document.getElementById("password")!.classList.remove("input-err")
         if(!validateEmail(email)){
@@ -57,6 +63,8 @@ export default function Login(): JSX.Element{
 
         // Otherwise, accesses the api and gets a response
         try{
+            // Sets loading to true before the api call
+            setLoading(true);
             const res : RespType = await axios.post(`${config.apiURL}/login`, { 
                 email: email,
                 password: password, 
@@ -66,16 +74,22 @@ export default function Login(): JSX.Element{
             
             if(data.message == "Success"){
                 if (data.token){
+                    // Sets loading state to false after the api call
+                    setLoading(false);
                     // Sets the token, user, and time in localStorage
                     localStorage.setItem("token", JSON.stringify({token: data.token, user: data.user, time: Date.now() }));
                     return history('/home');
                 }
             } else if (data.message == "Incorrect email or password.") {
+                // Sets loading state to false after the api call
+                setLoading(false);
                 // Sets the form error
                 setError("Incorrect email or password.");
             }
 
          } catch(err) {
+            // Sets loading state to false after the api call
+            setLoading(false);
             // If error, re-directs to error page
             history('/error');
         }
@@ -83,7 +97,12 @@ export default function Login(): JSX.Element{
 
     // A login function for a guest user
     async function guestLogin(){
+        if(loading){
+            return;
+        }
         try{
+            // Sets loading state to true before the api call
+            setLoading(true);
             const res : RespType = await axios.post(`${config.apiURL}/login`, { 
                 email: 'guest@email.com',
                 password: 'password', 
@@ -93,15 +112,21 @@ export default function Login(): JSX.Element{
             
             if(data.message == "Success"){
                 if (data.token){
+                    // Sets loading state to false after the api call
+                    setLoading(false);
                     // Sets the token, user, and time in localStorage
                     localStorage.setItem("token", JSON.stringify({token: data.token, user: data.user, time: Date.now() }));
                     return history('/home');
                 }
             } else if (data.message == "Incorrect email or password.") {
+                // Sets loading state to false after the api call
+                setLoading(false);
                 // Sets the form error
                 setError("Incorrect email or password.");
             }
         } catch(err){
+            // Sets loading state to false after the api call
+            setLoading(false);
             // If error, re-directs to error page
             history('/error');
         }
@@ -131,8 +156,8 @@ export default function Login(): JSX.Element{
                     <input type="email" onChange={(e) => {setEmail(e.target.value)}} placeholder="Email" name="email" id="email" required/>
                     <input type="password" onChange={(e) => {setPassword(e.target.value)}} placeholder="Password" name="password" id="password" required/>
                     <div className="form-error">{error}</div>
-                    <button className="submit" onClick={handleSubmitOnClick}>Log In</button>
-                    <button className='submit' onClick={handleGuestSubmitOnClick}>Log In as Guest</button>
+                    {loading ? <button className='login-submit-disabled' onClick={handleSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className="submit" onClick={handleSubmitOnClick}>Log In</button>}
+                    {loading ? <button className='login-submit-disabled' onClick={handleGuestSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button>: <button className='submit' onClick={handleGuestSubmitOnClick}>Log In as Guest</button>}
                 </form>
 
                 <div className="break"></div>

@@ -37,6 +37,9 @@ export default function FriendRequestContainer(props: {id: string, req: string, 
         outGoingFriendRequests: []
     });
 
+    // State for loading time for the comment to send
+    const [loading, setLoading] = React.useState(false);
+
     // Fetches the profile of the user
     async function fetchUser(token: string, id: string) {
         try{
@@ -91,9 +94,14 @@ export default function FriendRequestContainer(props: {id: string, req: string, 
     async function acceptRequest(){
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
+        if(loading){
+            return;
+        }
 
         if(token) {
             try{
+                // Sets the loading state for the api call
+                setLoading(true);
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
                 const res : RespType = await axios.put(
                     `${config.apiURL}/accept_req`, 
@@ -107,12 +115,17 @@ export default function FriendRequestContainer(props: {id: string, req: string, 
                 if(res.data.message == 'Success'){
                     // Sets the user state with the new accepted friend id
                     props.setUser({...props.user, 'friends': [...props.user.friends, props.id], 'friendRequests': props.user.friendRequests.filter(item => item !== props.id)});
-                    
+                    // Sets loading state to false after api call
+                    setLoading(false);
                 } else{
+                    // Sets loading state to false after api call
+                    setLoading(false);
                     // If error, re-directs to error page
                     history('/error');
                 }
             } catch(err) {
+                // Sets loading state to false after api call
+                setLoading(false);
                 // If error, re-directs to error page
                 history('/error');
             }
@@ -125,9 +138,15 @@ export default function FriendRequestContainer(props: {id: string, req: string, 
         // Retrieves token from localStorage, ensures user is logged in
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
+        
+        if(loading){
+            return;
+        }
 
         if(token) {
             try{
+                // Sets the loading state for the api call
+                setLoading(true);
                 // Authorization headers for backend call
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
                 const res : RespType = await axios.put(
@@ -142,12 +161,17 @@ export default function FriendRequestContainer(props: {id: string, req: string, 
                 if(res.data.message == 'Success'){
                     // Deletes the declined user from the friendRequests array, therefore, state is changed and user is updated
                     props.setUser({...props.user, 'friendRequests': props.user.friendRequests.filter(item => item !== props.id)});
-                    
+                    // Sets loading state to false after api call
+                    setLoading(false);
                 } else{
+                    // Sets loading state to false after api call
+                    setLoading(false);
                     // If error, re-directs to error page
                     history('/error');
                 }
             } catch(err) {
+                // Sets loading state to false after api call
+                setLoading(false);
                // If error, re-directs to error page
                history('/error');
             }
@@ -172,25 +196,39 @@ export default function FriendRequestContainer(props: {id: string, req: string, 
         void denyRequest();
     }
 
-    return (
-        <div className='friend-container'>
-            {/* Redirects to friend profile when photo, name, or view profile is clicked */}
-            <img src={friend.profilePhoto} onClick={redirect}/>
-            <h4 onClick={redirect}>{`${friend.firstName} ${friend.lastName}`}</h4>
-            <h5>{`${getMutualFriends()} mutual friends`}</h5>
-            {/* If this is a friend request, the user can choose to accept/deny their request. */}
-            {props.req == 'request' &&
-            <div className='friend-button-container'>
-                    <button className="friend-request-container" onClick={handleAcceptRequestOnClick}>Confirm</button>
-                    <button className="deny-friend-container" onClick={handleDenyRequestOnClick}>Delete</button>
-            </div>
-            }
-            {props.req == 'friend' &&
-            <div className='friend-button-container'>
-                    <button className="deny-friend-container" onClick={redirect}>View Profile</button>
-            </div>
-            }
+    // Dummy function to prevent default event and return
+    const handleDummyClick = (e: SyntheticEvent) => {
+        e.preventDefault();
+        return;
+    }
 
+    return (
+        <div>
+        { friend._id == "" ?
+            <div className='friend-container'>
+                <img src='/loading.gif' className='friend-req-loading'/>
+            </div>
+            :
+            <div className='friend-container'>
+                {/* Redirects to friend profile when photo, name, or view profile is clicked */}
+                <img src={friend.profilePhoto} onClick={redirect}/>
+                <h4 onClick={redirect}>{`${friend.firstName} ${friend.lastName}`}</h4>
+                <h5>{`${getMutualFriends()} mutual friends`}</h5>
+                {/* If this is a friend request, the user can choose to accept/deny their request. */}
+                {props.req == 'request' &&
+                <div className='friend-button-container'>
+                        {loading ? <button className='friend-req-disabled' onClick={handleDummyClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className="friend-request-container" onClick={handleAcceptRequestOnClick}>Confirm</button>}
+                        {loading ? <button className='friend-req-disabled se' onClick={handleDummyClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className="deny-friend-container" onClick={handleDenyRequestOnClick}>Delete</button>}
+                </div>
+                }
+                {props.req == 'friend' &&
+                <div className='friend-button-container'>
+                        <button className="deny-friend-container" onClick={redirect}>View Profile</button>
+                </div>
+                }
+
+            </div>
+        }
         </div>
     )
 }

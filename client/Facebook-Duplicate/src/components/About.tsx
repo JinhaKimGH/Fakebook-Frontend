@@ -17,6 +17,9 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
     // State for the selection of a tab on the about section
     const [selection, setSelection] = React.useState('Biography');
 
+    // State for loading time for the comment to send
+    const [loading, setLoading] = React.useState(false);
+
     // State to determine whether user is in edit mode
     const [edit, setEdit] = React.useState(false);
 
@@ -36,9 +39,24 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
         setEdit(false);
     }
 
+    // IF the user changes the selection, the edit state is set to false
+    React.useEffect(() => {
+        setEdit(false);
+        setLoading(false);
+    }, [selection])
+
+    // If user presses edit button, loading is set to false
+    React.useEffect(() => {
+        setLoading(false);
+    }, [edit])
     
     // Submits the updates for the user
     async function submit(){
+        // Don't call the api if it is already loading
+        if(loading){
+            return;
+        }
+
         // Gets the token from local storage
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
@@ -56,6 +74,8 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
         
         if(token) {
             try{
+                // Sets the loading state before the api call
+                setLoading(true);
                 const edit_type = isEditBio ? 'bio' : 'gender';
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
                 // Put request to the backend, sends the user id, what is being edited, and the new content
@@ -72,6 +92,8 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                     
                     // If successful, the edit page is closed
                     if (res.data.message == 'Success'){
+                        // Sets loading state to false after api call
+                        setLoading(false);
                         setEdit(false);
                         // Updates the user state to match what was edited
                         if(isEditBio){
@@ -80,9 +102,13 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                             props.setUser({...props.user, gender: content});
                         }
                     } else {
+                        // Sets loading state to false after api call
+                        setLoading(false);
                         history('/error');
                     }
                 } catch (err) {
+                    // Sets loading state to false after api call
+                    setLoading(false);
                     history('/error');
                 }
         } else {
@@ -96,6 +122,12 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
     const handleSubmitOnClick = (e: SyntheticEvent) => {
         e.preventDefault();
         void submit();
+    }
+
+    // Dummy Submit on click that only prevents default event of the form, is used when the api call is loading
+    const handleDummyOnClick = (e: SyntheticEvent) => {
+        e.preventDefault();
+        return;
     }
 
     return( 
@@ -118,15 +150,16 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                         {props.isUser && <div className='edit-button' onClick={() => {setEdit(!edit)}}>Edit</div>}
                     </div>
                     {/* If the edit state is true, the edit form is displayed, otherwise the user's bio is displayed */}
+                    {/* Displays a loading gif if props.user has not been properly set yet */}
                     {edit ? 
                         <form className='edit-form'>
                             <textarea className='edit-form-textarea' placeholder='Write a bio to introduce yourself...' id='text-bio'></textarea>
                             <div className='edit-form-buttons'>
-                                <button className='form-button-cancel' onClick={closeForm}>Cancel</button>
-                                <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>
+                                {loading ? <button className='form-button-cancel disabled' onClick={handleDummyOnClick}>Cancel</button> :<button className='form-button-cancel' onClick={closeForm}>Cancel</button>}
+                                {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>}
                             </div>
                         </form> : 
-                        <p className='contact-symbol bio'>{props.user.bio}</p>}
+                        props.user.bio ? <p className='contact-symbol bio'>{props.user.bio}</p> : <div className='loading-container'><img src='/loading.gif' className='about-loading'/></div>}
                 </div>
             }
 
@@ -134,12 +167,12 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
             {selection == 'Contact Info' &&
                 <div className='profile-about-right'>
                     <h4>Contact Info</h4>
-                    <p className='contact-symbol'><span className="material-symbols-rounded about-button-icon">email</span>{props.user.email}</p>
+                    <p className='contact-symbol'><span className="material-symbols-rounded about-button-icon">email</span>{props.user.email ? props.user.email : <img src='/loading.gif' className='about-property-loading'/>}</p>
                     <p className='about-desc'>Email</p>
                 </div>
             }
 
-            {/* If the user selects the basic info tab*/}
+            {/* If the user selects the basic info tab, if the props.user value is not set, a loading gif is shown instead of the null information */}
             {selection == 'Basic Info' &&
                 <div className='profile-about-right'>
                     <h4>Basic Info</h4>
@@ -148,8 +181,8 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                         <form className='edit-form'>
                             <input className='edit-form-input' placeholder='Enter the gender you identify with...' id='text-gender'/>
                             <div className='edit-form-buttons'>
-                                <button className='form-button-cancel' onClick={closeForm}>Cancel</button>
-                                <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>
+                                {loading ? <button className='form-button-cancel disabled' onClick={handleDummyOnClick}>Cancel</button> :<button className='form-button-cancel' onClick={closeForm}>Cancel</button>}
+                                {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>}
                             </div>
                         </form> : <div>
                         <div className='contact-symbol'>
@@ -157,7 +190,7 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                             {props.user.gender.toLowerCase() == 'male' ? <span className="material-symbols-rounded about-button-icon">man</span> : ""}
                             {props.user.gender.toLowerCase() == 'female' ? <span className="material-symbols-rounded about-button-icon">woman</span> : ""}
                             {props.user.gender.toLowerCase() !== 'male' && props.user.gender.toLowerCase() !== 'female' && <span></span>}
-                            {props.user.gender}
+                            {props.user.gender ? props.user.gender : <img src='/loading.gif' className='about-property-loading'/>}
                             {props.isUser && <div className='edit-button-pencil' onClick={() => {setEdit(!edit)}}><span className="material-symbols-rounded edit-icon">edit</span></div>}
                         </div>
                         <p className='about-desc'>Gender</p>
@@ -166,19 +199,19 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                     {/* The birthday, account creation date, and number of posts information is not editable, thus they will display no matter what */}
                     <p className='contact-symbol'>
                         <span className="material-symbols-rounded about-button-icon">cake</span>
-                        {new Date(props.user.birthday).toDateString()}
+                        {props.user.birthday ? new Date(props.user.birthday).toDateString() : <img src='/loading.gif' className='about-property-loading'/>}
                     </p>
                     <p className='about-desc'>Birthday</p>
             
                     <p className='contact-symbol'>
                         <span className="material-symbols-rounded about-button-icon">today</span>
-                        {new Date(props.user.accountCreationDate).toDateString()}
+                        {props.user.accountCreationDate ? new Date(props.user.accountCreationDate).toDateString() : <img src='/loading.gif' className='about-property-loading'/>}
                     </p>
                     <p className='about-desc'>Account Creation Date</p>
             
                     <p className='contact-symbol'>
                         <span className='material-symbols-rounded about-button-icon'>format_list_numbered</span>
-                        {`${props.user.posts.length} Posts`}
+                        {props.user.posts ? `${props.user.posts.length} Posts` : <img src='/loading.gif' className='about-property-loading'/>}
                     </p>
                     <p className='about-desc'>Total Number of Posts</p>
                 </div>

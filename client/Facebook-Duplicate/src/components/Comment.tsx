@@ -25,6 +25,9 @@ export default function Comment(props: {id: string}): JSX.Element{
         likes: []
     });
 
+    // State for loading time for the comment to send
+    const [loading, setLoading] = React.useState(false);
+
     // State for the number of likes for the comment
     const [numLikes, setNumLikes] = React.useState(0);
 
@@ -195,7 +198,8 @@ export default function Comment(props: {id: string}): JSX.Element{
     }
 
     async function sendComment(){
-        if(commentText == ''){
+        // If comment is blank, or a send comment is still loading, return
+        if(commentText == '' || loading){
             return;
         }
 
@@ -209,6 +213,8 @@ export default function Comment(props: {id: string}): JSX.Element{
 
         else {
             try{
+            // Sets the loading state for the api call
+            setLoading(true);
             const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
             const res : RespType = await axios.post(
                 `${config.apiURL}/createreply`, 
@@ -228,12 +234,16 @@ export default function Comment(props: {id: string}): JSX.Element{
                 }
                 setCommentText('');
                 setReplyForm(false);
+                // Sets loading state to false after api call
+                setLoading(false);
 
                 // Update the local state to include the reply
                 setComment({...comment, replies: [...comment.replies, res.data.id]});
                 return;
             }
             } catch (err){
+                // Sets loading state to false after api call
+                setLoading(false);
                 // If error, re-directs to error page
                 history('/error');
             }
@@ -273,25 +283,29 @@ export default function Comment(props: {id: string}): JSX.Element{
 
     return (
         <div>
-            <div className='comment-bubble'>
-                {/* Comment bubble displays the users photo, name, and reply. Both the name and photo are linked to the user's profile*/}
-                <Link to={`/user/${user._id}`}><img src={user.profilePhoto} className='comment-profile-photo'/></Link>
-                <div>
-                    <div className='comment-text'>
-                        <Link to={`/user/${user._id}`} className='comment-name'>{`${user.firstName} ${user.lastName}`}</Link>
-                        <p>{comment.text}</p>
-                    </div>
-                    {/* The different interactions (like, reply) the user can have with the comment. Also displays the time state and the number of likes*/}
-                    <div className='interactions'>
-                        {/* Sets the isLiked state and the numLikes state */}
-                        <p className={`comment-like${isLiked ? "d" : ''}`} onClick={clickLike}>Like</p>
-                        {/* Opens the comment reply form when reply is clicked */}
-                        <p className='comment-reply' onClick={() => setReplyForm(!replyForm)}>Reply</p>
-                        <p>{time}</p>
-                        <div className='likes'><span className="material-symbols-rounded like-icon">thumb_up</span><p>{numLikes}</p></div>
+            {
+                comment._id == '' ? <div className="comment-bubble"><img src='/loading.gif' className='comment-loading'/></div> :
+
+                <div className='comment-bubble'>
+                    {/* Comment bubble displays the users photo, name, and reply. Both the name and photo are linked to the user's profile*/}
+                    <Link to={`/user/${user._id}`}><img src={user.profilePhoto} className='comment-profile-photo'/></Link>
+                    <div>
+                        <div className='comment-text'>
+                            <Link to={`/user/${user._id}`} className='comment-name'>{`${user.firstName} ${user.lastName}`}</Link>
+                            <p>{comment.text}</p>
+                        </div>
+                        {/* The different interactions (like, reply) the user can have with the comment. Also displays the time state and the number of likes*/}
+                        <div className='interactions'>
+                            {/* Sets the isLiked state and the numLikes state */}
+                            <p className={`comment-like${isLiked ? "d" : ''}`} onClick={clickLike}>Like</p>
+                            {/* Opens the comment reply form when reply is clicked */}
+                            <p className='comment-reply' onClick={() => setReplyForm(!replyForm)}>Reply</p>
+                            <p>{time}</p>
+                            <div className='likes'><span className="material-symbols-rounded like-icon">thumb_up</span><p>{numLikes}</p></div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
             {/* If the user clicks on the view replies option, the replies to a comment will be displayed */}
             {openReplies && comment.replies.length > 0 &&
                 comment.replies.map((reply) => <Reply key={reply} id={reply}/>)
@@ -302,11 +316,12 @@ export default function Comment(props: {id: string}): JSX.Element{
                 <span className="material-symbols-rounded view-replies">shortcut</span>
                 <p>{openReplies ? 'Hide Replies' : (comment.replies.length == 1 ? "1 Reply" : `${comment.replies.length} Replies`)}</p>
             </div>}
-            {/* If the replyForm state is true, the form is displayed */}
+            {/* If the replyForm state is true, the form is displayed, if a previous reply is being sent, the button is disabled and a loading gif is shown */}
             {replyForm &&  <div>
             <form className='reply-form'>
                 <input id='reply-form' className='reply-input' name='comment' placeholder='Write a reply...' onChange={handleChange}></input>
-                <button className='send-reply' onClick={handleSendCommentOnClick}><span className="material-symbols-rounded send">send</span></button>
+                {loading ? <img src='/loading.gif' className='about-property-loading'/> : ""}
+                {loading ? <span className="material-symbols-rounded send-disabled">send</span> : <button className='send-reply' onClick={handleSendCommentOnClick}><span className="material-symbols-rounded send">send</span></button>}
             </form>
             </div>}
         </div>

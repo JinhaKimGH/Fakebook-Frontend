@@ -11,7 +11,7 @@ import FriendRequestContainer from "./FriendRequestContainer";
  *  
  * @returns {JSX.Element} A React JSX element representing the Friend Component, the friends page on Fakebook
 */
-export default function Friend() {
+export default function Friend(): JSX.Element {
     // Used for the routing
     const history = useNavigate();
 
@@ -29,7 +29,7 @@ export default function Friend() {
         facebookid: "",
         friends: [],
         friendRequests: [],
-        profilePhoto: "",
+        profilePhoto: "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1",
         posts: [],
         outGoingFriendRequests: []
     });
@@ -83,7 +83,7 @@ export default function Friend() {
         <div className='homepage'>
             <Navbar user={user} home={'friends'}/>
             {/* Displays friend requests if the user has any incoming friend requests */}
-            { user.friendRequests.length > 0 &&
+            { user.friendRequests.length > 0 && user._id !== "" &&
                 <div className='friend-requests'>
                     <h4>Friend Requests</h4>
                     <div className='friend-requests-list'>
@@ -92,12 +92,19 @@ export default function Friend() {
                 </div>
             }
             {/* Displays list of friends */}
-            <div className='friend-requests list'>
-                <h4>Friends</h4>
-                <div className='friend-requests-list'>
-                    {user.friends.map((friend) => <FriendRequestContainer key={friend} id={friend} req={'friend'} user={user} setUser={setUser}/>)}
+            {user._id !== "" && 
+                <div className='friend-requests list'>
+                    <h4>Friends</h4>
+                    <div className='friend-requests-list'>
+                        {user.friends.map((friend) => <FriendRequestContainer key={friend} id={friend} req={'friend'} user={user} setUser={setUser}/>)}
+                    </div>
                 </div>
-            </div>
+            }   
+
+            {/* If user state hasn't loaded in yet from the API */}
+            {user._id == "" && 
+                <img src='/loading.gif' className='friends-loading'/>
+            }
             
         </div>
     )

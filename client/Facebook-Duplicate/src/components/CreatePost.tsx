@@ -17,8 +17,11 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
     // Used to navigate routes
     const history = useNavigate();
 
-     // State for opening and closing the post form
-     const [open, setOpen] = React.useState(false);
+    // State for loading time for the comment to send
+    const [loading, setLoading] = React.useState(false);
+
+    // State for opening and closing the post form
+    const [open, setOpen] = React.useState(false);
 
     // Reference to the form
     const formRef = React.useRef<HTMLDivElement>(null);
@@ -37,11 +40,13 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
 
-        if(!token){
+        if(!token || loading){
             return;
         }
         
         try{
+            // Sets the loading state for the api call
+            setLoading(true);
             const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
             const res : RespType = await axios.post(
                 `${config.apiURL}/createpost`, 
@@ -57,17 +62,27 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
                 
             // Checks response message to verify status of the api POST call
             if(res.data.message == 'Success') {
+                // Sets loading state to false after api call
+                setLoading(false);
+
                 // If the call was successful and the form can be closed
                 setOpen(false);
+                
 
                 // Updates the user's state and adds the new post id
                 props.setUser({...props.user, posts: [...props.user.posts, res.data.id]});
             } else {
                 // Otherwise the error message is set
                 setError(res.data.message)
+
+                // Sets loading state to false after api call
+                setLoading(false);
             }
             
         } catch (err) {
+            // Sets loading state to false after api call
+            setLoading(false);
+
             // If error, re-directs to error page
             history('/error');
         }
@@ -119,7 +134,7 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
                     </div>
                     {/* Displays any error sent back from the backend */}
                     <div className="form-error-post">{error}</div>
-                    <button className='post-submit' onClick={handleSubmitOnClick}>Post</button>
+                    {loading ? <button className='post-submit-disabled' onClick={handleSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='post-submit' onClick={handleSubmitOnClick}>Post</button>}
                 </div>
             </form>
         </div>

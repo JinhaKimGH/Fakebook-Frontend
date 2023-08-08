@@ -11,26 +11,15 @@ import { useNavigate } from "react-router-dom";
  * Post Component
  *  
  * @param {Object} props - The component props.
- * @param {string} props.user_id - The user id of the user that made the post
- * @param {string} props.id - The id of the post
+ * @param {PostType} props.post - The post object displayed in this component
  * @param {string} props.style - A string that sets the className of the post
+ * @param {boolean} props.display - A boolean that decides if the component is displayed
+ * @param {React.Dispatch<React.SetStateAction<number>>} props.setPostCount - A function that updates the count state
  * @returns {JSX.Element} A React JSX element representing the Post component, component that displays the posts
 */
-export default function Post(props : {user_id: string, id: string, style:string}) {
+export default function Post(props : {post: PostType, style:string, display: boolean, setPostCount: React.Dispatch<React.SetStateAction<number>>}): JSX.Element {
     // For routing
     const history = useNavigate();
-
-    // State for the post object
-    const [post, setPost] = React.useState<PostType>({
-        _id: "",
-        user: '',
-        text: '',
-        link: '',
-        postTime: '',
-        comments: [],
-        image: '',
-        likes: [],
-    });
 
     // State for the poster
     const [poster, setPoster] = React.useState<UserType>({
@@ -53,10 +42,13 @@ export default function Post(props : {user_id: string, id: string, style:string}
 
     // State for the number of likes of the post
     const [likes, setLikes] = React.useState(0);
-    // State for the comments of a post
+
+    // State for the list of comments
     const [comments, setComments] = React.useState<Array<string>>([]);
+
     // State for whether the comments are hidden or not on the post
     const [commentsIsHidden, setCommentsIsHidden] = React.useState(true);
+
     // State for the current User that is logged in
     const [currentUser, setCurrentUser] = React.useState<UserType>({
         _id: "",
@@ -71,7 +63,7 @@ export default function Post(props : {user_id: string, id: string, style:string}
         facebookid: "",
         friends: [],
         friendRequests: [],
-        profilePhoto: "",
+        profilePhoto: "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1",
         posts: [],
         outGoingFriendRequests: []
     });
@@ -86,37 +78,9 @@ export default function Post(props : {user_id: string, id: string, style:string}
         // Sets the currentUser and isLiked state when there is a token
         if (token) {
           setCurrentUser(token.user);
-          setIsLiked(post.likes.includes(token.user._id));
+          setIsLiked(props.post.likes.includes(token.user._id));
         }
-    }, [post.likes]);
-
-    // Async function that fetches the post information
-    async function fetchPost(){
-        const tokenJSON = localStorage.getItem("token");
-        const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
-        if(token){
-            try{
-                const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
-                const res : RespType = await axios.get(
-                    `${config.apiURL}/getpost/${props.id}/`, 
-                    {
-                        headers: headers
-                    });
-                
-                // If successfully called, the post, likes, comments, currentUser, and isLiked states are set
-                if (res.data.message == 'Success'){
-                    setPost(res.data.post);
-                    setLikes(res.data.post.likes.length);
-                    setComments(res.data.post.comments);
-                    setCurrentUser(token.user);
-                    setIsLiked(res.data.post.likes.includes(token.user._id));
-                }
-            } catch (err){
-                // If error, re-directs to error page
-                history('/error');
-            }
-        }
-    }
+    }, [props.post.likes]);
 
     // Fetches the profile of the user
     async function fetchUser() {
@@ -124,7 +88,7 @@ export default function Post(props : {user_id: string, id: string, style:string}
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
         if(token){
             try{
-                const res : RespType = await axios.get(`${config.apiURL}/user/${props.user_id}`, {
+                const res : RespType = await axios.get(`${config.apiURL}/user/${props.post.user}`, {
                     headers: {
                         'Content-Type': "application/json",
                         Authorization: `Bearer ${token.token}`,
@@ -135,6 +99,8 @@ export default function Post(props : {user_id: string, id: string, style:string}
                     // Sets the poster
                     const data : UserType = res.data.user;
                     setPoster(data);
+                    // Post can be displayed, increase the count
+                    props.setPostCount(prevCount => prevCount + 1);
                 } else {
                     // If error, re-directs to error page
                     history('/error');
@@ -150,11 +116,11 @@ export default function Post(props : {user_id: string, id: string, style:string}
     async function updateLikes(increase: boolean) {
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
-        if(token && (isLiked !== post.likes.includes(token.user._id))){
+        if(token && (isLiked !== props.post.likes.includes(token.user._id))){
             try{
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
                 const res : RespType = await axios.put(
-                    `${config.apiURL}/updatepost/${post._id}/${increase ? 'increase' : 'decrease'}`, 
+                    `${config.apiURL}/updatepost/${props.post._id}/${increase ? 'increase' : 'decrease'}`, 
                     {
                         user: token.user._id,
                     },
@@ -176,14 +142,21 @@ export default function Post(props : {user_id: string, id: string, style:string}
     // Effect that calls the updateLikes async function on unmount
     React.useEffect(() => {
         return () => {
-            void updateLikes(likes > post.likes.length);
+            void updateLikes(likes > props.post.likes.length);
         };
     }, [isLiked])
 
     
     // Effect fetches post information on mount
     React.useEffect(() => {
-        void fetchPost();
+        const tokenJSON = localStorage.getItem("token");
+        const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
+        if(token){
+            setCurrentUser(token.user);
+            setIsLiked(props.post.likes.includes(token.user._id))
+        }
+        setLikes(props.post.likes.length);
+        setComments(props.post.comments)
         void fetchUser();
     }, [])
     
@@ -198,39 +171,46 @@ export default function Post(props : {user_id: string, id: string, style:string}
     }
 
     return(
-        <div className={`post-container ${post.link || post.image ? "big" : "small"} ${props.style}`}>
-            <div className='post-feed'>
-                {/* Contains the post creation info. User profile picture, name, and date of post */}
-                    <div className="post-creation-info">
-                        <Link to={`/user/${props.user_id}`} className='profile-link-post-feed'>
-                            <img className='nav-profile-photo' src={poster.profilePhoto}/>
-                            <div>
-                                <div className='post-feed-author'>{`${poster.firstName} ${poster.lastName}`}</div>
-                                <div className='post-feed-date'>{`${(new Date(post.postTime)).toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} at ${new Date(post.postTime).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}</div>
+        <div>
+            {props.display && 
+                <div className={`post-container ${props.post.link || props.post.image ? "big" : "small"} ${props.style}`}>
+                    {/* If one of the poster or post state hasn't been loaded in yet, a loading gif will be displayed */}      
+                    <div className='post-feed'>
+                        {/* Contains the post creation info. User profile picture, name, and date of post */}
+                            <div className="post-creation-info">
+                                <Link to={`/user/${props.post.user}`} className='profile-link-post-feed'>
+                                    <img className='nav-profile-photo' src={poster.profilePhoto}/>
+                                    <div>
+                                        <div className='post-feed-author'>{`${poster.firstName} ${poster.lastName}`}</div>
+                                        <div className='post-feed-date'>{`${(new Date(props.post.postTime)).toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} at ${new Date(props.post.postTime).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}</div>
+                                    </div>
+                                </Link>
                             </div>
-                        </Link>
+                            <div className='post-content'>
+                                {/* Content of the post: text and image or link */}
+                                <p className='post-text'>{props.post.text}</p>
+                                {props.post.image && <img src={props.post.image} className='post-image'></img>}
+                                {props.post.link && <Microlink url={props.post.link} style={{'marginBottom': '10px'}} />}
+                            </div>
+                            {/* Number of likes and comments of a post */}
+                            <div className='post-likes-comments'>
+                                {likes > 0 ? <div>{`${likes} likes`}</div> : <div>No Likes</div>}
+                                {comments.length > 0 ? <div>{`${comments.length} comments`}</div> : <div>No Comments</div>}
+                            </div>
+                            {/* Buttons to like the post and open the comments section of a post */}
+                            <div className='post-interactions'>
+                                <button className={`thumbs-up ${isLiked ? 'liked' : ""}`} onClick={thumbsUp}><span className="material-symbols-rounded interactions">thumb_up</span>Like</button>
+                                <button className='comment' onClick={() => {setCommentsIsHidden(!commentsIsHidden)}}><span className="material-symbols-rounded interactions">chat_bubble</span>Comment</button>
+                            </div>
                     </div>
-                    <div className='post-content'>
-                        {/* Content of the post: text and image or link */}
-                        <p className='post-text'>{post.text}</p>
-                        {post.image && <img src={post.image} className='post-image'></img>}
-                        {post.link && <Microlink url={post.link} style={{'marginBottom': '10px'}} />}
+                    
+                    {/* The comments section if commentsIsHidden is false*/}
+                    <div className={`post-right ${commentsIsHidden ? "inactive" : "active"}`}>
+                        {commentsIsHidden ? <div className='empty-container'></div> : <CommentContainer currentUser={currentUser} comments={comments} setCommentsIsHidden={setCommentsIsHidden} setComments={setComments} postID={props.post._id}/>}
                     </div>
-                    {/* Number of likes and comments of a post */}
-                    <div className='post-likes-comments'>
-                        {likes > 0 ? <div>{`${likes} likes`}</div> : <div>No Likes</div>}
-                        {comments.length > 0 ? <div>{`${comments.length} comments`}</div> : <div>No Comments</div>}
-                    </div>
-                    {/* Buttons to like the post and open the comments section of a post */}
-                    <div className='post-interactions'>
-                        <button className={`thumbs-up ${isLiked ? 'liked' : ""}`} onClick={thumbsUp}><span className="material-symbols-rounded interactions">thumb_up</span>Like</button>
-                        <button className='comment' onClick={() => {setCommentsIsHidden(!commentsIsHidden)}}><span className="material-symbols-rounded interactions">chat_bubble</span>Comment</button>
-                    </div>
-            </div>
-            {/* The comments section if commentsIsHidden is false*/}
-            <div className={`post-right ${commentsIsHidden ? "inactive" : "active"}`}>
-                {commentsIsHidden ? <div className='empty-container'></div> : <CommentContainer currentUser={currentUser} comments={comments} setCommentsIsHidden={setCommentsIsHidden} setComments={setComments} postID={post._id}/>}
-            </div>
+                </div>
+
+            }
         </div>
     )
 }

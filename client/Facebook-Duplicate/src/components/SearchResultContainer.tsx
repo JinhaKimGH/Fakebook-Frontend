@@ -16,6 +16,9 @@ export default function SearchResultContainer(props: {user: UserType}): JSX.Elem
     // Is Friends State, checks if the two are friends
     const [isFriends, setIsFriends] = React.useState(false);
 
+    // State for loading time for the comment to send
+    const [loading, setLoading] = React.useState(false);
+
     // State that determines if you are the user
     const [isYou, setIsYou] = React.useState(false);
 
@@ -104,11 +107,17 @@ export default function SearchResultContainer(props: {user: UserType}): JSX.Elem
 
     // Async function that sends a friend request
     async function requestFriend() {
+        // Returns if api is being called already
+        if(loading){
+            return;
+        }
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
 
         if(token){
             try{
+                // Sets the loading state for the api call
+                setLoading(true);
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
                 const res : RespType = await axios.put(
                     `${config.apiURL}/friend_req`, 
@@ -123,9 +132,13 @@ export default function SearchResultContainer(props: {user: UserType}): JSX.Elem
                 // If successful, the request state is set
                 if (res.data.message == 'Success'){
                     setRequest("Outgoing");
+                    // Sets loading state to false after api call
+                    setLoading(false);
                     localStorage.setItem('token', JSON.stringify({token: token.token, user: {...token.user, 'outGoingFriendRequests': [...token.user.outGoingFriendRequests, props.user._id]}}));
                 }
             } catch (err){
+                // Sets loading state to false after api call
+                setLoading(false);
                 // If error, re-directs to error page
                 history('/error');
             }
@@ -134,11 +147,17 @@ export default function SearchResultContainer(props: {user: UserType}): JSX.Elem
 
     // Async Function that accepts a friend request
     async function acceptRequest(){
+        // Returns if api is being called already
+        if(loading){
+            return;
+        }
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
 
         if(token) {
             try{
+                // Sets the loading state for the api call
+                setLoading(true);
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
                 const res : RespType = await axios.put(
                     `${config.apiURL}/accept_req`, 
@@ -152,11 +171,15 @@ export default function SearchResultContainer(props: {user: UserType}): JSX.Elem
 
                 // If successful the isFriends state is set, request state is reset, and localstoraget is updated to reflect the new friend
                 if(res.data.message == 'Success'){
+                    // Sets loading state to false after api call
+                    setLoading(false);
                     setIsFriends(true);
                     setRequest('');
                     localStorage.setItem('token', JSON.stringify({token: token.token, user: {...token.user, 'friends': [...token.user.friends, props.user._id]}}));
                 }
             } catch(err) {
+                // Sets loading state to false after api call
+                setLoading(false);
                 // If error, re-directs to error page
                 history('/error');
             }
@@ -175,6 +198,12 @@ export default function SearchResultContainer(props: {user: UserType}): JSX.Elem
         void requestFriend();
     }
 
+    // Dummy Submit on click that only prevents default event of the form, is used when the api call is loading
+    const handleDummyOnClick = (e: SyntheticEvent) => {
+        e.preventDefault();
+        return;
+    }
+
     return (
         <div className='search-result-user'>
             {/* Link to the search result user's profile page */}
@@ -185,9 +214,9 @@ export default function SearchResultContainer(props: {user: UserType}): JSX.Elem
             </div>
 
             {/* Redirects/calls a function depending on the different states */}
-            {isYou == false && isFriends == false && request == "" &&<button className='friend-request' onClick={handleRequestOnClick}>Add Friend</button>}
+            {isYou == false && isFriends == false && request == "" && (loading ? <button className='friend-request disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='friend-request' onClick={handleRequestOnClick}>Add Friend</button>)}
             {isFriends == false &&  request == "Outgoing" && <button className='friend-request' onClick={(event) => redirect(event, `/friends`)}>Pending Request</button>}
-            {isFriends == false &&  request == 'Incoming' && <button className='friend-request' onClick={handleAcceptOnClick}>Accept Request</button>}
+            {isFriends == false &&  request == 'Incoming' && (loading ? <button className='friend-request disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='friend-request' onClick={handleAcceptOnClick}>Accept Request</button>)}
             {(isYou == true || isFriends == true) && <button className='friend-request' onClick={(event) => redirect(event, `/user/${props.user._id}`)}>View Profile</button>}
         </div>
     )

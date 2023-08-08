@@ -1016,7 +1016,6 @@ ul{
 .post-form-icon{
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
 }
 
 .profile-pic-form > .post-form-icon{
@@ -1777,4 +1776,42 @@ iframe{
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
+}
+
+.file-upload{
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+}
+
+.file-upload.post{
+    margin-top: 5px;
+    margin-bottom: 8px;
+}
+
+.file-upload > input{
+    width: 200px;
+    color: var(--fakebook-white);
+    font-family: var(--fakebook-white-font);
+    font-weight: 100;
+}
+
+.file-upload > input::file-selector-button{
+    background-color: var(--fakebook-blue);
+    border: none;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--secondary-font);
+    padding: 0 12px;
+    font-size: 12px;
+    height: 36px;
+    margin-right: 20px;
+    color: rgb(228, 230, 235);
+    box-shadow: var(--card-box-shadow);
+}
+
+.file-upload > input::file-selector-button:hover{
+    cursor: pointer;
+    background-color: var(--fakebook-blue-hover)
 }

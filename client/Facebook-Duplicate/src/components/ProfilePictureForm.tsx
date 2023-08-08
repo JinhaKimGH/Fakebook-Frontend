@@ -26,17 +26,28 @@ export default function ProfilePictureForm(props: {user_id: string, setProfileFo
     // Error State of the form
     const [error, setError] = React.useState('');
 
-    // Form Link State 
-    const [link, setLink] = React.useState('');
+    // Image file to be uploaded
+    const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
 
-    // Close form function, sets the profileForm state to false, resets in the link state
+    // Close form function, sets the profileForm state to false, resets the selectedFile state
     function closeForm(e: SyntheticEvent){
         e.preventDefault();
-
+        setError('');
+        setSelectedFile(null);
+        (document.getElementById('file-upload') as HTMLInputElement).value = "";
         props.setProfileForm(false);
+    }
 
-        setLink('');
-
+    // Handles the file change
+    function handleFileChange(event: React.ChangeEvent<HTMLInputElement>){
+        if(event.target.files){
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                setSelectedFile(file);
+              } else {
+                setError('Please select a valid image file.');
+              }
+        }
     }
 
     // Async function to submit the form
@@ -46,46 +57,70 @@ export default function ProfilePictureForm(props: {user_id: string, setProfileFo
             return;
         }
 
+        // If the selectedFile is null, the api is not called.
+        if (!selectedFile){
+            setError('Please upload a valid image file.');
+            return;
+        }
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
 
         if(!token){
             return;
         } else {
-            try{
+
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+
+            try {
                 // Sets the loading state before the api call
                 setLoading(true);
+
+                // API Call to upload the image
+                const response : RespType = await axios.post(
+                    'https://api.imgur.com/3/upload',
+                    formData,
+                    {
+                    headers: {
+                        Authorization: `Client-ID ${config.imgurID as string}`,
+                    },
+                    }
+                );
+                
+                // Next call to update the user profile picture
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
                 const res : RespType = await axios.put(
                     `${config.apiURL}/updateuser/`, 
                     {
                         id: token.user._id,
                         edit_type: 'pfp',
-                        content: link,
+                        content: response.data.data.link,
                     },
                     {
                         headers: headers
-                    });
+                });
+
                 // If successful, the link and error states are reset and the profileform is set to false, (closes the form)
                 if(res.data.message == 'Success'){
-                    setLink('');
                     props.setProfileForm(false);
                     setError('');
                     // Sets loading state to false after api call
                     setLoading(false);
-                    localStorage.setItem("token", JSON.stringify({token: token.token, user: {...token.user, 'profilePhoto': link}, time: Date.now() }));
+                    localStorage.setItem("token", JSON.stringify({token: token.token, user: {...token.user, 'profilePhoto': response.data.data.link}, time: Date.now() }));
                 } else{
                     // Sets loading state to false after api call
                     setLoading(false);
                     // Otherwise sets the error message
                     setError(res.data.message);
                 }
-            } catch (error){
+                
+            } catch (error) {
                 // Sets loading state to false after api call
                 setLoading(false);
                 // If error, re-directs to error page
                 history('/error');
             }
+        
         }
     }
 
@@ -125,7 +160,7 @@ export default function ProfilePictureForm(props: {user_id: string, setProfileFo
                 {/* Profile pic form change, that pops up when activated */}
                 <form className='profile-pic-form'>
                     <h1>Change Profile Pic</h1>
-                    <div className='post-form-icon'><span className="material-symbols-rounded about-button-icon">add_link</span><input placeholder='Profile Picture Link' id='link' onChange={(e) => {setLink(e.target.value)}}/></div>
+                    <div className='file-upload'><input id='file-upload' type="file" accept="image/*" onChange={handleFileChange}/></div>
                     <div className="form-error-post">{error}</div>
                     <div className='edit-form-buttons'>
                         {loading ? <button className='form-button-cancel disabled' onClick={handleDummyOnClick}>Cancel</button> : <button className='form-button-cancel' onClick={closeForm}>Cancel</button>}

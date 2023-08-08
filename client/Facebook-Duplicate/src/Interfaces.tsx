@@ -42,6 +42,10 @@ export interface CommentType{
     likes: Array<string>
 }
 
+export interface ImgurType{
+    link: string
+}
+
 export interface DataType {
     message: string
     post: PostType
@@ -52,6 +56,7 @@ export interface DataType {
     posts: Array<PostType>
     ids: Array<string>
     comment: CommentType
+    data: ImgurType
 }
 
 export interface RespType {

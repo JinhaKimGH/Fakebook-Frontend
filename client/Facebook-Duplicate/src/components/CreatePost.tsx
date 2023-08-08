@@ -26,8 +26,22 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
     // Reference to the form
     const formRef = React.useRef<HTMLDivElement>(null);
 
+    // Image file to be uploaded
+    const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+
     // Sets the error message for the form
     const [error, setError] = React.useState("");
+
+    function handleFileChange(event: React.ChangeEvent<HTMLInputElement>){
+        if(event.target.files){
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                setSelectedFile(file);
+              } else {
+                setError('Please select a valid image file.');
+              }
+        }
+    }
 
     // Async function to send a request to the backend api to create a post
     async function submit(){
@@ -35,7 +49,6 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
         // Gets values of all the text inputs
         const textPost = (document.getElementById('text') as HTMLInputElement).value;
         const linkPost = (document.getElementById('link') as HTMLInputElement).value;
-        const imageUrlPost = (document.getElementById('image-url') as HTMLInputElement).value;
         
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
@@ -43,41 +56,99 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
         if(!token || loading){
             return;
         }
+
         
         try{
-            // Sets the loading state for the api call
-            setLoading(true);
-            const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
-            const res : RespType = await axios.post(
-                `${config.apiURL}/createpost`, 
-                {
-                    text: textPost,
-                    link: linkPost,
-                    image: imageUrlPost,
-                    user: props.user._id,
-                },
-                {
-                    headers: headers
-                });
-                
-            // Checks response message to verify status of the api POST call
-            if(res.data.message == 'Success') {
-                // Sets loading state to false after api call
-                setLoading(false);
+            // If the selectedFile is not null, the imgur api is called.
+            if (selectedFile){
+                const formData = new FormData();
+                formData.append('image', selectedFile);
 
-                // If the call was successful and the form can be closed
-                setOpen(false);
-                
+                // Sets the loading state for the api call
+                setLoading(true);
+    
+                // API Call to upload the image
+                const response : RespType = await axios.post(
+                    'https://api.imgur.com/3/upload',
+                    formData,
+                    {
+                    headers: {
+                        Authorization: `Client-ID ${config.imgurID as string}`,
+                    },
+                    }
+                );
+    
+                // API Call to create the post
+                const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
+                const res : RespType = await axios.post(
+                    `${config.apiURL}/createpost`, 
+                    {
+                        text: textPost,
+                        link: linkPost,
+                        image: response.data.data.link,
+                        user: props.user._id,
+                    },
+                    {
+                        headers: headers
+                    });
+                    
+                // Checks response message to verify status of the api POST call
+                if(res.data.message == 'Success') {
+                    // Sets loading state to false after api call
+                    setLoading(false);
+    
+                    // If the call was successful and the form can be closed
+                    setOpen(false);
+                    
+                    // Resets error if successful
+                    setError('');
+    
+                    // Updates the user's state and adds the new post id
+                    props.setUser({...props.user, posts: [...props.user.posts, res.data.id]});
+                } else {
+                    // Otherwise the error message is set
+                    setError(res.data.message)
+    
+                    // Sets loading state to false after api call
+                    setLoading(false);
+                }
 
-                // Updates the user's state and adds the new post id
-                props.setUser({...props.user, posts: [...props.user.posts, res.data.id]});
-            } else {
-                // Otherwise the error message is set
-                setError(res.data.message)
-
-                // Sets loading state to false after api call
-                setLoading(false);
-            }
+                } else {
+                    // API Call to create the post without an image
+                    const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
+                    const res : RespType = await axios.post(
+                        `${config.apiURL}/createpost`, 
+                        {
+                            text: textPost,
+                            link: linkPost,
+                            image: "",
+                            user: props.user._id,
+                        },
+                        {
+                            headers: headers
+                        });
+                        
+                    // Checks response message to verify status of the api POST call
+                    if(res.data.message == 'Success') {
+                        // Sets loading state to false after api call
+                        setLoading(false);
+        
+                        // If the call was successful and the form can be closed
+                        setOpen(false);
+                        
+                        // Resets error if successful
+                        setError('');
+        
+                        // Updates the user's state and adds the new post id
+                        props.setUser({...props.user, posts: [...props.user.posts, res.data.id]});
+                    } else {
+                        // Otherwise the error message is set
+                        setError(res.data.message)
+        
+                        // Sets loading state to false after api call
+                        setLoading(false);
+                    }
+                }
             
         } catch (err) {
             // Sets loading state to false after api call
@@ -115,12 +186,20 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
         void submit();
     }
 
+    // The form trigger
+    const handleFormTrigger = (e: SyntheticEvent) => {
+        e.preventDefault();
+        setSelectedFile(null);
+        (document.getElementById('file-upload') as HTMLInputElement).value = "";
+        setOpen(!open);
+    }
+
     return (
         <div className='create-post'>
             {/* If clicked, the form trigger opens the full post form on the screen */}
             <div className='post-form'>
                 <img className='nav-profile-photo' src={props.user.profilePhoto}/>
-                <div className='form-trigger' onClick={() => {setOpen(!open)}}>{`What's on your mind, ${props.user.firstName}?`}</div>
+                <div className='form-trigger' onClick={handleFormTrigger}>{`What's on your mind, ${props.user.firstName}?`}</div>
             </div>
             {/* If opened, the post form is opened on the screen */}
             <form className={`post-form-popup-screen ${open ? 'active' : 'inactive'}`}>
@@ -129,7 +208,7 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
                     <div className='post-form-user'><img className='nav-profile-photo' src={props.user.profilePhoto}/><p>{`${props.user.firstName} ${props.user.lastName}`}</p></div>
                     <div className='post-form-inputs'>
                         <textarea id='text' name="text" placeholder={`What's on your mind, ${props.user.firstName}?`} className='post-text-area'/>
-                        <div className='post-form-icon'><span className="material-symbols-rounded about-button-icon">add_a_photo</span><input name='image-url' placeholder='Enter an image Link' id='image-url'/></div>
+                        <div className='file-upload post'><input id='file-upload' type="file" accept="image/*" onChange={handleFileChange} placeholder='Upload Photo'/></div>
                         <div className='post-form-icon'><span className="material-symbols-rounded about-button-icon">add_link</span><input name='link' placeholder='External Link' id='link'/></div>
                     </div>
                     {/* Displays any error sent back from the backend */}

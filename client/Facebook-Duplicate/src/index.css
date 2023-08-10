@@ -788,6 +788,10 @@ ul{
     margin-right: 5px;
 }
 
+.about-button-icon.blacked-out{
+    color: var(--fakebook-post-nav);
+}
+
 .error-icon{
     color: var(--fakebook-white);
     margin-right: 5px

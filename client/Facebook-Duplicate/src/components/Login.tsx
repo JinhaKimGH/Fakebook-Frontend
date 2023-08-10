@@ -3,6 +3,7 @@ import axios from "axios"
 import React, { SyntheticEvent } from "react"
 import {config} from "../config"
 import { RespType } from "../Interfaces";
+import FacebookLoginButton from "./FacebookLoginButton";
 
 /**
  * Login Component
@@ -25,6 +26,9 @@ export default function Login(): JSX.Element{
     // Sets the error message for the form
     const [error, setError] = React.useState("");
 
+    // State determines whether the user is logged in
+    const [loggedIn, setLoggedIn] = React.useState(false);
+
     // Helper function ensures that inputted email is a valid email
     function validateEmail(inputEmail: string){
         const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, 'gm');
@@ -32,13 +36,13 @@ export default function Login(): JSX.Element{
         return emailRegex.test(inputEmail);
     }
 
-    // If there is a token saved, go to home automatically
+    // If there is a token saved, go to home automatically, happens onMount and when the loggedIn state changes
     React.useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
             history("/home");
         }
-    }, [])
+    }, [loggedIn])
 
     // Asynchronous function which handles the login submission
     async function submit(){
@@ -158,6 +162,7 @@ export default function Login(): JSX.Element{
                     <div className="form-error">{error}</div>
                     {loading ? <button className='login-submit-disabled' onClick={handleSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className="submit" onClick={handleSubmitOnClick}>Log In</button>}
                     {loading ? <button className='login-submit-disabled' onClick={handleGuestSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button>: <button className='submit' onClick={handleGuestSubmitOnClick}>Log In as Guest</button>}
+                    <FacebookLoginButton setLoggedIn={setLoggedIn}/>
                 </form>
 
                 <div className="break"></div>

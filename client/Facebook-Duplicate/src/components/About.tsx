@@ -189,7 +189,7 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                             {/* Display's icon depending on the gender */}
                             {props.user.gender.toLowerCase() == 'male' ? <span className="material-symbols-rounded about-button-icon">man</span> : ""}
                             {props.user.gender.toLowerCase() == 'female' ? <span className="material-symbols-rounded about-button-icon">woman</span> : ""}
-                            {props.user.gender.toLowerCase() !== 'male' && props.user.gender.toLowerCase() !== 'female' && <span></span>}
+                            {props.user.gender.toLowerCase() !== 'male' && props.user.gender.toLowerCase() !== 'female' && <span className="material-symbols-rounded about-button-icon blacked-out">view_agenda</span>}
                             {props.user.gender ? props.user.gender : <img src='/loading.gif' className='about-property-loading'/>}
                             {props.isUser && <div className='edit-button-pencil' onClick={() => {setEdit(!edit)}}><span className="material-symbols-rounded edit-icon">edit</span></div>}
                         </div>

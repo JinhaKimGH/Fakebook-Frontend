@@ -62,3 +62,8 @@ export interface DataType {
 export interface RespType {
     data: DataType
 }
+
+export interface loginRespType{
+    accessToken: string
+    data: DataType
+}

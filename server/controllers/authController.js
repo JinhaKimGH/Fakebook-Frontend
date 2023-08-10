@@ -59,11 +59,10 @@ exports.login_post = asyncHandler(async (req, res, next) => {
 })
 
 exports.login_fakebook = [
-  // Authenticate with facebook and return token for OdinBook
-  passport.authenticate("facebook-token", { session: false, scope: ['email', ] }),
+  // Authenticate with facebook and return token
+  passport.authenticate("facebook-token", { session: false }),
   function (req, res) {
     const opts = {};
-    opts.expiresIn = "24h";
     const secret = process.env.SECRET;
     const token = jwt.sign({ email: req.user.email }, secret, opts);
     res.json({ token, user: req.user });

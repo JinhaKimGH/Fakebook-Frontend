@@ -87,6 +87,7 @@ export default function ProfileFeedContainer(props: {tab: string, user: UserType
                     // Sets the posts state array if the api call was successful
                     setPosts(res.data.posts);
 
+                } else {
                     // Sets loading state to false after api call
                     setPostLoading(false);
                 }

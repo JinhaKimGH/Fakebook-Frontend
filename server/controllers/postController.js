@@ -36,7 +36,7 @@ exports.user_posts_get = asyncHandler(async (req, res, next) => {
         
         const posts = await Post.find({'_id': {$in: user.posts}}).sort({'postTime': -1});
         if(posts.length === 0){
-            return res.status(404).json({message: "Posts not found"})
+            return res.json({message: "Posts not found"})
         }
         return res.json({message: 'Success', posts});
     } catch (error){

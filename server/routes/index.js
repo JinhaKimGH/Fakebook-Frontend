@@ -21,8 +21,7 @@ router.post('/login', authController.login_post);
 router.post('/signup', authController.user_signup_post);
 
 /* POST Login Page */
-router.post('/facebook-login', authController.login_fakebook);
-
+router.post('/facebookLogin', authController.login_fakebook);
 
 // User Routes 
 

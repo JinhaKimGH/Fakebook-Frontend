@@ -25,12 +25,13 @@ export interface UserType {
     accountCreationDate: string,
     password: string,
     bio: string,
-    facebookid: string,
+    facebookId: string,
     friends: Array<string>,
     profilePhoto: string,
     posts: Array<string>,
     friendRequests: Array<string>
     outGoingFriendRequests: Array<string>
+    savedPosts: Array<string>
 }
 
 export interface CommentType{

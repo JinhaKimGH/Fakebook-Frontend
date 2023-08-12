@@ -41,7 +41,7 @@ export default function Reply(props: {id: string}): JSX.Element{
         accountCreationDate: '',
         password: '',
         bio: '',
-        facebookid: '',
+        facebookId: '',
         friends: [],
         friendRequests: [],
         profilePhoto: '',

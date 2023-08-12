@@ -9,7 +9,8 @@ const PostSchema = new Schema({
     postTime: { type: Date, required: true },
     comments: [{type: Schema.Types.ObjectId, ref: "Comment",  default: []}],
     image: {type: String, default: ""},
-    likes: [{type: Schema.Types.ObjectId, ref: "User",  default: []}]
+    likes: [{type: Schema.Types.ObjectId, ref: "User",  default: []}],
+    savedBy: [{type: Schema.Types.ObjectId, ref: "User", default: []}]
 });
 
 // Formatted Date of Post

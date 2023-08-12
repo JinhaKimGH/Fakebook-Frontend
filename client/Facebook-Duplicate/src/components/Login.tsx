@@ -160,9 +160,11 @@ export default function Login(): JSX.Element{
                     <input type="email" onChange={(e) => {setEmail(e.target.value)}} placeholder="Email" name="email" id="email" required/>
                     <input type="password" onChange={(e) => {setPassword(e.target.value)}} placeholder="Password" name="password" id="password" required/>
                     <div className="form-error">{error}</div>
-                    {loading ? <button className='login-submit-disabled' onClick={handleSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className="submit" onClick={handleSubmitOnClick}>Log In</button>}
-                    {loading ? <button className='login-submit-disabled' onClick={handleGuestSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button>: <button className='submit' onClick={handleGuestSubmitOnClick}>Log In as Guest</button>}
-                    <FacebookLoginButton setLoggedIn={setLoggedIn}/>
+                    {loading ? <button className='login-submit-disabled' onClick={handleSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className="submit" onClick={handleSubmitOnClick}>Login</button>}
+                    <div className='login-buttons'>
+                        {loading ? <button className='facebook-login-disabled' onClick={handleGuestSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button>: <button className='facebook-login' onClick={handleGuestSubmitOnClick}>Login as a Guest</button>}
+                        <FacebookLoginButton setLoggedIn={setLoggedIn}/>
+                    </div>
                 </form>
 
                 <div className="break"></div>

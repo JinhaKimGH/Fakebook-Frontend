@@ -16,7 +16,8 @@ const UserSchema = new Schema({
     friendRequests: [{type: Schema.Types.ObjectId, ref: "User", default: []}],
     outGoingFriendRequests: [{type: Schema.Types.ObjectId, ref: "User", default: []}],
     profilePhoto: {type: String, default: "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1"},
-    posts: [{type: Schema.Types.ObjectId, ref: "Post", default: []}]
+    posts: [{type: Schema.Types.ObjectId, ref: "Post", default: []}],
+    savedPosts: [{type: Schema.Types.ObjectId, ref: "Post", default: []}]
 });
 
 module.exports = mongoose.model("User", UserSchema);

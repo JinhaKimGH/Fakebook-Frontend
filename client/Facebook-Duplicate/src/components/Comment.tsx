@@ -48,7 +48,7 @@ export default function Comment(props: {id: string}): JSX.Element{
         accountCreationDate: '',
         password: '',
         bio: '',
-        facebookid: '',
+        facebookId: '',
         friends: [],
         friendRequests: [],
         profilePhoto: '',

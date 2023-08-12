@@ -52,6 +52,15 @@ router.put('/unfriend', passport.authenticate('jwt', {session: false}), userCont
 /* GET Birthdays */
 router.get('/birthdays/:id', passport.authenticate('jwt', {session: false}), userController.user_birthday_get);
 
+/* POST Delete User */
+router.post('/deleteuser/:user_id', passport.authenticate('jwt', {session: false}), userController.delete_user);
+
+/* PUT Add post to user saved posts */
+router.put('/addsavedpost', passport.authenticate('jwt', {session: false}), userController.save_post)
+
+/* PUT Remove post from user saved posts */
+router.put('/removesavedpost', passport.authenticate('jwt', {session: false}), userController.unsave_post)
+
 // Post Routes
 
 /* POST post */
@@ -66,6 +75,8 @@ router.get('/getpost/:id', passport.authenticate('jwt', {session: false}), postC
 /* GET homepage posts */
 router.get('/gethomeposts/:user_id', passport.authenticate('jwt', {session: false}), postController.get_recent_posts);
 
+/* Delete Post */
+router.post('/deletepost/', passport.authenticate('jwt', {session: false}), postController.delete_post);
 
 // Comment Routes
 
@@ -80,7 +91,5 @@ router.put('/updatecomment', passport.authenticate('jwt', {session: false}), com
 
 /* POST Comment Replies */
 router.post('/createreply', passport.authenticate('jwt', {session: false}), commentController.create_reply_post);
-
-//router.get("/posts", passport.authenticate("jwt", { session: false }), postController.posts_get);
 
 module.exports = router;

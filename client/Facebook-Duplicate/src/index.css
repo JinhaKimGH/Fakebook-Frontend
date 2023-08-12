@@ -13,6 +13,7 @@
     --card-box-shadow: 0 12px 28px 0 var(--shadow-2);
     --secondary-font: system-ui, -apple-system, "system-ui", ".SFNSText-Regular", sans-serif;
     --hover-button: rgba(255, 255, 255, 0.398);
+    --hover-button-2: rgba(255, 255, 255, 0.174);
     --fakebook-white-font: rgb(228, 230, 235);
     --fakebook-light-grey: rgb(176, 179, 184);
 }
@@ -53,7 +54,7 @@
     margin: 40px 0 0;
     padding: 14px 0 28px;
     width: 396px;
-    height: 340px;
+    height: 320px;
     text-align: center;
     border-radius: 8px;
     background-color: white;
@@ -169,6 +170,10 @@
     margin: 20px 16px;
 }
 
+.break.save{
+    margin: 10px 0px;
+}
+
 .signup-break{
     border-bottom: 0.5px solid #dadde1;
 }
@@ -203,7 +208,7 @@
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 2;
+    z-index: 3;
 }
 
 .nav-app-icon{
@@ -494,21 +499,21 @@ ul{
     margin-left: 5px;
 }
 
-.dropdown-menu.active, .post-form-popup-screen.active, .post-right.active{
+.dropdown-menu.active, .post-form-popup-screen.active, .post-right.active, .post-options-menu.active{
     opacity: 1;
     visibility: visible;
     transition: 1s ease;
 }
 
-.dropdown-menu.active, .post-form-popup-screen.active{
+.dropdown-menu.active, .post-form-popup-screen.active, .post-options-menu.active{
     transform: translateY(0);
 }
 
-.dropdown-menu.inactive, .post-form-popup-screen.inactive{
+.dropdown-menu.inactive, .post-form-popup-screen.inactive, .post-options-menu.inactive{
     transform: translateY(-20px);
 }
 
-.dropdown-menu.inactive, .post-form-popup-screen.inactive, .post-right.inactive{
+.dropdown-menu.inactive, .post-form-popup-screen.inactive, .post-right.inactive, .post-options-menu.inactive{
     opacity: 0;
     visibility: hidden;
     transition: 1s ease;
@@ -695,7 +700,7 @@ ul{
     margin: 16px auto;
     background-color:var(--fakebook-post-nav);
     width: 1218px;
-    height: 300px;
+    height: 350px;
     border-radius: 8px;
     padding: 20px;
     box-shadow: var(--shadow-2);
@@ -838,6 +843,7 @@ ul{
 .post-feed{
     display: flex;
     flex-direction: column;
+    max-width: 668px;
 }
 .post-right{
     margin-left: 10px;
@@ -850,6 +856,7 @@ ul{
     flex-direction: column;
     box-shadow: 0 1px 2px var(--shadow-2);
     max-width: 300px;
+    z-index: 1;
 }
 
 .post-feed{
@@ -859,6 +866,7 @@ ul{
 .post-creation-info{
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .form-trigger{
@@ -899,7 +907,7 @@ ul{
     margin-top: 10px;
 }
 
-.edit-form-textarea, .edit-form-input{
+.edit-form-textarea, .edit-form-input, .birthday-edit-input{
     border: none;
     background-color: rgb(58, 59, 60);
     color: #B0B3B8;
@@ -958,6 +966,7 @@ ul{
 .edit-form-buttons{
     display: flex;
     width: 100%;
+    margin-bottom: 20px;
 }
 
 .post-form-popup{
@@ -1198,21 +1207,18 @@ iframe{
     display: flex;
     flex-direction: column;
     height: 100%;
+    z-index: 1;
 }
 
 .post-container{
     display: flex;
-    margin-left: 609px;
+    justify-content: center;
     margin-bottom: 20px;
 }
 
 .post-loading-container{
     display: flex;
     justify-content: center;
-}
-
-.post-container.home{
-    margin-left: 340px;
 }
 
 .post-container.big{
@@ -1710,6 +1716,11 @@ iframe{
     height: 20px
 }
 
+.about-property-loading.save{
+    margin-right: 5%;
+    height: 24px;
+}
+
 .post-loading{
     margin-top: 50px;
     height: 60px;
@@ -1818,4 +1829,108 @@ iframe{
 .file-upload > input::file-selector-button:hover{
     cursor: pointer;
     background-color: var(--fakebook-blue-hover)
+}
+
+.login-buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 17px;
+}
+
+.facebook-login{
+    background-color: var(--fakebook-blue);
+    border: none;
+    font-size: 12px;
+    font-weight: 400;
+    color: white;
+    border-radius: 6px;
+    padding: 12px 14px;
+    min-width: 180px;
+}
+
+.facebook-login:hover{
+    cursor: pointer;
+}
+
+.fa.fa-facebook{
+    margin-right: 10px;
+}
+
+.facebook-login-disabled{
+    background-color: #1876f239;
+    border: none;
+    font-size: 12px;
+    font-weight: 400;
+    color: white;
+    border-radius: 6px;
+    padding: 12px 14px;
+    min-width: 180px;
+    max-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.facebook-login-disabled:hover{
+    cursor: wait;
+}
+
+.birthday-edit-input{
+    color-scheme: dark;
+}
+
+.fill-space{
+    width: 300px;
+    padding: 16px;
+    margin-right: 10px;
+}
+
+.post-options > .interactions{
+    font-weight: bold;
+    color: var(--fakebook-light-grey);
+    margin-right: auto;
+}
+
+.post-options > .interactions:hover{
+    cursor: pointer;
+}
+
+.post-options-parent{
+    position: relative;
+}
+
+.post-options-menu{
+    z-index: 2;
+    font-family: var(--secondary-font);
+    color: var(--fakebook-white);
+    font-size: 15spx;
+    background-color: rgb(36, 37, 38);
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;;
+    padding: 5px 10px;
+    position: absolute;
+    top: 100%;
+    left: -360%;
+    width: 400%;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+
+.save-post{
+    margin-top: 5%;
+    display: flex;
+    align-items: center;
+    margin-bottom: 5%;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.save-post:hover{
+    background-color: var(--hover-button-2);
+    cursor: pointer;
+}
+
+.icon-save-post{
+    margin-right: 5%;
 }

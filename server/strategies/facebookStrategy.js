@@ -19,9 +19,9 @@ module.exports = new FacebookTokenStrategy({
             facebookId: profile.id,
             firstName: profile._json.first_name,
             lastName: profile._json.last_name,
-            gender: profile.gender !== '' ? profile.gender : 'Undefined',
+            gender: profile.gender !== '' ? profile.gender : 'Not Set',
             email: profile.emails ? (profile.emails[0].value !== '' ? profile.emails[0].value : `${profile.id}@email.com`) :`${profile.id}@email.com`,
-            birthday: new Date("2000-01-01T00:00:00.000Z"),
+            birthday: new Date("1000-01-01T00:00:00.000Z"),
             accountCreationDate: new Date(),
         });
         await newUser.save();

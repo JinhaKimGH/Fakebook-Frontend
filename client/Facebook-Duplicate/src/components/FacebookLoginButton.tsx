@@ -3,6 +3,7 @@ import FacebookLogin from 'react-facebook-login';
 import axios from 'axios';
 import { config } from '../config';
 import { loginRespType } from '../Interfaces';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * FacebookLoginButton Component
@@ -12,22 +13,31 @@ import { loginRespType } from '../Interfaces';
  * @returns {JSX.Element} A React JSX element representing the FacebookLoginButton Component, a button allowing users to login with their real facebook accounts
 */
 export default function FacebookLoginButton(props: { setLoggedIn: React.Dispatch<React.SetStateAction<boolean>> }): JSX.Element{
+    // Used to navigate routes
+    const history = useNavigate();
+
+    // Async function that calls the facebook login procedure in the backend
     async function fbLogin(response: loginRespType){
         if (response.accessToken){
-            const user : loginRespType = await axios.post(
-                `${config.apiURL}/facebookLogin`, 
-                {},
-                { 
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${response.accessToken}`
-                    },
+            try{
+                const user : loginRespType = await axios.post(
+                    `${config.apiURL}/facebookLogin`, 
+                    {},
+                    { 
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${response.accessToken}`
+                        },
+                    }
+                );
+    
+                if (user){
+                    localStorage.setItem('token', JSON.stringify({token: user.data.token, user: user.data.user, time: Date.now() }))
+                    props.setLoggedIn(true);
                 }
-            );
-
-            if (user){
-                localStorage.setItem('token', JSON.stringify({token: user.data.token, user: user.data.user, time: Date.now() }))
-                props.setLoggedIn(true);
+            } catch (err){
+                // If error, re-directs to error page
+                history('/error');
             }
         }
     }
@@ -39,7 +49,7 @@ export default function FacebookLoginButton(props: { setLoggedIn: React.Dispatch
 
     return (
         <div>
-            <FacebookLogin appId={`${config.facebookAppID}`} fields="name,email,birthday" scope="openid" callback={handleFbLogin} icon='fa-facebook'/>
+            <FacebookLogin appId={`${config.facebookAppID}`} fields="name,email,birthday" scope="openid" cssClass="facebook-login" callback={handleFbLogin} icon='fa-facebook'/>
         </div>
     )
 }

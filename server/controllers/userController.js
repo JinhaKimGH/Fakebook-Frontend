@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Post = require('../models/post')
 const asyncHandler = require("express-async-handler");
 
 function checkImageURL(url) {
@@ -37,7 +38,10 @@ exports.user_update = asyncHandler(async (req, res, next) => {
                 await User.findByIdAndUpdate(id, {'profilePhoto': content});
                 return res.json({message: "Success"});
             }
-        }else{
+        } else if (edit_type == 'birthday'){
+            await User.findByIdAndUpdate(id, {'birthday': content});
+            return res.json({message: "Success"});
+        } else{
             return res.json({message: "Invalid edit type."})
         }
     } catch (error){
@@ -192,5 +196,63 @@ exports.user_birthday_get = asyncHandler(async (req, res, next) => {
 
     } catch (error) {
         return res.status(500).json({message: 'Users Not Found.'});
+    }
+})
+
+exports.delete_user = asyncHandler(async (req, res, next) => {
+    const user_id = req.params.user_id;
+    if(user_id == ''){
+        return res.status(404).json({message: 'User not found.'});
+    }
+
+    try{
+        await User.findByIdAndDelete(user_id);
+        return res.json({message: "Success"});
+    } catch (err) {
+        return res.status(404).json({message: 'User not found.'});
+    }
+})
+
+exports.save_post = asyncHandler(async (req, res, next) => {
+    const {user_id, post_id} = req.body;
+
+    if(user_id == '' || post_id == ''){
+        return res.status(404).json({message: "User/Post Not Found."});
+    }
+
+    try{
+        const post = await Post.findById(post_id);
+
+        if(post){
+            await User.findByIdAndUpdate(user_id, {"$push" : {'savedPosts': post_id}})
+            return res.json({message: "Success"})
+        } else {
+            return res.status(404).json({message: 'Post not found.'});
+        }
+
+    } catch (err){
+        return res.status(404).json({message: 'User/Post not found.'});
+    }
+})
+
+exports.unsave_post = asyncHandler(async (req, res, next) => {
+    const {user_id, post_id} = req.body;
+
+    if(user_id == '' || post_id == ''){
+        return res.status(404).json({message: "User/Post Not Found."});
+    }
+
+    try{
+        const post = await Post.findById(post_id);
+
+        if(post){
+            await User.findByIdAndUpdate(user_id, {"$pull" : {'savedPosts': post_id}})
+            return res.json({message: "Success"})
+        } else {
+            return res.status(404).json({message: 'Post not found.'});
+        }
+
+    } catch (err){
+        return res.status(404).json({message: 'User/Post not found.'});
     }
 })

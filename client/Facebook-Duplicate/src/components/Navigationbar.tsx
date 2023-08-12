@@ -71,7 +71,7 @@ export default function Navbar(props: {user: UserType,  home: string}): JSX.Elem
                     <div className='search-glass-div'>
                         <span className="material-symbols-outlined searchIcon">search</span>
                     </div> 
-                    <input id='nav-search' className="nav-search-box" placeholder='Search Fakebook'/> 
+                    <input id='nav-search' className="nav-search-box" placeholder='Search for People'/> 
                 </div>
                 {/* Middle of the navbar contains links to the homepage and friends page */}
                 <div className='nav-middle'>

@@ -1,6 +1,7 @@
 import React, { SyntheticEvent } from 'react';
 import axios from 'axios';
 import { config } from '../config';
+import { RespType } from '../Interfaces';
 
 export default function ImgurUploader(){
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
@@ -19,7 +20,7 @@ export default function ImgurUploader(){
     formData.append('image', selectedFile);
 
     try {
-      const response = await axios.post(
+      const response : RespType = await axios.post(
         'https://api.imgur.com/3/upload',
         formData,
         {

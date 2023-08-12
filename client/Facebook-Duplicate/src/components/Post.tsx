@@ -6,6 +6,7 @@ import CommentContainer from "./CommentContainer";
 import Microlink from '@microlink/react';
 import {UserType, PostType, TokenType, RespType} from '../Interfaces'
 import { useNavigate } from "react-router-dom";
+import PostOptions from "./PostOptions";
 
 /**
  * Post Component
@@ -32,12 +33,13 @@ export default function Post(props : {post: PostType, style:string, display: boo
         accountCreationDate: "",
         password: "",
         bio: "",
-        facebookid: "",
+        facebookId: "",
         friends: [],
         friendRequests: [],
         profilePhoto: "",
         posts: [],
-        outGoingFriendRequests: []
+        outGoingFriendRequests: [],
+        savedPosts: [],
     });
 
     // State for the number of likes of the post
@@ -60,13 +62,15 @@ export default function Post(props : {post: PostType, style:string, display: boo
         accountCreationDate: "",
         password: "",
         bio: "",
-        facebookid: "",
+        facebookId: "",
         friends: [],
         friendRequests: [],
         profilePhoto: "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1",
         posts: [],
-        outGoingFriendRequests: []
+        outGoingFriendRequests: [],
+        savedPosts: [],
     });
+    
     // Boolean state that determines if the user has liked this post
     const [isLiked, setIsLiked] = React.useState(false);
 
@@ -174,6 +178,8 @@ export default function Post(props : {post: PostType, style:string, display: boo
         <div>
             {props.display && 
                 <div className={`post-container ${props.post.link || props.post.image ? "big" : "small"} ${props.style}`}>
+                    <div className="fill-space">
+                    </div>
                     {/* If one of the poster or post state hasn't been loaded in yet, a loading gif will be displayed */}      
                     <div className='post-feed'>
                         {/* Contains the post creation info. User profile picture, name, and date of post */}
@@ -185,6 +191,7 @@ export default function Post(props : {post: PostType, style:string, display: boo
                                         <div className='post-feed-date'>{`${(new Date(props.post.postTime)).toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} at ${new Date(props.post.postTime).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}</div>
                                     </div>
                                 </Link>
+                                <PostOptions post_id={props.post._id} post_author={poster._id} current_user={currentUser} savedPosts={currentUser.savedPosts} setCurrentUser={setCurrentUser}/>
                             </div>
                             <div className='post-content'>
                                 {/* Content of the post: text and image or link */}

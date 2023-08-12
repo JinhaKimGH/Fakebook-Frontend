@@ -44,7 +44,7 @@ export default function Search(): JSX.Element{
         accountCreationDate: "",
         password: "",
         bio: "",
-        facebookid: "",
+        facebookId: "",
         friends: [],
         friendRequests: [],
         profilePhoto: "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1",

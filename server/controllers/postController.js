@@ -121,3 +121,29 @@ exports.get_recent_posts = asyncHandler(async (req, res, next) => {
         return res.status(400).json({message: "Unable to find posts"});
     }
 })
+
+exports.delete_post = asyncHandler(async (req, res, next) => {
+    const {post_id, user_id} = req.body;
+    if(post_id == '' || user_id == ''){
+        return res.status(404).json({message: 'Post not found.'});
+    }
+
+    try{
+        const post = await Post.findById(post_id);
+
+        if (post){
+            // Pulls the post id from the user's posts array
+            await User.findByIdAndUpdate(user_id, {"$pull":  {"posts": post_id}});
+            // Pulls the post id from every user's saved posts
+            await User.updateMany({_id: { "$in": post.savedBy}}, {"$pull": {'savedPosts': post_id}});
+            // Deletes the post at the end
+            await Post.findByIdAndDelete(post_id);
+
+            return res.json({message: "Success"})
+        } else {
+            return res.status(404).json({message: 'Post not found.'});
+        }
+    } catch (err) {
+        return res.status(404).json({message: 'Post not found.'});
+    }
+})

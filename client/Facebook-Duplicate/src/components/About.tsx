@@ -23,6 +23,12 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
     // State to determine whether user is in edit mode
     const [edit, setEdit] = React.useState(false);
 
+    // State to determine whether user wants to edit their birthday
+    const [birthdayEdit, setBirthdayEdit] = React.useState(false);
+
+    // Birthday state for sign-up form
+    const [birthdate, setBirthDate] = React.useState(new Date());
+
     // Used to navigate routes
     const history = useNavigate();
 
@@ -35,7 +41,7 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
     // Closes the edit forms
     function closeForm(e: SyntheticEvent){
         e.preventDefault();
-
+        setBirthdayEdit(false);
         setEdit(false);
     }
 
@@ -49,7 +55,21 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
     React.useEffect(() => {
         setLoading(false);
     }, [edit])
+
+    // Function that sets a min attribute to the input date type  (Min Date is 130 years ago)
+    function setMin(){
+        const min = new Date();
+        min.setFullYear(min.getFullYear() - 130);
+        return min.toISOString().split('T')[0];
+    }
     
+    // Function that sets a max attribute to the input date type (Max date is 13 years ago)
+    function setMax(){
+        const max = new Date();
+        max.setFullYear(max.getFullYear() - 13);
+        return max.toISOString().split('T')[0];
+    }
+
     // Submits the updates for the user
     async function submit(){
         // Don't call the api if it is already loading
@@ -61,46 +81,90 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
 
-        // Determine whether the user is editing the Bio or Gender
-        const isEditBio = document.getElementById('text-bio') as HTMLInputElement;
-        let content = '';
-        if (isEditBio){
-            content = isEditBio.value;
-        } else if(document.getElementById('text-gender')) {
-            content = (document.getElementById('text-gender') as HTMLInputElement).value;
-        } if(content == '') {
-            return;
-        }
-        
-        if(token) {
-            try{
-                // Sets the loading state before the api call
-                setLoading(true);
-                const edit_type = isEditBio ? 'bio' : 'gender';
-                const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
-                // Put request to the backend, sends the user id, what is being edited, and the new content
-                const res : RespType = await axios.put(
-                    `${config.apiURL}/updateuser/`, 
-                    {
-                        id: token.user._id,
-                        edit_type: edit_type,
-                        content: content,
-                    },
-                    {
-                        headers: headers
+        if(edit){
+            // Determine whether the user is editing the Bio or Gender
+            const isEditBio = document.getElementById('text-bio') as HTMLInputElement;
+            let content = '';
+            if (isEditBio){
+                content = isEditBio.value;
+            } else if(document.getElementById('text-gender')) {
+                content = (document.getElementById('text-gender') as HTMLInputElement).value;
+            } if(content == '') {
+                return;
+            }
+            
+            if(token) {
+                try{
+                    // Sets the loading state before the api call
+                    setLoading(true);
+                    const edit_type = isEditBio ? 'bio' : 'gender';
+                    const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
+                    // Put request to the backend, sends the user id, what is being edited, and the new content
+                    const res : RespType = await axios.put(
+                        `${config.apiURL}/updateuser/`, 
+                        {
+                            id: token.user._id,
+                            edit_type: edit_type,
+                            content: content,
+                        },
+                        {
+                            headers: headers
+                        });
+                        
+                        // If successful, the edit page is closed
+                        if (res.data.message == 'Success'){
+                            // Sets loading state to false after api call
+                            setLoading(false);
+                            setEdit(false);
+                            // Updates the user state to match what was edited
+                            if(isEditBio){
+                                props.setUser({...props.user, bio: content});
+                            } else {
+                                props.setUser({...props.user, gender: content});
+                            }
+                        } else {
+                            // Sets loading state to false after api call
+                            setLoading(false);
+                            history('/error');
+                        }
+                    } catch (err) {
+                        // Sets loading state to false after api call
+                        setLoading(false);
+                        history('/error');
+                    }
+            } else {
+                // If the token doesn't exist, the user is not logged in and is re-directed to the login page
+                history('/');
+            }
+        } else if (birthdayEdit){
+            if(token) {
+                try{
+                    if (birthdate == new Date()){
+                        return;
+                    }
+                    // Sets the loading state before the api call
+                    setLoading(true);
+                    const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
+
+                    // Put request to the backend, sends the user id, what is being edited, and the new content
+                    const res : RespType = await axios.put(
+                        `${config.apiURL}/updateuser/`, 
+                        {
+                            id: token.user._id,
+                            edit_type: 'birthday',
+                            content: birthdate,
+                        },
+                        {
+                            headers: headers
                     });
-                    
+                        
                     // If successful, the edit page is closed
                     if (res.data.message == 'Success'){
                         // Sets loading state to false after api call
                         setLoading(false);
-                        setEdit(false);
+                        setBirthdayEdit(false);
                         // Updates the user state to match what was edited
-                        if(isEditBio){
-                            props.setUser({...props.user, bio: content});
-                        } else {
-                            props.setUser({...props.user, gender: content});
-                        }
+                        props.setUser({...props.user, birthday: birthdate.toDateString()})
                     } else {
                         // Sets loading state to false after api call
                         setLoading(false);
@@ -111,9 +175,10 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                     setLoading(false);
                     history('/error');
                 }
-        } else {
-            // If the token doesn't exist, the user is not logged in and is re-directed to the login page
-            history('/');
+            } else {
+                // If the token doesn't exist, the user is not logged in and is re-directed to the login page
+                history('/');
+            }
         }
             
     }
@@ -134,10 +199,10 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
         <div className='profile-about'>
             <div className='profile-about-left'>
                 <h3>About</h3>
-                {/* The different tabs that the user can click to access the different information pages of the user */}
+                {/* The different tabs that the user can click to access the different information pages of the user. The contact information details do not exist for Facebook logged-in users */}
                 <ul>
                     {selection == 'Biography' ? <li className='selection-chosen'>Biography</li> : <li className='selection-not-chosen' onClick={changeSelection}>Biography</li>}
-                    {selection == 'Contact Info' ? <li className='selection-chosen'>Contact Info</li> : <li className='selection-not-chosen' onClick={changeSelection}>Contact Info</li>}
+                    {props.user.facebookId ? "" : (selection == 'Contact Info' ? <li className='selection-chosen'>Contact Info</li> : <li className='selection-not-chosen' onClick={changeSelection}>Contact Info</li>)}
                     {selection == 'Basic Info' ? <li className='selection-chosen'>Basic Info</li> : <li className='selection-not-chosen' onClick={changeSelection}>Basic Info</li>}
                 </ul>
             </div>
@@ -196,13 +261,26 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                         <p className='about-desc'>Gender</p>
                         </div>
                         }
-                    {/* The birthday, account creation date, and number of posts information is not editable, thus they will display no matter what */}
-                    <p className='contact-symbol'>
-                        <span className="material-symbols-rounded about-button-icon">cake</span>
-                        {props.user.birthday ? new Date(props.user.birthday).toDateString() : <img src='/loading.gif' className='about-property-loading'/>}
-                    </p>
-                    <p className='about-desc'>Birthday</p>
-            
+                    {/* If signing up with Facebook, the birthday value is undefined by default. If the birthdayEdit state is true, the birthday edit form is displayed */}
+                    {birthdayEdit ? 
+                        <form className='edit-form'>
+                            <input type="date" onChange={(e) => {setBirthDate(new Date(e.target.value))}} id="birthday" className='birthday-edit-input' min={setMin()} max={setMax()}  required/>
+                            <div className='edit-form-buttons'>
+                                {loading ? <button className='form-button-cancel disabled' onClick={handleDummyOnClick}>Cancel</button> :<button className='form-button-cancel' onClick={closeForm}>Cancel</button>}
+                                {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>}
+                            </div>
+                        </form>
+                        
+                        : <div>
+                            <p className='contact-symbol'>
+                                <span className="material-symbols-rounded about-button-icon">cake</span>
+                                {props.user.birthday ? ((props.user.birthday === "1000-01-01T00:00:00.000Z" && props.user.facebookId) ? "Not Set" : new Date(props.user.birthday).toDateString() ): <img src='/loading.gif' className='about-property-loading'/>}
+                                {props.isUser && <div className='edit-button-pencil' onClick={() => {setBirthdayEdit(!birthdayEdit)}}><span className="material-symbols-rounded edit-icon">edit</span></div>}
+                            </p>
+                            <p className='about-desc'>Birthday</p>
+                        </div>
+                    }
+                    {/* The account creation date, and number of posts information is not editable, thus they will display no matter what */}
                     <p className='contact-symbol'>
                         <span className="material-symbols-rounded about-button-icon">today</span>
                         {props.user.accountCreationDate ? new Date(props.user.accountCreationDate).toDateString() : <img src='/loading.gif' className='about-property-loading'/>}

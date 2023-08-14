@@ -73,7 +73,7 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
                     formData,
                     {
                     headers: {
-                        Authorization: `Client-ID ${config.imgurID as string}`,
+                        Authorization: `Client-ID ${config.imgurID}`,
                     },
                     }
                 );

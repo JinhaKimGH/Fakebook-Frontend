@@ -712,7 +712,7 @@ ul{
     border-right: 0.5px solid var(--fakebook-border-color);
 }
 
-.profile-about-left > h3, .profile-about-left > ul > li, .profile-about-right > div > h4, .profile-about-right > h4, .profile-about-right > p{
+.profile-about-left > h3, .profile-about-left > ul > li, .profile-about-right > div > h4, .profile-about-right > h4, .profile-about-right > p, .delete-user > h4{
     color: rgb(228, 230, 235);
     font-family: var(--secondary-font);
 }
@@ -723,7 +723,7 @@ ul{
     justify-content: space-between;
 }
 
-.profile-about-right > h4, .title-container > h4{
+.profile-about-right > h4, .title-container > h4, .delete-user > h4{
     font-size: 20px;
     font-weight: 700;
     margin-bottom : 20px;
@@ -831,7 +831,7 @@ ul{
     align-items: center;
 }
 
-.post-form, .post-feed{
+.post-form, .post-feed, .delete-user{
     background-color: var(--fakebook-post-nav);
     padding: 16px;
     font-size: 12px;
@@ -1000,6 +1000,9 @@ ul{
 
 .post-form-user > p{
     margin-left: 10px;
+}
+
+.post-form-user > p, .delete-user > p{
     color: var(--fakebook-white-font);
     font-family: var(--secondary-font);
     font-weight: 400;
@@ -1947,4 +1950,47 @@ iframe{
     height: 100%;
     align-items: center;
     flex: 1;
+}
+
+.settings{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.delete-user{
+    height: 15%;
+    min-width: 20%;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.delete-user-button-container{
+    display: flex;
+    width: 100%;
+}
+
+.delete-user-btn{
+    border-radius: 6px;
+    border-style: solid;
+    background-color: rgb(39, 43, 51);
+    border-color: rgb(122, 130, 142);
+    border-width: 1px;
+    color: rgb(255, 106, 105);
+    font-family: var(--secondary-font);
+    font-weight: 500;
+    font-size: 14px;
+    overflow-wrap: break-word;
+    padding: 5px 16px;
+    margin-left: auto;
+}
+
+.delete-user-btn:hover{
+    cursor: pointer;
+    color: rgb(39, 43, 51);
+    background-color: rgb(255, 106, 105);
 }

@@ -61,6 +61,9 @@ router.put('/removesavedpost', passport.authenticate('jwt', {session: false}), u
 /* GET All saved posts from a user */
 router.get('/getsavedposts/:user_id', passport.authenticate('jwt', {session: false}), userController.get_saved_posts)
 
+/* POST Delete a user */
+router.post('/deleteuser/:user_id', passport.authenticate('jwt', {session: false}), userController.delete_user)
+
 // Post Routes
 
 /* POST Creates a post */

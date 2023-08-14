@@ -1,5 +1,6 @@
 const User = require("../models/user");
-const Post = require('../models/post')
+const Post = require('../models/post');
+const Comment = require('../models/comment')
 const asyncHandler = require("express-async-handler");
 
 // Function that checks the validity of the image's url
@@ -522,6 +523,109 @@ exports.get_saved_posts = asyncHandler(async (req, res, next) => {
         return res.status(404).json(
             {
                 message: "User/Saved Posts not found."
+            });
+    }
+})
+
+// Deletes the user from the database
+exports.delete_user = asyncHandler(async (req, res, next) => {
+    const { user_id } = req.params;
+
+    // If the given id is null a 404 error is sent
+    if(user_id == ''){
+        return res.status(404).json(
+            {
+                message: "User Not Found."
+            });
+    } 
+
+    try{
+        const user = await User.findById(user_id);
+        if (user) {
+            // Deletes the user from all other users friends, friendRequests, and outGoingFriendRequests fields
+            await User.updateMany(
+                {
+
+                }, {
+                    "$pull": {
+                        'friends': user_id,
+                        'friendRequests': user_id,
+                        'outGoingFriendRequests': user_id
+                    }
+                });
+            
+            
+            // Deletes all user interaction with posts and deletes the post
+            for(let i = 0; i < user.posts.length; i++){
+                await User.updateMany(
+                    {
+                    }, {
+                        "$pull": {
+                            'savedPosts': user.posts[i]
+                        }
+                    });
+
+                await Comment.deleteMany(
+                    {
+                        '_id': {
+                            "$in": user.posts[i].comments
+                        }
+                    });
+
+                await Post.findByIdAndDelete(user.posts[i]);
+            }
+
+            
+            // Deletes all the user's comments 
+            const commentsToDelete = await Comment.find(
+                {
+                    'user': user_id
+                }).select('_id');
+
+            const commentArray = []
+            for (const comment of commentsToDelete){
+                commentArray.push(comment._id);
+            }
+
+            await Post.updateMany(
+                {
+                    'comments': {'$in': commentArray}
+                },
+                {
+                    "$pull": { 'comments': {'$in': commentArray}}
+                    
+                });
+
+            await Comment.deleteMany(
+                {
+                    'user': user_id
+                });
+
+            // Pulls all the user's likes
+            await Post.updateMany(
+                {
+
+                },
+                {
+                    '$pull': {
+                        "likes": user_id
+                    }
+                }
+            )
+
+            // Deletes the user in the end
+            await User.findByIdAndDelete(user_id);
+
+            return res.json(
+                {
+                    message: "Success"
+                });
+        }
+
+    } catch (err){
+        return res.status(404).json(
+            {
+                message: 'User/Post not found.'
             });
     }
 })

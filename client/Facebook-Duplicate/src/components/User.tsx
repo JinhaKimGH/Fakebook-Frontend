@@ -38,7 +38,8 @@ export default function User(): JSX.Element{
         friendRequests: [],
         profilePhoto: "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1",
         posts: [],
-        outGoingFriendRequests: []
+        outGoingFriendRequests: [],
+        savedPosts: []
     });
 
     // State for the user logged into the site
@@ -57,7 +58,8 @@ export default function User(): JSX.Element{
         friendRequests: [],
         profilePhoto: "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1",
         posts: [],
-        outGoingFriendRequests: []
+        outGoingFriendRequests: [],
+        savedPosts: []
     });
 
     // State of whether the user is the current user's friend
@@ -329,11 +331,12 @@ export default function User(): JSX.Element{
                     {!isUser && !isFriend && request == 'Incoming' ? (loading ? <div className='profile-not-friend disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></div> : <div className='profile-not-friend' onClick={handleAcceptRequestOnClick}><span className="material-symbols-rounded button-icon">check_circle</span>Accept Request?</div>) : ''}
                     {!isUser && !isFriend && request == 'Outgoing' ? <div className='profile-not-friend'><span className="material-symbols-rounded button-icon">schedule</span>Pending</div> : ''}
                 </div>
-                {/* Different profile tabs for the profile feed container */}
+                {/* Different profile tabs for the profile feed container. If the profile you are on is your own profile, then the bookmarks tab shows */}
                 <ul className='profile-tabs'>
                     {tab == 'Posts' ? <li className='tab-chosen'>Posts</li> : <li className='not-chosen' onClick={changeTab}>Posts</li>}
                     {tab == 'About' ? <li className='tab-chosen'>About</li> : <li className='not-chosen' onClick={changeTab}>About</li>}
                     {tab == 'Friends' ? <li className='tab-chosen'>Friends</li> : <li className='not-chosen' onClick={changeTab}>Friends</li>}
+                    {isUser && (tab == 'Bookmarks' ? <li className='tab-chosen'>Bookmarks</li> : <li className='not-chosen' onClick={changeTab}>Bookmarks</li>)}
                 </ul>
                 {/* Profile feed container displays content based on the tab state */}
                 <div className='profile-feed'>

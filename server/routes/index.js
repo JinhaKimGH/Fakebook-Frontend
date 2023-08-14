@@ -20,7 +20,7 @@ router.post('/login', authController.login_post);
 /* POST Sign Up Page */
 router.post('/signup', authController.user_signup_post);
 
-/* POST Login Page */
+/* POST Facebook Login Page */
 router.post('/facebookLogin', authController.login_fakebook);
 
 // User Routes 
@@ -28,16 +28,16 @@ router.post('/facebookLogin', authController.login_fakebook);
 /* GET posts from a specific user */
 router.get('/getposts/:id', passport.authenticate("jwt", { session: false }), postController.user_posts_get);
 
-/* GET user */
+/* GET user object from id */
 router.get('/user/:id', passport.authenticate("jwt", {session: false}), userController.user_get);
 
-/* PUT user */
+/* PUT updates user information */
 router.put('/updateuser', passport.authenticate('jwt', {session: false}), userController.user_update);
 
 /* GET users from search */
 router.get('/searchusers/:name', passport.authenticate('jwt', {session: false}), userController.user_get_by_name);
 
-/* PUT send friend requests */
+/* PUT send sfriend requests */
 router.put('/friend_req', passport.authenticate('jwt', {session: false}), userController.user_friend_request_put);
 
 /* PUT Accept Friend Requests */
@@ -52,35 +52,35 @@ router.put('/unfriend', passport.authenticate('jwt', {session: false}), userCont
 /* GET Birthdays */
 router.get('/birthdays/:id', passport.authenticate('jwt', {session: false}), userController.user_birthday_get);
 
-/* POST Delete User */
-router.post('/deleteuser/:user_id', passport.authenticate('jwt', {session: false}), userController.delete_user);
-
 /* PUT Add post to user saved posts */
 router.put('/addsavedpost', passport.authenticate('jwt', {session: false}), userController.save_post)
 
 /* PUT Remove post from user saved posts */
 router.put('/removesavedpost', passport.authenticate('jwt', {session: false}), userController.unsave_post)
 
+/* GET All saved posts from a user */
+router.get('/getsavedposts/:user_id', passport.authenticate('jwt', {session: false}), userController.get_saved_posts)
+
 // Post Routes
 
-/* POST post */
+/* POST Creates a post */
 router.post('/createpost', passport.authenticate("jwt", {session: false}), postController.user_create_post);
 
 /* PUT Update Post Likes */
 router.put('/updatepost/:id/:increase', passport.authenticate('jwt', {session: false}), postController.update_likes_put);
 
-/* GET singular post */
+/* GET a singular post */
 router.get('/getpost/:id', passport.authenticate('jwt', {session: false}), postController.get_post);
 
 /* GET homepage posts */
 router.get('/gethomeposts/:user_id', passport.authenticate('jwt', {session: false}), postController.get_recent_posts);
 
-/* Delete Post */
+/* POST Deletes a Post */
 router.post('/deletepost/', passport.authenticate('jwt', {session: false}), postController.delete_post);
 
 // Comment Routes
 
-/* POST Create Comment */
+/* POST Creates a Comment */
 router.post('/createcomment', passport.authenticate('jwt', {session: false}), commentController.comment_post);
 
 /* GET Comment */

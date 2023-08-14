@@ -38,7 +38,8 @@ export default function ProfileFeedContainer(props: {tab: string, user: UserType
         friendRequests: [],
         profilePhoto: "",
         posts: [],
-        outGoingFriendRequests: []
+        outGoingFriendRequests: [],
+        savedPosts: []
     });
 
     // State that determines the number of posts to be loaded
@@ -59,7 +60,7 @@ export default function ProfileFeedContainer(props: {tab: string, user: UserType
     // Gets posts when the user property changes
     React.useEffect(() => {
         void getPosts();
-    }, [props.user])
+    }, [props.user, props.tab])
 
     // The state to determine if posts are being loaded from the api
     const [postLoading, setPostLoading] = React.useState(false);
@@ -74,23 +75,46 @@ export default function ProfileFeedContainer(props: {tab: string, user: UserType
 
         if(token){
             try{
-                // Sets loading state to true before api call
-                setPostLoading(true);
-                const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
-                const res : RespType = await axios.get(
-                    `${config.apiURL}/getposts/${props.user._id}`, 
-                    {
-                        headers: headers
-                    });
-
-                if(res.data.message == 'Success'){
-                    // Sets the posts state array if the api call was successful
-                    setPosts(res.data.posts);
-                    // Sets loading state to false after api call
-                    setPostLoading(false);
+                if(props.tab == 'Posts'){
+                    // Sets loading state to true before api call
+                    setPostLoading(true);
+                    const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
+                    const res : RespType = await axios.get(
+                        `${config.apiURL}/getposts/${props.user._id}`, 
+                        {
+                            headers: headers
+                        });
+    
+                    if(res.data.message == 'Success'){
+                        // Sets the posts state array if the api call was successful
+                        setPosts(res.data.posts);
+                        // Sets loading state to false after api call
+                        setPostLoading(false);
+                    } else {
+                        // Sets loading state to false after api call
+                        setPostLoading(false);
+                    }
+                } else if (props.tab == 'Bookmarks'){
+                    // Sets loading state to true before api call
+                    setPostLoading(true);
+                    const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
+                    const res : RespType = await axios.get(
+                        `${config.apiURL}/getsavedposts/${props.user._id}`, 
+                        {
+                            headers: headers
+                        });
+    
+                    if(res.data.message == 'Success'){
+                        // Sets the posts state array if the api call was successful
+                        setPosts(res.data.posts);
+                        // Sets loading state to false after api call
+                        setPostLoading(false);
+                    } else {
+                        // Sets loading state to false after api call
+                        setPostLoading(false);
+                    }
                 } else {
-                    // Sets loading state to false after api call
-                    setPostLoading(false);
+                    return;
                 }
             } catch (err){
                 // Sets loading state to false after api call
@@ -109,19 +133,20 @@ export default function ProfileFeedContainer(props: {tab: string, user: UserType
                 <CreatePost user={props.user} isUser={props.isUser} setUser={props.setUser}/>
             : ''}
             {/* If the posts are loading, or the count state is less than the length of the array the loading gif is displayed */}
-            {props.tab === 'Posts' && (postLoading || postCount < posts.length) && 
+            {(props.tab === 'Posts' || props.tab === 'Bookmarks') && (postLoading || postCount < posts.length) && 
                         <div className='post-loading-container'><img src='/loading.gif' className='post-loading'/></div>
             }
-            {/* If the tab is posts, the posts are mapped to the posts component */}
-            {props.tab === 'Posts' ? (
+            {/* If the tab is posts or bookmarks, the posts are mapped to the posts component */}
+            {(props.tab === 'Posts' || props.tab === 'Bookmarks') ? (
                 props.user && props.user.posts && props.user.posts.length !== 0 ? (
                     posts.map((post) => <Post post={post} key={post._id} setPostCount={setPostCount} style={''} display={postCount >= posts.length}/>)
                 ) : null
             ) : null}
 
-            {props.tab === 'Posts' && props.user.posts.length === 0 &&
+            {(props.tab === 'Posts' || props.tab == 'Bookmarks') && props.user.posts.length === 0 &&
                 <h4 className='profile-feed-container-no-posts'> No Posts</h4>
             }
+
             {/* If the tab is About, the about component is rendered */}
             {props.tab == 'About' ? <About setUser={props.setUser} user={props.user} isUser={props.isUser}/> : ''}
 

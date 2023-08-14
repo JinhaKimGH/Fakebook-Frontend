@@ -143,14 +143,6 @@ export default function Post(props : {post: PostType, style:string, display: boo
         }
     }
 
-    // Effect that calls the updateLikes async function on unmount
-    React.useEffect(() => {
-        return () => {
-            void updateLikes(likes > props.post.likes.length);
-        };
-    }, [isLiked])
-
-    
     // Effect fetches post information on mount
     React.useEffect(() => {
         const tokenJSON = localStorage.getItem("token");
@@ -172,6 +164,7 @@ export default function Post(props : {post: PostType, style:string, display: boo
             setLikes(prevLikes => prevLikes + 1);
         }
         setIsLiked(prevLiked => !prevLiked);
+        void updateLikes(likes > props.post.likes.length);
     }
 
     return(

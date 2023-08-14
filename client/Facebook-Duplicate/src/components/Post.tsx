@@ -84,7 +84,7 @@ export default function Post(props : {post: PostType, style:string, display: boo
           setCurrentUser(token.user);
           setIsLiked(props.post.likes.includes(token.user._id));
         }
-    }, [props.post.likes]);
+    }, []);
 
     // Fetches the profile of the user
     async function fetchUser() {
@@ -120,7 +120,7 @@ export default function Post(props : {post: PostType, style:string, display: boo
     async function updateLikes(increase: boolean) {
         const tokenJSON = localStorage.getItem("token");
         const token : TokenType | null = tokenJSON ? JSON.parse(tokenJSON) as TokenType : null;
-        if(token && (isLiked !== props.post.likes.includes(token.user._id))){
+        if(token){
             try{
                 const headers = {'Content-Type': 'application/json', Authorization: `Bearer ${token.token}`}
                 const res : RespType = await axios.put(
@@ -160,11 +160,12 @@ export default function Post(props : {post: PostType, style:string, display: boo
     function thumbsUp(){
         if(isLiked == true){ 
             setLikes(prevLikes => prevLikes - 1);
+            void updateLikes(false);
         } else {
             setLikes(prevLikes => prevLikes + 1);
+            void updateLikes(true)
         }
         setIsLiked(prevLiked => !prevLiked);
-        void updateLikes(likes > props.post.likes.length);
     }
 
     return(

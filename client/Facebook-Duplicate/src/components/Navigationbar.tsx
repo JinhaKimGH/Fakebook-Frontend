@@ -67,7 +67,7 @@ export default function Navbar(props: {user: UserType,  home: string}): JSX.Elem
             <ul className='nav-items'>
                 {/* Left side of the nav, contains the app icon that links to home, and the search bar */}
                 <div className='nav-left'>
-                     <li className=".list-item"><Link to="/home"><img className="nav-app-icon" src="/facebookLogo.png"></img></Link></li>
+                     <li className="nav-list-item"><Link to="/home"><img className="nav-app-icon" src="/facebookLogo.png"></img></Link></li>
                     <div className='search-glass-div'>
                         <span className="material-symbols-outlined searchIcon">search</span>
                     </div> 

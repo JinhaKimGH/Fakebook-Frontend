@@ -34,7 +34,8 @@ export default function FriendRequestContainer(props: {id: string, req: string, 
         friendRequests: [],
         profilePhoto: "",
         posts: [],
-        outGoingFriendRequests: []
+        outGoingFriendRequests: [],
+        savedPosts: []
     });
 
     // State for loading time for the comment to send

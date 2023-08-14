@@ -190,7 +190,9 @@ export default function Post(props : {post: PostType, style:string, display: boo
                                 {/* Content of the post: text and image or link */}
                                 <p className='post-text'>{props.post.text}</p>
                                 {props.post.image && <img src={props.post.image} className='post-image'></img>}
-                                {props.post.link && <Microlink url={props.post.link} style={{'marginBottom': '10px'}} />}
+                                {props.post.link && <div className='micro-link'>
+                                    {props.post.link && <Microlink url={props.post.link} style={{'marginBottom': '10px', 'width': '100%'}} />}
+                                </div>}
                             </div>
                             {/* Number of likes and comments of a post */}
                             <div className='post-likes-comments'>

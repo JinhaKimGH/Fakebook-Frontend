@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
  * @param {Object} props - The component props.
  * @returns {JSX.Element} A React JSX element representing the ErrorPage component, pops up when the API call encounters an error
  */
-export default function ErrorPage(props: {isApiErr: boolean}){
+export default function ErrorPage(props: {isApiErr: boolean}): JSX.Element{
      // Used to navigate routes
      const history = useNavigate();
 

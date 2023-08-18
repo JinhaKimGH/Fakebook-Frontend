@@ -137,6 +137,9 @@ export default function ProfileFeedContainer(props: {tab: string, user: UserType
                         <div className='post-loading-container'><img src='/loading.gif' className='post-loading'/></div>
             }
             {/* If the tab is posts or bookmarks, the posts are mapped to the posts component */}
+            {props.tab == 'Bookmarks' && 
+                <h4 className='profile-feed-container-title'>Bookmarks</h4>
+            }
             {(props.tab === 'Posts' || props.tab === 'Bookmarks') ? (
                 props.user && props.user.posts && props.user.posts.length !== 0 ? (
                     posts.map((post) => <Post post={post} key={post._id} setPostCount={setPostCount} style={''} display={postCount >= posts.length}/>)
@@ -152,11 +155,13 @@ export default function ProfileFeedContainer(props: {tab: string, user: UserType
 
             {/* If the tab is Friends, the friends are mapped to the FriendRequestContainer */}
             {props.tab === 'Friends' ? 
-                <div className='friend-requests list'>
+                <div>
+                    <h4 className='profile-feed-container-title'>Friends</h4>
                     <div className='friend-requests-list'>
                         {props.user.friends.map((friend) => <FriendRequestContainer key={friend} id={friend} req={'friend'} user={currUser} setUser={setCurrUser}/>)}
                     </div>
-                </div> : ''
+                </div>
+                 : ''
             }
         </div>
     )

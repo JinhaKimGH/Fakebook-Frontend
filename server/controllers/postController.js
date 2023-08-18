@@ -27,7 +27,7 @@ exports.get_post = asyncHandler(async (req, res, next) => {
         } else {
             return res.json(
                 {
-                    message: 'Success', 
+                    message: 'Success',  
                     post: post
                 });
         }

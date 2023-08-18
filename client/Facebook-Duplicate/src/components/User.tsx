@@ -324,6 +324,9 @@ export default function User(): JSX.Element{
                         {isUser ? <div className='profile-friends'>{`${user.friends.length} friends`}</div> : <div className='profile-friends'>{`${user.friends.length} friends • ${getMutualFriends()} mutual friends`}</div>}
                     </div>
 
+                </div>
+
+                <div className='user-buttons'>
                     {/* Depending on the isUser and isFriend states, different buttons exist. If loading, the buttons are disabled and the loading gif is displayed */}
                     {!isUser && isFriend ? <div className='profile-friend'><span className="material-symbols-rounded button-icon">how_to_reg</span>Friends</div> : ''}
                     {!isUser && isFriend ? (loading ? <div className='profile-unfriend disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></div> : <div className='profile-unfriend' onClick={handleUnfriendOnClick}><span className="material-symbols-rounded button-icon">person_remove</span>Unfriend?</div>) : ''}

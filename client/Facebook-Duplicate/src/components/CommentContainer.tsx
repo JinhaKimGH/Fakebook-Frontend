@@ -11,12 +11,11 @@ import { UserType, RespType, TokenType } from "../Interfaces";
  * @param {Object} props - The component props.
  * @param {Array<string>} props.comments - The array of ids for the comments of a post
  * @param {React.Dispatch<React.SetStateAction<Array<string>>>} props.setComments - A function that updates the comments state
- * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setCommentsIsHidden - A function that updates the commentsIsHidden state, determines whether the comments are displayed
  * @param {UserType} props.currentUser - The user object containing the user information of the logged-on user
  * @param {String} props.postId - The id of the post the user is viewing
  * @returns {JSX.Element} A React JSX element representing the CommentContainer Component, container for comments of a post
 */
-export default function CommentContainer(props: {comments: Array<string>, setComments: React.Dispatch<React.SetStateAction<Array<string>>>, setCommentsIsHidden: React.Dispatch<React.SetStateAction<boolean>>, currentUser: UserType, postID: string}): JSX.Element{
+export default function CommentContainer(props: {comments: Array<string>, setComments: React.Dispatch<React.SetStateAction<Array<string>>>, currentUser: UserType, postID: string}): JSX.Element{
     // Used to navigate routes
     const history = useNavigate();
 
@@ -104,22 +103,17 @@ export default function CommentContainer(props: {comments: Array<string>, setCom
 
     return (
         <div className="comments-popup">
-            {/* Top of the comment container window, displays the title and exit button */}
-            <div className='comments-top'>
-                <h2>Comments</h2>
-                <button onClick={() => {props.setCommentsIsHidden(true)}}>✕</button>
-            </div>
             {/* Comment container that displays all comments */}
             <div className='comment-container'>
                 {props.comments.length > 0 ? props.comments.map((comment) => <Comment key={comment} id={comment}/>) : <div className='comment-nonexistent'>No Comments</div>}
             </div>
             {/* The comment form, users can submit a new comment here */}
-            <div className="form-error-post">{error}</div>
             <form className='comment-form'>
                 <input id='comment-form' className='comment-input' name='comment' placeholder='Write a comment...' onChange={handleChange}></input>
                 {loading ? <img src='/loading.gif' className='about-property-loading'/> : ""}
                 {loading ? <span className="material-symbols-rounded send-disabled">send</span> : <button className='send-comment' onClick={handleSubmitOnClick}><span className="material-symbols-rounded send">send</span></button>}
             </form>
+            <div className="form-error-post">{error}</div>
         </div>
     )
 }

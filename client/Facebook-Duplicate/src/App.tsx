@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Search from "./components/Search";
 import ErrorPage from "./components/ErrorPage";
 import Settings from "./components/Settings";
+import FullPost from "./components/FullPost";
 
 /**
  * App Component
@@ -27,6 +28,7 @@ function App() {
             <Route path="/friends" element={<Friend/>}/>
             <Route path='/deleteUser' element={<Settings/>}/>
             <Route path='/search_results/:name' element={<Search/>}/>
+            <Route path='/post/:id' element={<FullPost/>}/>
             <Route path='/error' element={<ErrorPage isApiErr={true}/>}/>
             <Route path="*" element={<ErrorPage isApiErr={false}/>}/>
           </Routes>

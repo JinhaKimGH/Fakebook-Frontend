@@ -48,9 +48,6 @@ export default function Post(props : {post: PostType, style:string, display: boo
     // State for the list of comments
     const [comments, setComments] = React.useState<Array<string>>([]);
 
-    // State for whether the comments are hidden or not on the post
-    const [commentsIsHidden, setCommentsIsHidden] = React.useState(true);
-
     // State for the current User that is logged in
     const [currentUser, setCurrentUser] = React.useState<UserType>({
         _id: "",
@@ -168,48 +165,45 @@ export default function Post(props : {post: PostType, style:string, display: boo
         setIsLiked(prevLiked => !prevLiked);
     }
 
+    function redirect(){
+        history(`/post/${props.post._id}`);
+    }
+
     return(
         <div>
             {props.display && 
                 <div className={`post-container ${props.post.link || props.post.image ? "big" : "small"} ${props.style}`}>
-                    <div className="fill-space">
-                    </div>
                     {/* If one of the poster or post state hasn't been loaded in yet, a loading gif will be displayed */}      
                     <div className='post-feed'>
                         {/* Contains the post creation info. User profile picture, name, and date of post */}
-                            <div className="post-creation-info">
-                                <Link to={`/user/${props.post.user}`} className='profile-link-post-feed'>
-                                    <img className='nav-profile-photo' src={poster.profilePhoto}/>
-                                    <div>
-                                        <div className='post-feed-author'>{`${poster.firstName} ${poster.lastName}`}</div>
-                                        <div className='post-feed-date'>{`${(new Date(props.post.postTime)).toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} at ${new Date(props.post.postTime).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}</div>
-                                    </div>
-                                </Link>
-                                <PostOptions post_id={props.post._id} post_author={poster._id} current_user={currentUser} savedPosts={currentUser.savedPosts} setCurrentUser={setCurrentUser}/>
-                            </div>
-                            <div className='post-content'>
-                                {/* Content of the post: text and image or link */}
-                                <p className='post-text'>{props.post.text}</p>
-                                {props.post.image && <img src={props.post.image} className='post-image'></img>}
-                                {props.post.link && <div className='micro-link'>
-                                    {props.post.link && <Microlink url={props.post.link} style={{'marginBottom': '10px', 'width': '100%'}} />}
-                                </div>}
-                            </div>
-                            {/* Number of likes and comments of a post */}
-                            <div className='post-likes-comments'>
-                                {likes > 0 ? <div>{`${likes} likes`}</div> : <div>No Likes</div>}
-                                {comments.length > 0 ? <div>{`${comments.length} comments`}</div> : <div>No Comments</div>}
-                            </div>
-                            {/* Buttons to like the post and open the comments section of a post */}
-                            <div className='post-interactions'>
-                                <button className={`thumbs-up ${isLiked ? 'liked' : ""}`} onClick={thumbsUp}><span className="material-symbols-rounded interactions">thumb_up</span>Like</button>
-                                <button className='comment' onClick={() => {setCommentsIsHidden(!commentsIsHidden)}}><span className="material-symbols-rounded interactions">chat_bubble</span>Comment</button>
-                            </div>
-                    </div>
-                    
-                    {/* The comments section if commentsIsHidden is false*/}
-                    <div className={`post-right ${commentsIsHidden ? "inactive" : "active"}`}>
-                        {commentsIsHidden ? <div className='empty-container'></div> : <CommentContainer currentUser={currentUser} comments={comments} setCommentsIsHidden={setCommentsIsHidden} setComments={setComments} postID={props.post._id}/>}
+                        <div className="post-creation-info">
+                            <Link to={`/user/${props.post.user}`} className='profile-link-post-feed'>
+                                <img className='nav-profile-photo' src={poster.profilePhoto}/>
+                                <div>
+                                    <div className='post-feed-author'>{`${poster.firstName} ${poster.lastName}`}</div>
+                                    <div className='post-feed-date'>{`${(new Date(props.post.postTime)).toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} at ${new Date(props.post.postTime).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}</div>
+                                </div>
+                            </Link>
+                            <PostOptions post_id={props.post._id} post_author={poster._id} current_user={currentUser} savedPosts={currentUser.savedPosts} setCurrentUser={setCurrentUser}/>
+                        </div>
+                        <div className='post-content'>
+                            {/* Content of the post: text and image or link */}
+                            <p className='post-text'>{props.post.text}</p>
+                            {props.post.image && <img src={props.post.image} className='post-image'></img>}
+                            {props.post.link && <div className='micro-link'>
+                                {props.post.link && <Microlink url={props.post.link} style={{'marginBottom': '10px', 'width': '100%'}} />}
+                            </div>}
+                        </div>
+                        {/* Number of likes and comments of a post */}
+                        <div className='post-likes-comments'>
+                            {likes > 0 ? <div>{`${likes} likes`}</div> : <div>No Likes</div>}
+                            {comments.length > 0 ? <div>{`${comments.length} comments`}</div> : <div>No Comments</div>}
+                        </div>
+                        {/* Buttons to like the post and open the comments section of a post */}
+                        <div className='post-interactions'>
+                            <button className={`thumbs-up ${isLiked ? 'liked' : ""}`} onClick={thumbsUp}><span className="material-symbols-rounded interactions">thumb_up</span>Like</button>
+                            <button className='comment' onClick={() => {redirect()}}><span className="material-symbols-rounded interactions">chat_bubble</span>Comments</button>
+                        </div>
                     </div>
                 </div>
 

@@ -660,7 +660,7 @@ exports.get_user_recommended_friends = asyncHandler(async (req, res, next) => {
                     return friend.equals(friends[i].friends[j])
                 })
 
-                if (isInArray || user.friends.includes(friends[i].friends[j])){
+                if (isInArray || user.friends.includes(friends[i].friends[j]) || friends[i].friends[j] == user_id){
                     continue;
                 } else {
                     mutuals.push(friends[i].friends[j]);

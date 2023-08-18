@@ -629,3 +629,55 @@ exports.delete_user = asyncHandler(async (req, res, next) => {
             });
     }
 })
+
+// Gets all recommended friends by mutual friends
+exports.get_user_recommended_friends = asyncHandler(async (req, res, next) => {
+    const { user_id } = req.params;
+
+    // If the given id is null a 404 error is sent
+    if(user_id == ''){
+        return res.status(404).json(
+            {
+                message: "User Not Found."
+            });
+    } 
+
+    try{
+        const user = await User.findById(user_id);
+
+        const friends = await User.find(
+            {
+            '_id': {
+                '$in': user.friends
+                }
+            });
+
+        const mutuals = [];
+
+        for (let i = 0; i < friends.length; i++){
+            for (let j = 0; j < friends[i].friends.length; j++){
+                let isInArray = mutuals.some(function (friend) {
+                    return friend.equals(friends[i].friends[j])
+                })
+
+                if (isInArray || user.friends.includes(friends[i].friends[j])){
+                    continue;
+                } else {
+                    mutuals.push(friends[i].friends[j]);
+                }
+            }
+        }
+
+        return res.json(
+            {
+                message: 'Success', 
+                ids: mutuals
+            });
+
+    } catch (err) {
+        return res.status(404).json(
+            {
+                message: 'User not found.'
+            });
+    }
+})

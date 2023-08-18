@@ -31,8 +31,12 @@ export default function Friend(): JSX.Element {
         friendRequests: [],
         profilePhoto: "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1",
         posts: [],
-        outGoingFriendRequests: []
+        outGoingFriendRequests: [],
+        savedPosts: []
     });
+
+    // Recommended friends state
+    const [recommended, setRecommended] = React.useState<Array<string>>([]);
 
     // Fetches the profile of the user
     async function fetchUser(token: string, id: string) {
@@ -67,6 +71,7 @@ export default function Friend(): JSX.Element {
             history("/");
         } else{
             void fetchUser(token.token, token.user._id);
+            void fetchRecomended(token.token, token.user._id);
         }
     }, [])
 
@@ -78,6 +83,31 @@ export default function Friend(): JSX.Element {
             localStorage.setItem('token', JSON.stringify({token: token.token, user: user}));
         }
     }, [user])
+
+    // Function that fetches the recommended users
+    async function fetchRecomended(token: string, id: string){
+
+        try {
+            const res : RespType = await axios.get(`${config.apiURL}/recommendedfriends/${id}`, {
+                headers: {
+                    'Content-Type': "application/json",
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            if(res.data.message == 'Success'){
+                // Sets recommended state
+                setRecommended(res.data.ids);
+            } else {
+                // If error, re-directs to error page
+                history('/error');
+            }
+
+        } catch (err){
+            // If error, re-directs to error page
+            history('/error');
+        }
+    }
 
     return (
         <div className='homepage'>
@@ -100,6 +130,16 @@ export default function Friend(): JSX.Element {
                     </div>
                 </div>
             }   
+
+            {/* Displays list of recommended friends */}
+            {recommended.length !== 0 &&
+                <div className='friend-requests list'>
+                <h4>People You May Know</h4>
+                <div className='friend-requests-list'>
+                    {recommended.map((friend) => <FriendRequestContainer key={friend} id={friend} req={'friend'} user={user} setUser={setUser}/>)}
+                </div>
+            </div>
+            }
 
             {/* If user state hasn't loaded in yet from the API */}
             {user._id == "" && 

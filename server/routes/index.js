@@ -64,6 +64,9 @@ router.get('/getsavedposts/:user_id', passport.authenticate('jwt', {session: fal
 /* POST Delete a user */
 router.post('/deleteuser/:user_id', passport.authenticate('jwt', {session: false}), userController.delete_user)
 
+/* GET All recommended friends */
+router.get('/recommendedfriends/:user_id', passport.authenticate('jwt', {session: false}), userController.get_user_recommended_friends)
+
 // Post Routes
 
 /* POST Creates a post */

@@ -1,13 +1,16 @@
 {
   "name": "Fakebook",
+  "homepage": "https://jinhakimgh.github.io/Fakebook-frontend/",
   "private": true,
   "version": "0.0.0",
   "proxy": "http://localhost:3000",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -53,7 +53,8 @@ export default function Comment(props: {id: string}): JSX.Element{
         friendRequests: [],
         profilePhoto: '',
         posts: [],
-        outGoingFriendRequests: []
+        outGoingFriendRequests: [],
+        savedPosts: []
     })
 
     // State for whether the user has liked the comment

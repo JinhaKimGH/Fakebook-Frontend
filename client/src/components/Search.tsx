@@ -49,7 +49,8 @@ export default function Search(): JSX.Element{
         friendRequests: [],
         profilePhoto: "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1",
         posts: [],
-        outGoingFriendRequests: []
+        outGoingFriendRequests: [],
+        savedPosts: []
     });
 
     // The users state, an array of users that were found from the search

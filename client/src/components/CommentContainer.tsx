@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import {config} from "../config";
 import axios from 'axios';
 import { UserType, RespType, TokenType } from "../Interfaces";
+import loadingGif from '../loading.gif'
 
 /**
  * CommentContainer Component
@@ -110,7 +111,7 @@ export default function CommentContainer(props: {comments: Array<string>, setCom
             {/* The comment form, users can submit a new comment here */}
             <form className='comment-form'>
                 <input id='comment-form' className='comment-input' name='comment' placeholder='Write a comment...' onChange={handleChange}></input>
-                {loading ? <img src='loading.gif' className='about-property-loading'/> : ""}
+                {loading ? <img src={loadingGif} className='about-property-loading'/> : ""}
                 {loading ? <span className="material-symbols-rounded send-disabled">send</span> : <button className='send-comment' onClick={handleSubmitOnClick}><span className="material-symbols-rounded send">send</span></button>}
             </form>
             <div className="form-error-post">{error}</div>

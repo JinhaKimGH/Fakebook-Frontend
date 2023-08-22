@@ -5,6 +5,7 @@ import { UserType, RespType, TokenType } from '../Interfaces';
 import axios from 'axios';
 import { config } from '../config';
 import SearchResultContainer from './SearchResultContainer';
+import loadingGif from '../loading.gif'
 
 /**
  * Search Component
@@ -103,7 +104,7 @@ export default function Search(): JSX.Element{
             {/* Displays search results & maps them into the SearchResultsContainer component */}
             {users.length > 0 && <h4 className='search-results-title'>Search results for "{name}"</h4>}
             {users.length == 0 && !loading && <h4 className='search-results-title'>No results for "{name}"</h4>}
-            {loading && <img src='loading.gif' className='search-result-loading'/>}
+            {loading && <img src={loadingGif} className='search-result-loading'/>}
 
             <div className='results-container'>
                 {users.map((user: UserType) => <SearchResultContainer user={user} key={user._id}/>)}

@@ -4,6 +4,7 @@ import {config} from "../config"
 import axios from 'axios'
 import {RespType, CommentType, UserType, TokenType} from '../Interfaces'
 import { Link } from "react-router-dom"
+import loadingGif from '../loading.gif'
 
 // Component for the individual comment
 /**
@@ -201,7 +202,7 @@ export default function Reply(props: {id: string}): JSX.Element{
     return (
         <div>
             {
-                reply._id == '' ? <div className="comment-bubble"><img src='loading.gif' className='comment-loading'/></div> :
+                reply._id == '' ? <div className="comment-bubble"><img src={loadingGif}className='comment-loading'/></div> :
                 <div className='comment-bubble reply'>
                     {/* Comment bubble displays the users photo and name. Both the name and photo are linked to the user's profile*/}
                     <Link to={`/user/${user._id}`}><img src={user.profilePhoto} className='comment-profile-photo'/></Link>

@@ -4,6 +4,7 @@ import axios from 'axios'
 import {config} from "../config"
 import { useNavigate } from "react-router-dom";
 import { TokenType, RespType, UserType } from '../Interfaces'
+import loadingGif from '../loading.gif'
 
 /**
  * SideProfile Component
@@ -65,7 +66,7 @@ export default function SideProfile(props: {image: string, text: string, id: str
                     </li>
                 </Link> :
 
-                <div className='side-profile-loading'><img src='loading.gif' className='birthday-loading'/></div>
+                <div className='side-profile-loading'><img src={loadingGif} className='birthday-loading'/></div>
             }
         </div>
     )

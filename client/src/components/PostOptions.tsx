@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { RespType, TokenType, UserType } from '../Interfaces';
 import axios from 'axios';
 import { config } from '../config';
+import loadingGif from '../loading.gif'
 
 /**
  * PostOptions Component
@@ -214,14 +215,14 @@ export default function PostOptions(props: {post_id: string, post_author: string
             <div className={`post-options-menu ${optionsIsHidden ? "inactive" : "active"}`}>
                 {props.savedPosts.includes(props.post_id) ? 
                     <div className='save-post' onClick={handleUnsavePostOnClick}>{loadReq ? 
-                        <img src='loading.gif' className='about-property-loading save'/> : <span className="material-symbols-outlined icon-save-post">bookmark</span>}
+                        <img src={loadingGif} className='about-property-loading save'/> : <span className="material-symbols-outlined icon-save-post">bookmark</span>}
                         Unsave Post</div> : <div className='save-post' onClick={handleSavePostOnClick}>
-                            {loadReq ? <img src='loading.gif' className='about-property-loading save'/> : <span className="material-symbols-outlined icon-save-post">bookmark_border</span>}Save Post</div>}
+                            {loadReq ? <img src={loadingGif} className='about-property-loading save'/> : <span className="material-symbols-outlined icon-save-post">bookmark_border</span>}Save Post</div>}
                             
                 { props.current_user._id == props.post_author &&
                     <div>
                         <div className="break save"></div>
-                        <div className='save-post' onClick={handleDeletePostOnClick}>{loadReq ? <img src='loading.gif' className='about-property-loading save'/> : <span className="material-symbols-outlined icon-save-post">delete</span>}Delete Post</div>
+                        <div className='save-post' onClick={handleDeletePostOnClick}>{loadReq ? <img src={loadingGif} className='about-property-loading save'/> : <span className="material-symbols-outlined icon-save-post">delete</span>}Delete Post</div>
                     </div>
                 }
             </div>

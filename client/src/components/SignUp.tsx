@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { SyntheticEvent } from "react";
 import {config} from "../config"
 import { RespType } from "../Interfaces";
+import loadingGif from '../loading.gif'
 
 /**
  * SignUp Component
@@ -182,7 +183,7 @@ export default function SignUp(): JSX.Element{
                     <input type="date" onChange={(e) => {setBirthDate(new Date(e.target.value))}} id="date" required/>
                     <input type="text" onChange={(e) => {setGender(e.target.value)}} id="gender" placeholder="Gender" required/>
                     <div className="form-error">{error}</div>
-                    {loading ? <button className='login-submit-disabled' onClick={handleSubmitOnClick}><img src='loading.gif' className='about-property-loading'/></button> : <button className="submit" onClick={handleSubmitOnClick}>Sign Up</button>}
+                    {loading ? <button className='login-submit-disabled' onClick={handleSubmitOnClick}><img src={loadingGif} className='about-property-loading'/></button> : <button className="submit" onClick={handleSubmitOnClick}>Sign Up</button>}
                 </form>
             </div>
         </div>

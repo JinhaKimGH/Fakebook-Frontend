@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { config } from "../config";
 import FriendRequestContainer from "./FriendRequestContainer";
+import loadingGif from '../loading.gif'
 
 /**
  * Friend Component
@@ -143,7 +144,7 @@ export default function Friend(): JSX.Element {
 
             {/* If user state hasn't loaded in yet from the API */}
             {user._id == "" && 
-                <img src='loading.gif' className='friends-loading'/>
+                <img src={loadingGif} className='friends-loading'/>
             }
             
         </div>

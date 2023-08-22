@@ -8,6 +8,7 @@ import Microlink from '@microlink/react';
 import CommentContainer from './CommentContainer';
 import {UserType, PostType, TokenType, RespType} from '../Interfaces'
 import PostOptions from "./PostOptions";
+import loadingGif from '../loading.gif'
 
 /**
  * FullPost Component
@@ -243,7 +244,7 @@ export default function FullPost(): JSX.Element{
                     <CommentContainer currentUser={currentUser} comments={comments} setComments={setComments} postID={post_id}/>
                 </div> :
                 
-                <div className='post-loading-container'><img src='loading.gif' className='post-loading'/></div>
+                <div className='post-loading-container'><img src={loadingGif} className='post-loading'/></div>
                 }
             </div>
 

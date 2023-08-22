@@ -8,6 +8,7 @@ import axios from "axios";
 import Post from "./Post";
 import { config } from "../config";
 import { UserType, TokenType, RespType, PostType } from "../Interfaces";
+import loadingGif from '../loading.gif'
 
 /**
  * Home Component
@@ -150,7 +151,7 @@ export default function Home(): JSX.Element{
                     <CreatePost user={user} isUser={true} setUser={setUser}/>
                     {/* If the posts are loading, or the count state is less than the length of the array the loading gif is displayed */}
                     {(postLoading || postCount < posts.length) && 
-                        <div className='post-loading-container'><img src='loading.gif' className='post-loading'/></div>
+                        <div className='post-loading-container'><img src={loadingGif} className='post-loading'/></div>
                     }
                     {posts.length > 0 &&
                         posts.map((post) => <Post post={post} key={post._id} style={'home'} display={postCount >= posts.length} setPostCount={setPostCount} />)
@@ -160,7 +161,7 @@ export default function Home(): JSX.Element{
                 <div className="home-contact-list">
                     <div className='contact-birthdays'>
                         <h4>Today's Birthdays</h4>
-                        {birthdayLoading && <div className='loading-birthdays'><img src='loading.gif' className='birthday-loading'/></div>}
+                        {birthdayLoading && <div className='loading-birthdays'><img src={loadingGif} className='birthday-loading'/></div>}
                         {birthdays.map((friend) => <SideProfile image="" text="" id={friend._id} key={friend._id}/>)}
                     </div>
                     <h4>Friends</h4>

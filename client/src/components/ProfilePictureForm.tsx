@@ -3,6 +3,7 @@ import { TokenType, RespType } from "../Interfaces";
 import { useNavigate } from "react-router-dom";
 import { config } from "../config";
 import axios from "axios";
+import loadingGif from '../loading.gif'
 
 /**
  * ProfilePictureForm Component
@@ -164,7 +165,7 @@ export default function ProfilePictureForm(props: {user_id: string, setProfileFo
                     <div className="form-error-post">{error}</div>
                     <div className='edit-form-buttons'>
                         {loading ? <button className='form-button-cancel disabled' onClick={handleDummyOnClick}>Cancel</button> : <button className='form-button-cancel' onClick={closeForm}>Cancel</button>}
-                        {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='loading.gif' className='about-property-loading'/></button>: <button className='form-button-save' onClick={handleSubmitOnClick}>Submit</button>}
+                        {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src={loadingGif} className='about-property-loading'/></button>: <button className='form-button-save' onClick={handleSubmitOnClick}>Submit</button>}
                     </div>
                 </form>
             </div>

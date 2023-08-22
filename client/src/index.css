@@ -592,7 +592,7 @@ ul{
 .profile-picture{
     max-height: 168px;
     height: 100%;
-    width: auto;
+    width: 100%;
     object-fit: cover;
     border-radius: 999999px;
 }

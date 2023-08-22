@@ -95,12 +95,12 @@ export default function Navbar(props: {user: UserType,  home: string}): JSX.Elem
                                         <p className='nav-name'>{`${props.user.firstName} ${props.user.lastName}`}</p>
                                     </div>
                                 </Link>
-                                <Link to={`/deleteUser`} className='dropdownItem-link'>
+                                {props.user.email !== "guest@email.com" && <Link to={`/deleteUser`} className='dropdownItem-link'>
                                     <li className='dropdownItem'>
                                         <span className="material-symbols-rounded dropdown-item-icon"> delete </span>
                                         <div className="dropdown-item-text">Delete Account</div>
                                     </li>
-                                </Link>
+                                </Link>}
                                 <div className="dropdownItem-link" onClick={logout}>
                                     <li className='dropdownItem'>
                                         <span className="material-symbols-rounded dropdown-item-icon"> logout </span>

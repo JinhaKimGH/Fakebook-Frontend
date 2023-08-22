@@ -14,12 +14,12 @@ import FullPost from "./components/FullPost";
  *  
  * @returns {JSX.Element} A React JSX element representing the App Component
 */
-function App() {
+function App(): JSX.Element {
 
   return (
     <div className="App">
       {/* Contains routing for all routes in this app */}
-        <Router>
+        <Router basename={"/Fakebook-Frontend"}>
           <Routes>
             <Route path="/" element={<Login/>}/>
             <Route path="/signup" element={<SignUp/>}/>

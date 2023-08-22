@@ -151,7 +151,7 @@ export default function Login(): JSX.Element{
 
     return (
         <div className="login">
-            <div>
+            <div className='login-left-heading'>
                 <h1 className="fakebook-logo-login">fakebook</h1>
                 <h3 className="login-subheading">Connect with friends and the world around you on Fakebook.</h3>
             </div>

@@ -30,6 +30,7 @@ html{
 }
 
 .login, .signup{
+    width: 100vw;
     display: flex;
     justify-content: space-around;
     padding-top: 72px;
@@ -45,20 +46,20 @@ html{
 
 .fakebook-logo-login{
     color: var(--fakebook-blue);
-    font-size: 60px;
+    font-size: 3rem;
 }
 
 .login-subheading, .signup-subheading{
     font-weight: normal;
-    font-size: 28px;
+    font-size: 1.4rem;
     line-height: 32px;
-    width: 500px;
+    width: 40%;
 }
 
 .login-form-box, .signup-form-box{
     margin: 40px 0 0;
     padding: 14px 0 28px;
-    width: 396px;
+    width: 30%;
     height: 320px;
     text-align: center;
     border-radius: 8px;
@@ -67,7 +68,7 @@ html{
 }
 
 .signup-form-box{
-    height: 420px !important;
+    height: 480px !important;
 }
 
 .signup-heading{
@@ -78,7 +79,7 @@ html{
 
 .signup-heading > .left > h3{
     font-weight: normal;
-    font-size: 15px;
+    font-size: 0.6rem;
     line-height: 24px;
     color: #606770;
 }
@@ -86,6 +87,7 @@ html{
     display: flex;
     flex-direction: column;
     text-align: center;
+    align-items: center;
 }
 
 .signup-form-box > form{
@@ -93,36 +95,27 @@ html{
     padding: 16px;
 }
 
-.fullname-signup{
-    justify-content: space-around;
-    display: flex;
-}
 .login-form-box > form > input, .login-form-box > form > button{
     margin: 6px auto;
     padding: 14px 16px;
-    width: 330px;
+    max-width: 80%;
+    width: 80%;
     border-radius: 6px;
 }
 
 .signup-form-box > form > input, .signup-form-box > form > button, .fullname-signup > input{
     border-radius: 6px;
     padding: 9px;
-    margin: 6px auto;
+    margin: 6px 0;
 }
 
-.fullname-signup > input{
-    width: 150px;
+
+.sign-up-form > input, .signup-form-box > form > button{
+    width: 90%;
 }
+
 
 .signup-form-box > form > input{
-    width: 330px;
-}
-
-.signup-form-box > form > button{
-    min-width: 351px !important;
-}
-
-.signup-form-box > form > input, .fullname-signup > input{
     font-size: 17px;
     border: 1px solid #dddfe2;
 }
@@ -141,10 +134,8 @@ html{
 .submit{
     background-color: var(--fakebook-blue);
     border: none;
-    min-width: 362px;
-    font-size: 20px;
+    font-size: 1rem;
     color: white;
-    font-weight: bold;
 }
 
 .submit:hover{
@@ -190,7 +181,7 @@ html{
     background-color: var(--fakebook-green);
     font-weight: bold;
     border-radius: 6px;
-    font-size: 17px;
+    font-size: 1rem;
     line-height: 48px;
     padding: 12px 16px;
 }
@@ -1879,6 +1870,12 @@ iframe{
     justify-content: space-between;
     align-items: center;
     margin: 0 17px;
+    max-width: 80%;
+    width: 80%;
+}
+
+.login-buttons > div{
+    width: 50%;
 }
 
 .facebook-login{
@@ -1889,7 +1886,11 @@ iframe{
     color: white;
     border-radius: 6px;
     padding: 12px 14px;
-    min-width: 180px;
+    width: 45%;
+}
+
+.facebook-login.metro{
+    width: 100%;
 }
 
 .facebook-login:hover{
@@ -2076,6 +2077,14 @@ iframe{
 
     .post-container.big{
         max-height: 630px;
+    }
+
+    .login-left-heading{
+        display: none;
+    }
+
+    .login-form-box, .signup-form-box{
+        width: 60%;
     }
 
 }

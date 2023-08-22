@@ -157,7 +157,7 @@ export default function SignUp(): JSX.Element{
 
     return (
         <div className="signup">
-            <div>
+            <div className="login-left-heading">
                 <h1 className="fakebook-logo-login">fakebook</h1>                
                 <h3 className="signup-subheading">Connect with friends and the world around you on Fakebook.</h3>
             </div>
@@ -172,11 +172,9 @@ export default function SignUp(): JSX.Element{
                 </div>
                 <div className="signup-break"></div>
 
-                <form action="POST">
-                    <div className="fullname-signup">
-                        <input type="text" onChange={(e) => {setFirstName(e.target.value)}} placeholder="First Name" name="firstName" id="firstName" required/>
-                        <input type="text" onChange={(e) => {setLastName(e.target.value)}} placeholder="Last Name" name="lastName" id="lastName" required/>    
-                    </div> 
+                <form action="POST" className='sign-up-form'>
+                    <input type="text" onChange={(e) => {setFirstName(e.target.value)}} placeholder="First Name" name="firstName" id="firstName" required/>
+                    <input type="text" onChange={(e) => {setLastName(e.target.value)}} placeholder="Last Name" name="lastName" id="lastName" required/>    
                     <input type="email" onChange={(e) => {setEmail(e.target.value)}} placeholder="Email" name="email" id="email" required/>
                     <input type="password" onChange={(e) => {setPassword(e.target.value)}} placeholder="New Password" name="password" id="password" required/>
                     <label htmlFor="date" className="sign-up-label">Birthday</label>

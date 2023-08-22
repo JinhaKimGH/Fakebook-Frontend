@@ -1154,7 +1154,7 @@ ul{
     font-size: 15px;
     font-weight: 400;
     overflow-wrap: break-word;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 60px;
     padding: 16px 0 16px 0;
 }
@@ -1288,7 +1288,7 @@ iframe{
 
 .comment-container{
     flex: 1;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 200%;
     max-width: 100%;
 }
@@ -1594,7 +1594,7 @@ iframe{
     margin-top: 16px; 
     display: flex;
     max-width: 100%;
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .friend-container > h4{

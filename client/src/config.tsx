@@ -1,1 +1,1 @@
-export const config = {apiURL: "http://localhost:3000", imgurID: "4069137ba5fcdfb", facebookAppID: 3560911340789188}
+export const config = {apiURL: "https://fakebook-backend-qc2m.onrender.com", imgurID: "4069137ba5fcdfb", facebookAppID: 3560911340789188}

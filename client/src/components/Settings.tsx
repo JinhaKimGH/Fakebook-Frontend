@@ -90,9 +90,11 @@ export default function Settings(): JSX.Element{
                 <div className='delete-user'>
                     <h4>Delete Account</h4>
                     <p>Would you like to delete your account?</p>
-                    <div className='delete-user-button-container'>
+                    {user.email !== "guest@email.com" ? <div className='delete-user-button-container'>
                         <button className='delete-user-btn' onClick={handleDeletionOnClick}>Delete Your Account</button>
-                    </div>
+                    </div> :
+                    <p>This feature is not available for a guest.</p>
+                    }
                 </div>
             </div>
         </div>

@@ -3,7 +3,7 @@ import SignUp from "./components/SignUp";
 import Home from "./components/Home"
 import User from './components/User'
 import Friend from "./components/Friend";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Search from "./components/Search";
 import ErrorPage from "./components/ErrorPage";
 import Settings from "./components/Settings";

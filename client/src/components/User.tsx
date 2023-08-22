@@ -313,7 +313,7 @@ export default function User(): JSX.Element{
         <div className="profile">
             <Navbar user={selfUser} home={'neither'}/>
             { user._id == '' ? 
-                <div className='profile-load'><img src='/loading.gif' className='user-loading'/></div>
+                <div className='profile-load'><img src='loading.gif' className='user-loading'/></div>
             : <div>
                 {/* Displays the top of the profile, with name, number of friends, mutual friends, and profile picture */}
                 <div className='top-profile'>
@@ -329,9 +329,9 @@ export default function User(): JSX.Element{
                 <div className='user-buttons'>
                     {/* Depending on the isUser and isFriend states, different buttons exist. If loading, the buttons are disabled and the loading gif is displayed */}
                     {!isUser && isFriend ? <div className='profile-friend'><span className="material-symbols-rounded button-icon">how_to_reg</span>Friends</div> : ''}
-                    {!isUser && isFriend ? (loading ? <div className='profile-unfriend disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></div> : <div className='profile-unfriend' onClick={handleUnfriendOnClick}><span className="material-symbols-rounded button-icon">person_remove</span>Unfriend?</div>) : ''}
-                    {!isUser && !isFriend && request == '' ? (loading ? <div className='profile-not-friend disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='friend about-property-loading'/></div> : <div className='profile-not-friend' onClick={handleRequestFriendOnClick}><span className="material-symbols-rounded button-icon" >person_add</span>Add Friend</div>) : ''}
-                    {!isUser && !isFriend && request == 'Incoming' ? (loading ? <div className='profile-not-friend disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></div> : <div className='profile-not-friend' onClick={handleAcceptRequestOnClick}><span className="material-symbols-rounded button-icon">check_circle</span>Accept Request?</div>) : ''}
+                    {!isUser && isFriend ? (loading ? <div className='profile-unfriend disabled' onClick={handleDummyOnClick}><img src='loading.gif' className='about-property-loading'/></div> : <div className='profile-unfriend' onClick={handleUnfriendOnClick}><span className="material-symbols-rounded button-icon">person_remove</span>Unfriend?</div>) : ''}
+                    {!isUser && !isFriend && request == '' ? (loading ? <div className='profile-not-friend disabled' onClick={handleDummyOnClick}><img src='loading.gif' className='friend about-property-loading'/></div> : <div className='profile-not-friend' onClick={handleRequestFriendOnClick}><span className="material-symbols-rounded button-icon" >person_add</span>Add Friend</div>) : ''}
+                    {!isUser && !isFriend && request == 'Incoming' ? (loading ? <div className='profile-not-friend disabled' onClick={handleDummyOnClick}><img src='loading.gif' className='about-property-loading'/></div> : <div className='profile-not-friend' onClick={handleAcceptRequestOnClick}><span className="material-symbols-rounded button-icon">check_circle</span>Accept Request?</div>) : ''}
                     {!isUser && !isFriend && request == 'Outgoing' ? <div className='profile-not-friend'><span className="material-symbols-rounded button-icon">schedule</span>Pending</div> : ''}
                 </div>
                 {/* Different profile tabs for the profile feed container. If the profile you are on is your own profile, then the bookmarks tab shows */}

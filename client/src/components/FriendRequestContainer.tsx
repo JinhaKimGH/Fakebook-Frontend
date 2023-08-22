@@ -207,7 +207,7 @@ export default function FriendRequestContainer(props: {id: string, req: string, 
         <div>
         { friend._id == "" ?
             <div className='friend-container'>
-                <img src='/loading.gif' className='friend-req-loading'/>
+                <img src='loading.gif' className='friend-req-loading'/>
             </div>
             :
             <div className='friend-container'>
@@ -218,8 +218,8 @@ export default function FriendRequestContainer(props: {id: string, req: string, 
                 {/* If this is a friend request, the user can choose to accept/deny their request. */}
                 {props.req == 'request' &&
                 <div className='friend-button-container'>
-                        {loading ? <button className='friend-req-disabled' onClick={handleDummyClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className="friend-request-container" onClick={handleAcceptRequestOnClick}>Confirm</button>}
-                        {loading ? <button className='friend-req-disabled se' onClick={handleDummyClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className="deny-friend-container" onClick={handleDenyRequestOnClick}>Delete</button>}
+                        {loading ? <button className='friend-req-disabled' onClick={handleDummyClick}><img src='loading.gif' className='about-property-loading'/></button> : <button className="friend-request-container" onClick={handleAcceptRequestOnClick}>Confirm</button>}
+                        {loading ? <button className='friend-req-disabled se' onClick={handleDummyClick}><img src='loading.gif' className='about-property-loading'/></button> : <button className="deny-friend-container" onClick={handleDenyRequestOnClick}>Delete</button>}
                 </div>
                 }
                 {props.req == 'friend' &&

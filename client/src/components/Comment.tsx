@@ -285,7 +285,7 @@ export default function Comment(props: {id: string}): JSX.Element{
     return (
         <div>
             {
-                comment._id == '' ? <div className="comment-bubble"><img src='/loading.gif' className='comment-loading'/></div> :
+                comment._id == '' ? <div className="comment-bubble"><img src='loading.gif' className='comment-loading'/></div> :
 
                 <div className='comment-bubble'>
                     {/* Comment bubble displays the users photo, name, and reply. Both the name and photo are linked to the user's profile*/}
@@ -321,7 +321,7 @@ export default function Comment(props: {id: string}): JSX.Element{
             {replyForm &&  <div>
             <form className='reply-form'>
                 <input id='reply-form' className='reply-input' name='comment' placeholder='Write a reply...' onChange={handleChange}></input>
-                {loading ? <img src='/loading.gif' className='about-property-loading'/> : ""}
+                {loading ? <img src='loading.gif' className='about-property-loading'/> : ""}
                 {loading ? <span className="material-symbols-rounded send-disabled">send</span> : <button className='send-reply' onClick={handleSendCommentOnClick}><span className="material-symbols-rounded send">send</span></button>}
             </form>
             </div>}

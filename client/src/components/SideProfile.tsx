@@ -65,7 +65,7 @@ export default function SideProfile(props: {image: string, text: string, id: str
                     </li>
                 </Link> :
 
-                <div className='side-profile-loading'><img src='/loading.gif' className='birthday-loading'/></div>
+                <div className='side-profile-loading'><img src='loading.gif' className='birthday-loading'/></div>
             }
         </div>
     )

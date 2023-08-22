@@ -221,10 +221,10 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                             <textarea className='edit-form-textarea' placeholder='Write a bio to introduce yourself...' id='text-bio'></textarea>
                             <div className='edit-form-buttons'>
                                 {loading ? <button className='form-button-cancel disabled' onClick={handleDummyOnClick}>Cancel</button> :<button className='form-button-cancel' onClick={closeForm}>Cancel</button>}
-                                {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>}
+                                {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='loading.gif' className='about-property-loading'/></button> : <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>}
                             </div>
                         </form> : 
-                        props.user.bio ? <p className='contact-symbol bio'>{props.user.bio}</p> : <div className='loading-container'><img src='/loading.gif' className='about-loading'/></div>}
+                        props.user.bio ? <p className='contact-symbol bio'>{props.user.bio}</p> : <div className='loading-container'><img src='loading.gif' className='about-loading'/></div>}
                 </div>
             }
 
@@ -232,7 +232,7 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
             {selection == 'Contact Info' &&
                 <div className='profile-about-right'>
                     <h4>Contact Info</h4>
-                    <p className='contact-symbol'><span className="material-symbols-rounded about-button-icon">email</span>{props.user.email ? props.user.email : <img src='/loading.gif' className='about-property-loading'/>}</p>
+                    <p className='contact-symbol'><span className="material-symbols-rounded about-button-icon">email</span>{props.user.email ? props.user.email : <img src='loading.gif' className='about-property-loading'/>}</p>
                     <p className='about-desc'>Email</p>
                 </div>
             }
@@ -247,7 +247,7 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                             <input className='edit-form-input' placeholder='Enter the gender you identify with...' id='text-gender'/>
                             <div className='edit-form-buttons'>
                                 {loading ? <button className='form-button-cancel disabled' onClick={handleDummyOnClick}>Cancel</button> :<button className='form-button-cancel' onClick={closeForm}>Cancel</button>}
-                                {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>}
+                                {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='loading.gif' className='about-property-loading'/></button> : <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>}
                             </div>
                         </form> : <div>
                         <div className='contact-symbol'>
@@ -255,7 +255,7 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                             {props.user.gender.toLowerCase() == 'male' ? <span className="material-symbols-rounded about-button-icon">man</span> : ""}
                             {props.user.gender.toLowerCase() == 'female' ? <span className="material-symbols-rounded about-button-icon">woman</span> : ""}
                             {props.user.gender.toLowerCase() !== 'male' && props.user.gender.toLowerCase() !== 'female' && <span className="material-symbols-rounded about-button-icon blacked-out">view_agenda</span>}
-                            {props.user.gender ? props.user.gender : <img src='/loading.gif' className='about-property-loading'/>}
+                            {props.user.gender ? props.user.gender : <img src='loading.gif' className='about-property-loading'/>}
                             {props.isUser && <div className='edit-button-pencil' onClick={() => {setEdit(!edit)}}><span className="material-symbols-rounded edit-icon">edit</span></div>}
                         </div>
                         <p className='about-desc'>Gender</p>
@@ -267,14 +267,14 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                             <input type="date" onChange={(e) => {setBirthDate(new Date(e.target.value))}} id="birthday" className='birthday-edit-input' min={setMin()} max={setMax()}  required/>
                             <div className='edit-form-buttons'>
                                 {loading ? <button className='form-button-cancel disabled' onClick={handleDummyOnClick}>Cancel</button> :<button className='form-button-cancel' onClick={closeForm}>Cancel</button>}
-                                {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>}
+                                {loading ? <button className='form-button-save disabled' onClick={handleDummyOnClick}><img src='loading.gif' className='about-property-loading'/></button> : <button className='form-button-save' onClick={handleSubmitOnClick}>Save</button>}
                             </div>
                         </form>
                         
                         : <div>
                             <p className='contact-symbol'>
                                 <span className="material-symbols-rounded about-button-icon">cake</span>
-                                {props.user.birthday ? ((props.user.birthday === "1000-01-01T00:00:00.000Z" && props.user.facebookId) ? "Not Set" : new Date(props.user.birthday).toDateString() ): <img src='/loading.gif' className='about-property-loading'/>}
+                                {props.user.birthday ? ((props.user.birthday === "1000-01-01T00:00:00.000Z" && props.user.facebookId) ? "Not Set" : new Date(props.user.birthday).toDateString() ): <img src='loading.gif' className='about-property-loading'/>}
                                 {props.isUser && <div className='edit-button-pencil' onClick={() => {setBirthdayEdit(!birthdayEdit)}}><span className="material-symbols-rounded edit-icon">edit</span></div>}
                             </p>
                             <p className='about-desc'>Birthday</p>
@@ -283,13 +283,13 @@ export default function About(props: {setUser: React.Dispatch<React.SetStateActi
                     {/* The account creation date, and number of posts information is not editable, thus they will display no matter what */}
                     <p className='contact-symbol'>
                         <span className="material-symbols-rounded about-button-icon">today</span>
-                        {props.user.accountCreationDate ? new Date(props.user.accountCreationDate).toDateString() : <img src='/loading.gif' className='about-property-loading'/>}
+                        {props.user.accountCreationDate ? new Date(props.user.accountCreationDate).toDateString() : <img src='loading.gif' className='about-property-loading'/>}
                     </p>
                     <p className='about-desc'>Account Creation Date</p>
             
                     <p className='contact-symbol'>
                         <span className='material-symbols-rounded about-button-icon'>format_list_numbered</span>
-                        {props.user.posts ? `${props.user.posts.length} Posts` : <img src='/loading.gif' className='about-property-loading'/>}
+                        {props.user.posts ? `${props.user.posts.length} Posts` : <img src='loading.gif' className='about-property-loading'/>}
                     </p>
                     <p className='about-desc'>Total Number of Posts</p>
                 </div>

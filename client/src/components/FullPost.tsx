@@ -243,7 +243,7 @@ export default function FullPost(): JSX.Element{
                     <CommentContainer currentUser={currentUser} comments={comments} setComments={setComments} postID={post_id}/>
                 </div> :
                 
-                <div className='post-loading-container'><img src='/loading.gif' className='post-loading'/></div>
+                <div className='post-loading-container'><img src='loading.gif' className='post-loading'/></div>
                 }
             </div>
 

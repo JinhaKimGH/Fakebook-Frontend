@@ -213,7 +213,7 @@ export default function CreatePost(props: {user: UserType, isUser: boolean, setU
                     </div>
                     {/* Displays any error sent back from the backend */}
                     <div className="form-error-post">{error}</div>
-                    {loading ? <button className='post-submit-disabled' onClick={handleSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='post-submit' onClick={handleSubmitOnClick}>Post</button>}
+                    {loading ? <button className='post-submit-disabled' onClick={handleSubmitOnClick}><img src='loading.gif' className='about-property-loading'/></button> : <button className='post-submit' onClick={handleSubmitOnClick}>Post</button>}
                 </div>
             </form>
         </div>

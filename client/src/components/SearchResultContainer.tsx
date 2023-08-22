@@ -214,9 +214,9 @@ export default function SearchResultContainer(props: {user: UserType}): JSX.Elem
             </div>
 
             {/* Redirects/calls a function depending on the different states */}
-            {isYou == false && isFriends == false && request == "" && (loading ? <button className='friend-request disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='friend-request' onClick={handleRequestOnClick}>Add Friend</button>)}
+            {isYou == false && isFriends == false && request == "" && (loading ? <button className='friend-request disabled' onClick={handleDummyOnClick}><img src='loading.gif' className='about-property-loading'/></button> : <button className='friend-request' onClick={handleRequestOnClick}>Add Friend</button>)}
             {isFriends == false &&  request == "Outgoing" && <button className='friend-request' onClick={(event) => redirect(event, `/friends`)}>Pending Request</button>}
-            {isFriends == false &&  request == 'Incoming' && (loading ? <button className='friend-request disabled' onClick={handleDummyOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className='friend-request' onClick={handleAcceptOnClick}>Accept Request</button>)}
+            {isFriends == false &&  request == 'Incoming' && (loading ? <button className='friend-request disabled' onClick={handleDummyOnClick}><img src='loading.gif' className='about-property-loading'/></button> : <button className='friend-request' onClick={handleAcceptOnClick}>Accept Request</button>)}
             {(isYou == true || isFriends == true) && <button className='friend-request' onClick={(event) => redirect(event, `/user/${props.user._id}`)}>View Profile</button>}
         </div>
     )

@@ -182,7 +182,7 @@ export default function SignUp(): JSX.Element{
                     <input type="date" onChange={(e) => {setBirthDate(new Date(e.target.value))}} id="date" required/>
                     <input type="text" onChange={(e) => {setGender(e.target.value)}} id="gender" placeholder="Gender" required/>
                     <div className="form-error">{error}</div>
-                    {loading ? <button className='login-submit-disabled' onClick={handleSubmitOnClick}><img src='/loading.gif' className='about-property-loading'/></button> : <button className="submit" onClick={handleSubmitOnClick}>Sign Up</button>}
+                    {loading ? <button className='login-submit-disabled' onClick={handleSubmitOnClick}><img src='loading.gif' className='about-property-loading'/></button> : <button className="submit" onClick={handleSubmitOnClick}>Sign Up</button>}
                 </form>
             </div>
         </div>

@@ -143,7 +143,7 @@ export default function Friend(): JSX.Element {
 
             {/* If user state hasn't loaded in yet from the API */}
             {user._id == "" && 
-                <img src='/loading.gif' className='friends-loading'/>
+                <img src='loading.gif' className='friends-loading'/>
             }
             
         </div>

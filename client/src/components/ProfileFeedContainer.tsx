@@ -134,7 +134,7 @@ export default function ProfileFeedContainer(props: {tab: string, user: UserType
             : ''}
             {/* If the posts are loading, or the count state is less than the length of the array the loading gif is displayed */}
             {(props.tab === 'Posts' || props.tab === 'Bookmarks') && (postLoading || postCount < posts.length) && 
-                        <div className='post-loading-container'><img src='/loading.gif' className='post-loading'/></div>
+                        <div className='post-loading-container'><img src='loading.gif' className='post-loading'/></div>
             }
             {/* If the tab is posts or bookmarks, the posts are mapped to the posts component */}
             {props.tab == 'Bookmarks' && 

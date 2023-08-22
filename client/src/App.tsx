@@ -21,7 +21,6 @@ function App(): JSX.Element {
       {/* Contains routing for all routes in this app */}
         <Router basename={"/Fakebook-Frontend"}>
           <Routes>
-            <Route path="/" element={<Login/>}/>
             <Route path="/signup" element={<SignUp/>}/>
             <Route path="/home" element={<Home />}/>
             <Route path="user/:id" element={<User/>}/>
@@ -31,6 +30,7 @@ function App(): JSX.Element {
             <Route path='/post/:id' element={<FullPost/>}/>
             <Route path='/error' element={<ErrorPage isApiErr={true}/>}/>
             <Route path="*" element={<ErrorPage isApiErr={false}/>}/>
+            <Route path="/" element={<Login/>}/>
           </Routes>
         </Router>
     </div>

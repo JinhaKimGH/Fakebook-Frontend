@@ -593,6 +593,7 @@ ul{
     max-height: 168px;
     height: 100%;
     width: auto;
+    object-fit: cover;
     border-radius: 999999px;
 }
 

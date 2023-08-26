@@ -6,13 +6,13 @@ The frontend utilizes ReactJS, [react-router-dom](https://reactrouter.com/en/mai
 
 ## Config Variables
 
-To run this project, you will need to add the following variables to a config.tsx file under src/components.
+To run this project, you will need to add the following variables to a config.tsx file under src.
 
-`apiURL` -> Backend URL
+`config.apiURL` -> Backend URL
 
-`imgurID` -> [Imgur API URL](https://api.imgur.com/)
+`config.imgurID` -> [Imgur API URL](https://api.imgur.com/)
 
-`facebookAppID` -> [Facebook App URL](https://developers.facebook.com/)
+`config.facebookAppID` -> [Facebook App URL](https://developers.facebook.com/)
 
 ## Run Locally
 
